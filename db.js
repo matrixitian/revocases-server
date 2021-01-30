@@ -1,11 +1,9 @@
 require('dotenv').config()
+const mongoose = require('mongoose')
 
-// (async () => {
-//     const { MongoClient } = require('mongodb');
-
-//     const uri = process.env.DATABASE
-
-//     const client = new MongoClient(uri)
-
-//     await client.connect()
-// })
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true 
+})

@@ -1,18 +1,13 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    gID: { // firebase user id
+    uid: {
       type: String,
-      trim: true,
       required: true
     },
     credits: {
       type: Number,
       default: 0
-    },
-    startTokensReceived: {
-      type: Boolean,
-      default: false
     },
     skins: [{ // references
       type: String,
