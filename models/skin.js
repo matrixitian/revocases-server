@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const skinSchema = new mongoose.Schema({
-  uname: {
+  skin: {
     type: String,
     required: true
   },
-  skinName: {
+  grade: {
     type: String,
     required: true
   },

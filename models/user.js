@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    tradeURL : {
+      type: String,
+      require: true
+    },
     credits: {
       type: Number,
       default: 0

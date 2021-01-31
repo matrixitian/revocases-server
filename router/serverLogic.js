@@ -1,6 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 const User = require('../models/user')
+const Skin = require('../models/skin')
 const log = console.log
 
 router.post('/create-user', async(req, res) => {
@@ -37,6 +38,7 @@ router.post('/buy-case', async(req, res) => {
 
   const userUID = req.body.userUID
   const caseName = req.body.caseName
+  const tradeURL = req.body.tradeURL
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
   const casePrices = [350, 400, 450, 750, 1100]
@@ -241,6 +243,10 @@ router.post('/buy-case', async(req, res) => {
     try {
       await User.updateOne({ uid: userUID }, {
         credits: userCredits - creditsRequired
+      })
+
+      const skin = new Skin({
+
       })
     } catch(err) {
       log(err)
