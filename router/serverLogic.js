@@ -414,31 +414,44 @@ router.post('/buy-case', async(req, res) => {
   res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
 })
 
-router.post('/check-profitability', async(req, res) => {
-  const key = req.body.key // secret key
+router.get('/check-profitability', async(req, res) => {
+  console.log('hello')
+//   const key = req.body.key // secret key
 
-  let i
+//   let i
 
-  let skins = []
-  for (i = 0; i < 1000; i++) {
-    let data = getSkinGradeAndCondition()
-    skinGrade = data.skinGrade
-    skinCon = data.skinCon
+//   let skins = []
+//   for (i = 0; i < 1000; i++) {
+//     let data = getWeapon()
+//     skin = data.skin
+//     skinCon = data.skinCon
 
-    skins.push({})
-  }
+//     const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
+//     const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
+    
+//     const conIndex = this.shorthandCondition.indexOf(skinCon)
+//     skinCon = conditions[conIndex]
+
+//     let formattedSkin = skin.replace('_', ' ')
+//     formattedSkin = `${formattedSkin} `
+
+//     // skins.push(`${}`)
+//   }
   
 
-  const items = [
-    'Clutch Case Key',
-    'Clutch Case'
-]
-steamprice.getprices(730, items, '1').then(data => {
-    console.log(data);
-}).catch(err => console.log(err));
+//   const items = [
+//     'Clutch Case Key',
+//     'Clutch Case'
+// ]
 
-  const data = await axios.get('http://steamcommunity.com/market/priceoverview/?currency=3&appid=730&market_hash_name=StatTrak%E2%84%A2%20P250%20%7C%20Steel%20Disruption%20%28Factory%20New%29')
-}) 
+try {
+  const price = await steamprice.getprices(730, 'Glock-18 | Neo-Noir (Minimal Wear)', '1')
+} catch(err) {
+  return res.status(400).send(err)
+}
+
+res.status(200).send(price)
+})
 
 router.get('/trade-requests', async(req, res) => {
   const user = await User.findById({_id: req.user._id})
