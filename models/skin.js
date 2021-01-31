@@ -22,7 +22,10 @@ const skinSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  requestedTrade: false
+  requestedTrade: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const Skin = mongoose.model('Skin', skinSchema)

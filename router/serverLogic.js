@@ -6,10 +6,12 @@ const log = console.log
 
 router.post('/create-user', async(req, res) => {
     const userUID = req.body.userUID
+    const tradeURL = req.body.tradeURL
 
     try {
         const userForSave = new User({
-          uid: userUID
+          uid: userUID,
+          tradeURL
         })
 
         const user = await userForSave.save()
@@ -38,7 +40,6 @@ router.post('/buy-case', async(req, res) => {
 
   const userUID = req.body.userUID
   const caseName = req.body.caseName
-  const tradeURL = req.body.tradeURL
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
   const casePrices = [350, 400, 450, 750, 1100]
@@ -176,10 +177,143 @@ router.post('/buy-case', async(req, res) => {
     }
   }
 
+  const formattedSkinName = {
+    dangerZone: {
+      mil_spec: [
+        'Wood Fired',
+        'Black Sand',
+        'Danger Close',
+        'Modest Threat',
+        'Fubar',
+        'Oxide Blaze',
+        'Magnesium'
+      ],
+      restricted: [
+        'Scavenger',
+        'Pipe Down',
+        'Signal',
+        'Nevermore',
+        'Flashback',
+      ],
+      classified: [
+        'Phosphor',
+        'Momentum',
+        'Mecha Industries'
+      ],
+      covert: [
+        'Neo-Noir',
+        'Asiimov'
+      ]
+    },
+    phoenix: {
+      mil_spec: [
+        'Corporal',
+        'Heaven Guard',
+        'Terrain',
+        'Sandstorm'
+      ],
+      restricted: [
+        'Sergeant',
+        'Heat',
+        'Pulse',
+        'Guardian',
+      ],
+      classified: [
+        'Guardian',
+        'Antique',
+        'Redline',
+      ],
+      covert: [
+        'Chameleon',
+        'Asiimov'
+      ]
+    },
+    chroma2: {
+      mil_spec: [
+        "Man-o'-war",
+        'Origami',
+        'Armor Core',
+        'Valence',
+        'Bronze Deco',
+        'Elite Build'
+      ],
+      restricted: [
+        'Grand Prix',
+        'Pole Position',
+        'Heat',
+        'Worm God',
+      ],
+      classified: [
+        'Djinn',
+        'Monkey Business',
+        'Eco',
+      ],
+      covert: [
+        'Neon Rider',
+        'Hyper Beast'
+      ]
+    },
+    fracture: {
+      mil_spec: [
+        'Ultralight',
+        "Ol' Rusty",
+        'Gnarled',
+        'Freight',
+        'Runic',
+        'Cassette',
+        'Mainframe 001'
+      ],
+      restricted: [
+        'Connexion',
+        'Kitbash',
+        'Brother',
+        'Allure',
+        'Monster Call'
+      ],
+      classified: [
+        'Entombed',
+        'Vogue',
+        'Tooth Fairy',
+      ],
+      covert: [
+        'Legion of Anubis',
+        'Printstream'
+      ]
+    },
+    clutch: {
+      mil_spec: [
+        'Oxide Blaze',
+        'Night Riot',
+        'Urban Hazard',
+        'Flame Test',
+        'Aloha',
+        'Grip',
+        'Black Sand'
+      ],
+      restricted: [
+        'Lionfish',
+        'Wild Six',
+        'Arctic Wolf',
+        'SWAG-7',
+        'Moonrise'
+      ],
+      classified: [
+        'Stymphalian',
+        'Mortis',
+        'Cortex',
+      ],
+      covert: [
+        'Bloodsport',
+        'Neo-Noir'
+      ]
+    }
+  }
+
   const caseIndex = cases.indexOf(caseName)
 
-  const user = await User.findOne({ uid: userUID }, `credits -_id`)
+  const user = await User.findOne({ uid: userUID }, `credits tradeURL -_id`)
   const userCredits = user.credits
+  const tradeURL = user.tradeURL
   const creditsRequired = casePrices[caseIndex]
 
   let skinGrade
@@ -245,9 +379,20 @@ router.post('/buy-case', async(req, res) => {
         credits: userCredits - creditsRequired
       })
 
-      const skin = new Skin({
-
+      const saveSkin = new Skin({
+        skin,
+        grade: skinGrade,
+        condition: skinCon,
+        tradeURL,
+        openedAt: new Date()
       })
+
+      saveSkin.save()
+
+      // Save Skin reference to User
+      const userSaveSkinRef = await User.findOne({ uid: userUID })
+      userSaveSkinRef.skins.push(saveSkin._id)
+      await userSaveSkinRef.save()
     } catch(err) {
       log(err)
     }
