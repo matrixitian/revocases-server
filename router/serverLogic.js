@@ -178,7 +178,6 @@ router.post('/buy-case', async(req, res) => {
 
   const user = await User.findOne({ uid: userUID }, `credits -_id`)
   const userCredits = user.credits
-  log(userCredits)
   const creditsRequired = casePrices[caseIndex]
 
   let skinGrade
@@ -231,13 +230,11 @@ router.post('/buy-case', async(req, res) => {
   }
 
   let skin
-  log(userCredits)
-  log(creditsRequired)
   if (userCredits >= creditsRequired) {
     getSkinGradeAndCondition()
 
     const arrLen = wpnCases[caseName][skinGrade].length
-    const skinIndex = Math.floor(Math.random(0, arrLen - 1))
+    const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
 
     skin = wpnCases[caseName][skinGrade][skinIndex]
 
@@ -248,8 +245,8 @@ router.post('/buy-case', async(req, res) => {
     } catch(err) {
       log(err)
     }
-    
-    console.log(skin)
+  } else {
+    return res.status(400).send("Not enough moneros Sunny. And cheating ain't nice")
   }
 
   res.status(200).send({ skin, skinGrade, skinCon })
