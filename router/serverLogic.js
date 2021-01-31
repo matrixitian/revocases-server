@@ -138,7 +138,7 @@ router.post('/buy-case', async(req, res) => {
       classified: [
         'xm1014_entombed',
         'glock-18_vogue',
-        'm4a4_toothfairy:',
+        'm4a4_toothfairy',
       ],
       covert: [
         'ak-47_legion_of_anubis',
@@ -160,12 +160,12 @@ router.post('/buy-case', async(req, res) => {
         'nova_wild_six',
         'ump-45_artic_wolf',
         'mag-7_swag-7',
-        'glock-18_moonrise:'
+        'glock-18_moonrise'
       ],
       classified: [
         'aug_stymphalian',
         'awp_mortis',
-        'usp-s_cortex:',
+        'usp-s_cortex',
       ],
       covert: [
         'mp7_bloodsport',
@@ -176,7 +176,9 @@ router.post('/buy-case', async(req, res) => {
 
   const caseIndex = cases.indexOf(caseName)
 
-  const userCredits = await User.findById(userUID, `credits`)
+  const user = await User.findOne({ uid: userUID }, `credits -_id`)
+  const userCredits = user.credits
+  log(userCredits)
   const creditsRequired = casePrices[caseIndex]
 
   let skinGrade
@@ -228,17 +230,29 @@ router.post('/buy-case', async(req, res) => {
     }
   }
 
-  // userCredits >= creditsRequired
-
-  if (true) {
+  let skin
+  log(userCredits)
+  log(creditsRequired)
+  if (userCredits >= creditsRequired) {
     getSkinGradeAndCondition()
 
-    const arrLen = wpnCases[caseName][skinGrade]
+    const arrLen = wpnCases[caseName][skinGrade].length
+    const skinIndex = Math.floor(Math.random(0, arrLen - 1))
 
-    console.log(arrLen)
+    skin = wpnCases[caseName][skinGrade][skinIndex]
+
+    try {
+      await User.updateOne({ uid: userUID }, {
+        credits: userCredits - creditsRequired
+      })
+    } catch(err) {
+      log(err)
+    }
+    
+    console.log(skin)
   }
 
-  res.status(200).send({ skinGrade, skinCon })
+  res.status(200).send({ skin, skinGrade, skinCon })
 })
 
 router.get('/trade-requests', async(req, res) => {
