@@ -220,11 +220,11 @@ router.post('/buy-case', async(req, res) => {
       skinCon = Math.round(skinCon * 100) / 100
 
       const getCondition = () => {
-        if (skinCon <= 3) return 'Factory New'
-        else if (skinCon >= 3 && skinCon < 10) return 'Minimal Wear'
-        else if (skinCon >= 10 && skinCon < 35) return 'Field-Tested'
-        else if (skinCon >= 35 && skinCon < 70) return 'Well-Worn'
-        else if (skinCon >= 70) return 'Battle-Scarred'
+        if (skinCon <= 3) return 'fn'
+        else if (skinCon >= 3 && skinCon < 10) return 'mw'
+        else if (skinCon >= 10 && skinCon < 35) return 'ft'
+        else if (skinCon >= 35 && skinCon < 70) return 'ww'
+        else if (skinCon >= 70) return 'bs'
       }
 
       skinCon = getCondition()
