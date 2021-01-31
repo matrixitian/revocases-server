@@ -1,4 +1,5 @@
 const express = require('express')
+const steamprice = require('steam-price-api');
 const router = new express.Router()
 const User = require('../models/user')
 const Skin = require('../models/skin')
@@ -414,11 +415,29 @@ router.post('/buy-case', async(req, res) => {
 })
 
 router.post('/check-profitability', async(req, res) => {
+  const key = req.body.key // secret key
+
   let i
 
-  const data = getSkinGradeAndCondition()
-  skinGrade = data.skinGrade
-  skinCon = data.skinCon
+  let skins = []
+  for (i = 0; i < 1000; i++) {
+    let data = getSkinGradeAndCondition()
+    skinGrade = data.skinGrade
+    skinCon = data.skinCon
+
+    skins.push({})
+  }
+  
+
+  const items = [
+    'Clutch Case Key',
+    'Clutch Case'
+]
+steamprice.getprices(730, items, '1').then(data => {
+    console.log(data);
+}).catch(err => console.log(err));
+
+  const data = await axios.get('http://steamcommunity.com/market/priceoverview/?currency=3&appid=730&market_hash_name=StatTrak%E2%84%A2%20P250%20%7C%20Steel%20Disruption%20%28Factory%20New%29')
 }) 
 
 router.get('/trade-requests', async(req, res) => {
