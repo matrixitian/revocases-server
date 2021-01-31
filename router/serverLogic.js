@@ -23,27 +23,7 @@ router.post('/create-user', async(req, res) => {
     }
 })
 
-router.post('/buy-case', async(req, res) => {
-  // % to get gun grade
-  // mil_spec: 89.0, // blue
-  // restricted: 10.8, // purple
-  // classified: 0.20, // pink
-  // covert: 0.00, // red
-  // exceedingly_rare: 0.00 // yellow
-
-  // % to get gun condition
-  // fn: 3,
-  // mw: 7,
-  // ft: 40,
-  // ww: 30,
-  // bs: 20
-
-  const userUID = req.body.userUID
-  const caseName = req.body.caseName
-
-  const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [350, 400, 450, 750, 1100]
-
+const getWeapon = (caseName) => {
   const wpnCases = {
     dangerZone: {
       mil_spec: [
@@ -309,72 +289,101 @@ router.post('/buy-case', async(req, res) => {
     }
   }
 
+  let skinGrade
+  let skinCon
+
+  // Get Skin Grade
+  skinGrade = Math.random() * 100
+  skinGrade = Math.round(skinGrade * 100) / 100
+
+  const getGrade = () => {
+    if (skinGrade < 0) return 'exceedingly_rare'
+    else if (skinGrade >= 0 && skinGrade < 0.20) return 'classified' 
+    else if (skinGrade >= 0.20 && skinGrade < 11.00) return 'restricted'
+    else if (skinGrade >= 11.00) return 'mil_spec'
+  }
+
+  skinGrade = getGrade()
+
+  // Get Skin Condition
+  // For Covert
+  if (skinGrade === 'covert') {
+    skinCon = 'bs'
+  }
+  // For Classified
+  else if (skinGrade === 'classified') {
+    const num = Math.round(skinCon * 100) / 100
+
+    if (num < 15) {
+      skinCon = 'ww'
+    } else {
+      skinCon = 'bs'
+    }
+  }
+  // For below Classified shuffle condition normally
+  else {
+    // Get Skin condition
+    skinCon = Math.random() * 100
+    skinCon = Math.round(skinCon * 100) / 100
+
+    const getCondition = () => {
+      if (skinCon <= 3) return 'fn'
+      else if (skinCon >= 3 && skinCon < 10) return 'mw'
+      else if (skinCon >= 10 && skinCon < 35) return 'ft'
+      else if (skinCon >= 35 && skinCon < 70) return 'ww'
+      else if (skinCon >= 70) return 'bs'
+    }
+
+    skinCon = getCondition()
+  }
+
+  const arrLen = wpnCases[caseName][skinGrade].length
+  const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
+
+  const skin = wpnCases[caseName][skinGrade][skinIndex]
+  const formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
+
+  return { formattedSkin, skin, skinGrade, skinCon }
+}
+
+router.post('/buy-case', async(req, res) => {
+  // % to get gun grade
+  // mil_spec: 89.0, // blue
+  // restricted: 10.8, // purple
+  // classified: 0.20, // pink
+  // covert: 0.00, // red
+  // exceedingly_rare: 0.00 // yellow
+
+  // % to get gun condition
+  // fn: 3,
+  // mw: 7,
+  // ft: 40,
+  // ww: 30,
+  // bs: 20
+
+  const userUID = req.body.userUID
+  const caseName = req.body.caseName
+
+  const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
+  const casePrices = [350, 400, 450, 750, 1100]
+
   const caseIndex = cases.indexOf(caseName)
 
   const user = await User.findOne({ uid: userUID }, `credits tradeURL -_id`)
   const userCredits = user.credits
-  const tradeURL = user.tradeURL
   const creditsRequired = casePrices[caseIndex]
 
   let skinGrade
   let skinCon
-  const getSkinGradeAndCondition = () => {
-    // Get Skin Grade
-    skinGrade = Math.random() * 100
-    skinGrade = Math.round(skinGrade * 100) / 100
-
-    const getGrade = () => {
-      if (skinGrade < 0) return 'exceedingly_rare'
-      else if (skinGrade >= 0 && skinGrade < 0.20) return 'classified' 
-      else if (skinGrade >= 0.20 && skinGrade < 11.00) return 'restricted'
-      else if (skinGrade >= 11.00) return 'mil_spec'
-    }
-
-    skinGrade = getGrade()
-
-    // Get Skin Condition
-    // For Covert
-    if (skinGrade === 'covert') {
-      skinCon = 'bs'
-    }
-    // For Classified
-    else if (skinGrade === 'classified') {
-      const num = Math.round(skinCon * 100) / 100
-
-      if (num < 15) {
-        skinCon = 'ww'
-      } else {
-        skinCon = 'bs'
-      }
-    }
-    // For below Classified shuffle condition normally
-    else {
-      // Get Skin condition
-      skinCon = Math.random() * 100
-      skinCon = Math.round(skinCon * 100) / 100
-
-      const getCondition = () => {
-        if (skinCon <= 3) return 'fn'
-        else if (skinCon >= 3 && skinCon < 10) return 'mw'
-        else if (skinCon >= 10 && skinCon < 35) return 'ft'
-        else if (skinCon >= 35 && skinCon < 70) return 'ww'
-        else if (skinCon >= 70) return 'bs'
-      }
-
-      skinCon = getCondition()
-    }
-  }
 
   let skin
   let formattedSkin
   if (userCredits >= creditsRequired) {
-    getSkinGradeAndCondition()
-
-    const arrLen = wpnCases[caseName][skinGrade].length
-    const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
-
-    skin = wpnCases[caseName][skinGrade][skinIndex]
-    formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
+    const data = getWeapon(caseName)
+    skinGrade = data.skinGrade
+    skinCon = data.skinCon
+    skin = data.skin
+    formattedSkin = data.formattedSkin
 
     try {
       await User.updateOne({ uid: userUID }, {
@@ -403,6 +412,14 @@ router.post('/buy-case', async(req, res) => {
 
   res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
 })
+
+router.post('/check-profitability', async(req, res) => {
+  let i
+
+  const data = getSkinGradeAndCondition()
+  skinGrade = data.skinGrade
+  skinCon = data.skinCon
+}) 
 
 router.get('/trade-requests', async(req, res) => {
   const user = await User.findById({_id: req.user._id})
