@@ -41,6 +41,139 @@ router.post('/buy-case', async(req, res) => {
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
   const casePrices = [350, 400, 450, 750, 1100]
 
+  const wpnCases = {
+    dangerZone: {
+      mil_spec: [
+        'nova_wood_fired',
+        'sawed-off_black_sand',
+        'sg553_danger_close',
+        'mp9_modest_threat',
+        'tec-9_fubar',
+        'glock-18_oxide_blaze',
+        'm4a4_magnesium'
+      ],
+      restricted: [
+        'g3sg1_scavenger',
+        'mac-10_pipe_down',
+        'galil_ar_signal',
+        'p250_nevermore',
+        'usp-s_flashback',
+        'ump-45_momentum'
+      ],
+      classified: [
+        'mp5-sd_phosphor',
+        'ump-45_momentum',
+        'desert_eagle_mecha_industries'
+      ],
+      covert: [
+        'awp_neo-noir',
+        'ak-47_asiimov'
+      ]
+    },
+    phoenix: {
+      mil_spec: [
+        'ump-45_corporal',
+        'mag-7_heaven_guard',
+        'negev_terrain',
+        'tec-9_sandstorm'
+      ],
+      restricted: [
+        'famas_sergeant',
+        'mac-10_heat',
+        'sg_553_pulse',
+        'usp-s_guardian',
+      ],
+      classified: [
+        'p90_trigon',
+        'nova_antique',
+        'dak-47_redline',
+      ],
+      covert: [
+        'aug_chameleon',
+        'awp_asiimov'
+      ]
+    },
+    chroma2: {
+      mil_spec: [
+        "negev_man-o-'war",
+        'sawed-off_origami',
+        'mp7_armor_core',
+        'p250_valence',
+        'desert_eagle_bronze_deco',
+        'ak-47_elite_build'
+      ],
+      restricted: [
+        'ump-45_grand_prix',
+        'cz75-auto_pole_position',
+        'mag-7_heat',
+        'awp_worm_god',
+      ],
+      classified: [
+        'famas_djinn',
+        'five-seven_monkey_business',
+        'galil_ar_eco',
+      ],
+      covert: [
+        'mac-10_neon_rider',
+        'm4a1-s_hyper_beast'
+      ]
+    },
+    fracture: {
+      mil_spec: [
+        'negev_ultralight',
+        "sg_553_ol'rusty",
+        'p2000_gnarled',
+        'p90_freight',
+        'pp-bizon_runic',
+        'p250_cassette',
+        'ssg_08_mainframe_001'
+      ],
+      restricted: [
+        'galil_ar_connexion',
+        'mp5-sd_kitbash',
+        'tec-9_brother',
+        'mac-10_allure',
+        'mag-7_monster_call'
+      ],
+      classified: [
+        'xm1014_entombed',
+        'glock-18_vogue',
+        'm4a4_toothfairy:',
+      ],
+      covert: [
+        'ak-47_legion_of_anubis',
+        'desert_eagle_printstream'
+      ]
+    },
+    clutch: {
+      mil_spec: [
+        'xm1014_oxide_blaze',
+        'pp-bizon_night_riot',
+        'p2000_urban_hazard',
+        'five-seven_flame_test',
+        'g_553_aloha',
+        'r8_revolver_grip',
+        'mp9_black_sand'
+      ],
+      restricted: [
+        'negev_lionfish',
+        'nova_wild_six',
+        'ump-45_artic_wolf',
+        'mag-7_swag-7',
+        'glock-18_moonrise:'
+      ],
+      classified: [
+        'aug_stymphalian',
+        'awp_mortis',
+        'usp-s_cortex:',
+      ],
+      covert: [
+        'mp7_bloodsport',
+        'm4a4_neo-noir'
+      ]
+    }
+  }
+
   const caseIndex = cases.indexOf(caseName)
 
   const userCredits = await User.findById(userUID, `credits`)
@@ -86,21 +219,23 @@ router.post('/buy-case', async(req, res) => {
       const getCondition = () => {
         if (skinCon <= 3) return 'Factory New'
         else if (skinCon >= 3 && skinCon < 10) return 'Minimal Wear'
-        else if (skinCon >= 10 && skinCon < 50) return 'Field-Tested'
-        else if (skinCon >= 50 && skinCon < 80) return 'Well-Worn'
-        else if (skinCon >= 80) return 'Battle-Scarred'
+        else if (skinCon >= 10 && skinCon < 35) return 'Field-Tested'
+        else if (skinCon >= 35 && skinCon < 70) return 'Well-Worn'
+        else if (skinCon >= 70) return 'Battle-Scarred'
       }
 
       skinCon = getCondition()
     }
   }
 
-  if (userCredits >= creditsRequired) {
+  // userCredits >= creditsRequired
+
+  if (true) {
     getSkinGradeAndCondition()
 
-    // const arrLen = cases[caseName][skinGrade].length
+    const arrLen = wpnCases[caseName][skinGrade]
 
-    // console.log(arrLen)
+    console.log(arrLen)
   }
 
   res.status(200).send({ skinGrade, skinCon })
