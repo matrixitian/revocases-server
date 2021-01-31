@@ -335,16 +335,16 @@ router.post('/buy-case', async(req, res) => {
     // Get Skin Condition
     // For Covert
     if (skinGrade === 'covert') {
-      skinCon = 'Battle-Scarred'
+      skinCon = 'bs'
     }
     // For Classified
     else if (skinGrade === 'classified') {
       const num = Math.round(skinCon * 100) / 100
 
       if (num < 15) {
-        skinCon = 'Well-Worn'
+        skinCon = 'ww'
       } else {
-        skinCon = 'Battle-Scarred'
+        skinCon = 'bs'
       }
     }
     // For below Classified shuffle condition normally
