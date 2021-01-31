@@ -366,6 +366,7 @@ router.post('/buy-case', async(req, res) => {
   }
 
   let skin
+  let formattedSkin
   if (userCredits >= creditsRequired) {
     getSkinGradeAndCondition()
 
@@ -373,6 +374,7 @@ router.post('/buy-case', async(req, res) => {
     const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
 
     skin = wpnCases[caseName][skinGrade][skinIndex]
+    formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
 
     try {
       await User.updateOne({ uid: userUID }, {
@@ -383,8 +385,7 @@ router.post('/buy-case', async(req, res) => {
         skin,
         grade: skinGrade,
         condition: skinCon,
-        tradeURL,
-        openedAt: new Date()
+        uid: userUID
       })
 
       saveSkin.save()
@@ -400,7 +401,7 @@ router.post('/buy-case', async(req, res) => {
     return res.status(400).send("Not enough moneros Sunny. And cheating ain't nice")
   }
 
-  res.status(200).send({ skin, skinGrade, skinCon })
+  res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
 })
 
 router.get('/trade-requests', async(req, res) => {

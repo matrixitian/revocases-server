@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const skinSchema = new mongoose.Schema({
+  uid: {
+    type: String,
+    required: true
+  },
   skin: {
     type: String,
     required: true
@@ -14,13 +18,9 @@ const skinSchema = new mongoose.Schema({
     maxlength: 2,
     required: true
   },
-  tradeURL: {
-    type: String,
-    required: true
-  },
-  openedAt: {
+  tradeRequestedAt: {
     type: Number,
-    required: true
+    required: false
   },
   requestedTrade: {
     type: Boolean,

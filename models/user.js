@@ -5,9 +5,9 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    tradeURL : {
-      type: String,
-      require: true
+    adsOpened: {
+      type: Number,
+      default: 0
     },
     credits: {
       type: Number,
