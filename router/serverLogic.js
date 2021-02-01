@@ -41,8 +41,7 @@ const getWeapon = (caseName) => {
         'mac-10_pipe_down',
         'galil_ar_signal',
         'p250_nevermore',
-        'usp-s_flashback',
-        'ump-45_momentum'
+        'usp-s_flashback'
       ],
       classified: [
         'mp5-sd_phosphor',
@@ -298,8 +297,7 @@ const getWeapon = (caseName) => {
   skinGrade = Math.round(skinGrade * 100) / 100
 
   const getGrade = () => {
-    if (skinGrade < 0) return 'exceedingly_rare'
-    else if (skinGrade >= 0 && skinGrade < 0.20) return 'classified' 
+    if (skinGrade >= 0 && skinGrade < 0.20) return 'classified' 
     else if (skinGrade >= 0.20 && skinGrade < 11.00) return 'restricted'
     else if (skinGrade >= 11.00) return 'mil_spec'
   }
@@ -415,43 +413,236 @@ router.post('/buy-case', async(req, res) => {
 })
 
 router.get('/check-profitability', async(req, res) => {
-  console.log('hello')
-//   const key = req.body.key // secret key
+  const key = req.body.key // secret key
 
-//   let i
+  const casePrice = 0.30
 
-//   let skins = []
-//   for (i = 0; i < 1000; i++) {
-//     let data = getWeapon()
-//     skin = data.skin
-//     skinCon = data.skinCon
+  let skinPrices = 0
+  let caseIncome = 0
+  let querySkins = []
+  let casesOpened = 0
 
-//     const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
-//     const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
-    
-//     const conIndex = this.shorthandCondition.indexOf(skinCon)
-//     skinCon = conditions[conIndex]
+  const amountOfDrops = 1000
 
-//     let formattedSkin = skin.replace('_', ' ')
-//     formattedSkin = `${formattedSkin} `
+  const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
+  const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
 
-//     // skins.push(`${}`)
-//   }
+  const skins = [
+    "desert eagle_mecha industries",
+    "mp5-sd_phosphor",
+    "ump-45_momentum",
+    "usp-s_flashback",
+    "p250_nevermore",
+    "galil_ar_signal",
+    "mac-10_pipe_down",
+    "g3sg1_scavenger",
+    "m4a4_magnesium",
+    "glock-18_oxide_blaze",
+    "tec-9_fubar",
+    "mp9_modest_threat",
+    "sg553_danger_close",
+    "sawed-off_black_sand",
+    "nova_wood_fired"
+  ]
   
+  const skinsFormatted = [
+    "Desert Eagle | Mecha Industries",
+    "UMP-45 | Momentum",
+    "MP5-SD | Phosphor",
+    "USP-S | Flashback",
+    "P250 | Nevermore",
+    "Galil AR | Signal",
+    "MAC-10 | Pipe Down",
+    "G3SG1 | Scavenger",
+    "M4A4 | Magnesium",
+    "Glock-18 | Oxide Blaze",
+    "Tec-9 | Fubar",
+    "MP9 | Modest Threat",
+    "SG553 | Danger Close",
+    "Sawed-Off | Black Sand",
+    "Nova | Wood Fired"
+  ]
 
-//   const items = [
-//     'Clutch Case Key',
-//     'Clutch Case'
-// ]
+  const pricesOfSkins = {
+    "Desert Eagle | Mecha Industries (Well-Worn)": 5.08,
+    "Desert Eagle | Mecha Industries (Battle-Scarred)": 4,
 
-try {
-  const price = await steamprice.getprices(730, 'Glock-18 | Neo-Noir (Minimal Wear)', '1')
-} catch(err) {
-  return res.status(400).send(err)
-}
+    "MP5-SD | Phosphor (Well-Worn)": 3.27,
+    "MP5-SD | Phosphor (Battle-Scarred)": 2.9,
 
-res.status(200).send(price)
+    "UMP-45 | Momentum (Factory New)": 6.34,
+    "UMP-45 | Momentum (Minimal Wear)": 4.28,
+    "UMP-45 | Momentum (Field-Tested)": 3.07,
+    "UMP-45 | Momentum (Well-Worn)": 3,
+    "UMP-45 | Momentum (Battle-Scarred)": 3.11,
+
+    "USP-S | Flashback (Factory New)": 1.1,
+    "USP-S | Flashback (Minimal Wear)": 0.81,
+    "USP-S | Flashback (Field-Tested)": 0.69,
+    "USP-S | Flashback (Well-Worn)": 0.99,
+    "USP-S | Flashback (Battle-Scarred)": 1.11,
+
+    "P250 | Nevermore (Factory New)": 0.93,
+    "P250 | Nevermore (Minimal Wear)": 0.61,
+    "P250 | Nevermore (Field-Tested)": 0.41,
+    "P250 | Nevermore (Well-Worn)": 0.55,
+    "P250 | Nevermore (Battle-Scarred)": 0.55,
+
+    "Galil AR | Signal (Factory New)": 0.92,
+    "Galil AR | Signal (Minimal Wear)": 0.59,
+    "Galil AR | Signal (Field-Tested)": 0.39,
+    "Galil AR | Signal (Well-Worn)": 0.40,
+    "Galil AR | Signal (Battle-Scarred)": 0.40,
+
+    "MAC-10 | Pipe Down (Factory New)": 1.2,
+    "MAC-10 | Pipe Down (Minimal Wear)": 0.6,
+    "MAC-10 | Pipe Down (Field-Tested)": 0.39,
+    "MAC-10 | Pipe Down (Well-Worn)": 0.34,
+    "MAC-10 | Pipe Down (Battle-Scarred)": 0.32,
+
+    "G3SG1 | Scavenger (Factory New)": 0.92,
+    "G3SG1 | Scavenger (Minimal Wear)": 0.59,
+    "G3SG1 | Scavenger (Field-Tested)": 0.38,
+    "G3SG1 | Scavenger (Well-Worn)": 0.37,
+    "G3SG1 | Scavenger (Battle-Scarred)": 0.32,
+
+    "M4A4 | Magnesium (Factory New)": 1.58,
+    "M4A4 | Magnesium (Minimal Wear)": 0.46,
+    "M4A4 | Magnesium (Field-Tested)": 0.21,
+    "M4A4 | Magnesium (Well-Worn)": 0.17,
+    "M4A4 | Magnesium (Battle-Scarred)": 0.13,
+
+    "Glock-18 | Oxide Blaze (Factory New)": 0.3,
+    "Glock-18 | Oxide Blaze (Minimal Wear)": 0.12,
+    "Glock-18 | Oxide Blaze (Field-Tested)": 0.09,
+    "Glock-18 | Oxide Blaze (Well-Worn)": 0.14,
+    "Glock-18 | Oxide Blaze (Battle-Scarred)": 0.09,
+
+    "Tec-9 | Fubar (Factory New)": 0.65,
+    "Tec-9 | Fubar (Minimal Wear)": 0.65,
+    "Tec-9 | Fubar (Field-Tested)": 0.08,
+    "Tec-9 | Fubar (Well-Worn)": 0.08,
+    "Tec-9 | Fubar (Battle-Scarred)": 0.08,
+
+    "MP9 | Modest Threat (Factory New)": 0.21,
+    "MP9 | Modest Threat (Minimal Wear)": 0.12,
+    "MP9 | Modest Threat (Field-Tested)": 0.08,
+    "MP9 | Modest Threat (Well-Worn)": 0.10,
+    "MP9 | Modest Threat (Battle-Scarred)": 0.09,
+
+    "SG553 | Danger Close (Factory New)": 0.20,
+    "SG553 | Danger Close (Minimal Wear)": 0.10,
+    "SG553 | Danger Close (Field-Tested)": 0.08,
+    "SG553 | Danger Close (Well-Worn)": 0.10,
+    "SG553 | Danger Close (Battle-Scarred)": 0.07,
+
+    "Sawed-Off | Black Sand (Factory New)": 0.2,
+    "Sawed-Off | Black Sand (Minimal Wear)": 0.1,
+    "Sawed-Off | Black Sand (Field-Tested)": 0.08,
+    "Sawed-Off | Black Sand (Well-Worn)": 0.08,
+    "Sawed-Off | Black Sand (Battle-Scarred)": 0.08,
+
+    "Nova | Wood Fired (Factory New)": 0.17,
+    "Nova | Wood Fired (Minimal Wear)": 0.10,
+    "Nova | Wood Fired (Field-Tested)": 0.08,
+    "Nova | Wood Fired (Well-Worn)": 0.09,
+    "Nova | Wood Fired (Battle-Scarred)": 0.08
+  }
+
+  let i
+  for (i = 0; i < amountOfDrops; i++) {
+    let data = getWeapon('dangerZone')
+
+    skin = data.skin
+    skinCon = data.skinCon
+
+    const conIndex = shorthandCondition.indexOf(skinCon)
+    skinCon = conditions[conIndex] 
+
+    const skinIndex = skins.indexOf(skin)
+    skin = skinsFormatted[skinIndex]
+    console.log(data.skin)
+
+
+    const query = `${skin} (${skinCon})`
+
+    price = pricesOfSkins[query]
+    log(`${query} ${pricesOfSkins[query]}`)
+
+    skinPrices += price
+    casesOpened++
+  }
+
+  caseIncome = casePrice * amountOfDrops
+
+  return res.status(200).send({
+    cijenaJedneKutijeKodNas: casePrice,
+    sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
+    sveukupnoIsplacenoSkinovaEUR: skinPrices,
+    profitEUR: caseIncome - skinPrices,
+    brojOtvorenihKutija: casesOpened
+  })
+
+  // res.send(querySkins)
+  // return res.send(querySkins)
+
+  // querySkins = [
+  //   "Sawed-Off | Black Sand (Minimal Wear)", "Galil AR | Signal (Well-Worn)", "Nova | Wood Fired (Factory New)"
+  // ]
+
+  // let price = 0
+  // try {
+  //   price = await steamprice.getprices(730, "Sawed-Off | Black Sand (Minimal Wear)", '1')
+  // } catch(err) {
+  //   log(err)
+  // }
+
+  // res.status(200).send(price)
+
+  // try {
+  //   let price
+  //   await Promise.all(querySkins.map(async (newQuery) => {
+  //     price = await steamprice.getprices(730, "Sawed-Off | Black Sand (Minimal Wear)", '1')
+
+  //     price = price[0].lowest_price
+  //     price = price.substring(1)
+
+  //     skinPrices += price
+  //     casesOpened++
+  //   }))
+
+  //   caseIncome = casePrice * amountOfDrops
+
+  //   res.status(200).send({
+  //     casePrice,
+  //     caseIncome,
+  //     profit: caseIncome - casePrice,
+  //     casesOpened
+  //   })
+  // } catch(err) {
+  //   res.status(400).send(err)
+  // }
 })
+
+// const wpnsFormatted = 
+    // ['Desert Eagle', 'Dual Berettas', 'Five-SeveN', 'Glock-18',
+    // 'CZ75-Auto', 'P2000', 'P250', 'R8 Revolver', 'Tec-9', 'USP-S',
+    // 'MAG-7', 'Nova', 'Sawed-Off', 'XM1014', 'M249', 'Negev',
+    // 'MAC-10',  'MP5-SD',  'MP7',  'MP9',  'P90',  'PP-Bizon',  'UMP-45',
+    // 'AK-47', 'AUG', 'FAMAS', 'Galil AR', 'M4A1-S', 'M4A4', 'SG 553',
+    // 'AWP', 'G3SG1', 'SCAR-20', 'SSG 08']
+
+    // const wpns = wpnsFormatted.map(wpn => {
+    //   return wpn.replace(' ', '_').toLowerCase()
+    // })
+
+    // console.log(wpns)
+
+    // let formattedSkin = skin.replace('_', ' ')
+    // formattedSkin = `${formattedSkin} `
+
+    // skins.push(`${}`)
+  // }
 
 router.get('/trade-requests', async(req, res) => {
   const user = await User.findById({_id: req.user._id})
