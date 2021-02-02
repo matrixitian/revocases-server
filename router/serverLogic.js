@@ -24,6 +24,31 @@ router.post('/create-user', async(req, res) => {
     }
 })
 
+router.post('/get-user-credits', async(req, res) => {
+  const uid = req.body.userUID
+
+  try {
+    const user = await User.findOne({ uid }, `credits -_id`)
+
+    console.log(user)
+    res.status(200).send(user)
+  } catch(err) {
+    res.status(400).send(err)
+  }
+})
+
+router.post('/get-user-skins', async(req, res) => {
+  const uid = req.body.userUID
+
+  try {
+    const user = await User.findOne({ uid }, `skins -_id`)
+
+    return res.status(200).send(user.skins)
+  } catch(err) {
+    return res.status(400).send(err)
+  }
+})
+
 const getWeapon = (caseName) => {
   const wpnCases = {
     dangerZone: {
@@ -326,9 +351,9 @@ const getWeapon = (caseName) => {
     skinCon = Math.round(skinCon * 100) / 100
 
     const getCondition = () => {
-      if (skinCon <= 3) return 'fn'
-      else if (skinCon >= 3 && skinCon < 10) return 'mw'
-      else if (skinCon >= 10 && skinCon < 35) return 'ft'
+      if (skinCon <= 1) return 'fn'
+      else if (skinCon >= 1 && skinCon < 7) return 'mw'
+      else if (skinCon >= 7 && skinCon < 35) return 'ft'
       else if (skinCon >= 35 && skinCon < 70) return 'ww'
       else if (skinCon >= 70) return 'bs'
     }
@@ -364,7 +389,7 @@ router.post('/buy-case', async(req, res) => {
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [350, 400, 450, 750, 1100]
+  const casePrices = [600, 750, 900, 1400, 1800]
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -415,7 +440,7 @@ router.post('/buy-case', async(req, res) => {
 router.get('/check-profitability', async(req, res) => {
   const key = req.body.key // secret key
 
-  const casePrice = 0.30
+  const casePrice = 0.55
 
   let skinPrices = 0
   let caseIncome = 0
@@ -576,11 +601,11 @@ router.get('/check-profitability', async(req, res) => {
   caseIncome = casePrice * amountOfDrops
 
   return res.status(200).send({
+    brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice,
-    sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
-    sveukupnoIsplacenoSkinovaEUR: skinPrices,
-    profitEUR: caseIncome - skinPrices,
-    brojOtvorenihKutija: casesOpened
+    sveukupnaZaradaOdProdavanjaKutijaEUR: Math.floor(caseIncome),
+    sveukupnoIsplacenoSkinovaEUR: Math.floor(skinPrices),
+    profitEUR: Math.floor(caseIncome - skinPrices)
   })
 
   // res.send(querySkins)
