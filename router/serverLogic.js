@@ -29,9 +29,26 @@ router.post('/get-user-credits', async(req, res) => {
 
   try {
     const user = await User.findOne({ uid }, `credits -_id`)
-
-    console.log(user)
+    
     res.status(200).send(user)
+  } catch(err) {
+    res.status(400).send(err)
+  }
+})
+
+router.post('/get-wpn-prices', async(req, res) => {
+  const uid = req.body.userUID
+  const wpns = req.body.wpns
+
+  try {
+    // const user = await User.findOne({ uid }, `credits -_id`)
+
+    let price
+    price = await steamprice.getprices(730, wpns, '1')
+
+
+    console.log(price)
+    res.status(200).send(price)
   } catch(err) {
     res.status(400).send(err)
   }
@@ -39,7 +56,7 @@ router.post('/get-user-credits', async(req, res) => {
 
 router.post('/get-user-skins', async(req, res) => {
   const uid = req.body.userUID
-
+console.log(uid)
   try {
     const user = await User.findOne({ uid }, `skins -_id`)
 
