@@ -913,6 +913,25 @@ router.post('/view-trade-requests', async(req, res) => {
   }
 })
 
+router.post('/delete-skins', async(req, res) => {
+  const fetchSkinsSecret = req.body.fetchSkinsSecret
+  const skinIDs = req.body.skinIDsForDeletion
+
+  if (fetchSkinsSecret !== process.env.FETCH_SKINS_SECRET) {
+    throw new Error ('Unauthorized.')
+  }
+
+  try {
+    await Promise.all(skinIDs.map(async (skinID) => {
+      await Skin.deleteOne(skinID)
+    }))
+
+    res.status(200).send("Skinovi su izbrisani.")
+  } catch(err) {
+    res.status(400).send("Nešto si pogrešno unjeo.")
+  }
+})
+
 router.post('/sell-skin', auth, async(req, res) => {
   const skinID = req.body.skinID
 
@@ -925,20 +944,6 @@ router.post('/sell-skin', auth, async(req, res) => {
   } catch(err) {
     log(err)
     return res.status(400).send(err)
-  }
-})
-
-router.post('/tag', async(req, res) => {
-  const tag = req.body.tag.toLowerCase()
-
-  try {
-      const user = await User.findById({_id: req.user._id})
-      user.tags.push(tag)
-      await user.save()
-
-      res.sendStatus(200)
-  } catch (err) {
-      res.sendStatus(400)
   }
 })
 
