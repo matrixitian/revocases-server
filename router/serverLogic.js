@@ -674,7 +674,6 @@ router.get('/check-profitability', async(req, res) => {
     skin = skinsFormatted[skinIndex]
     console.log(data.skin)
 
-
     const query = `${skin} (${skinCon})`
 
     price = pricesOfSkins[query]
