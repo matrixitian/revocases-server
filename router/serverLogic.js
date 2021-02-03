@@ -764,10 +764,20 @@ router.get('/check-profitability', async(req, res) => {
     // skins.push(`${}`)
   // }
 
-router.get('/trade-requests', async(req, res) => {
-  const user = await User.findById({_id: req.user._id})
+router.post('/request-trade', auth, async(req, res) => {
+  const skinID = req.body.skinID
 
-  return res.send(req.user)
+  try {
+    await Skin.findByIdAndUpdate(skinID, {
+      requestedTrade: true
+    })
+  
+    return res.status(200).send()
+  } catch(err) {
+    log(err)
+    return res.status(400).send(err)
+  }
+  
 })
 
 router.post('/tag', async(req, res) => {
