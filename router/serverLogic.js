@@ -129,10 +129,19 @@ router.get('/get-user-skins', auth, async(req, res) => {
   try {
     const user = await User.findById(id, `skins -_id`)
 
-    return res.status(200).send(user.skins)
+    let skins = []
+    await Promise.all(user.skins.map(async (skinID) => {
+      let data = await Skin.findById(skinID)
+
+      skins.push(data)
+    }))
+
+    return res.status(200).send(skins)
   } catch(err) {
-    return res.status(400).send(err)
+    log(err)
+    return res.status(400).send(err) 
   }
+
 })
 
 const getWeapon = (caseName) => {
