@@ -408,9 +408,9 @@ const getWeapon = (caseName) => {
   skinGrade = Math.round(skinGrade * 100) / 100
 
   const getGrade = () => {
-    if (skinGrade >= 0 && skinGrade < 0.20) return 'classified' 
-    else if (skinGrade >= 0.20 && skinGrade < 11.00) return 'restricted'
-    else if (skinGrade >= 11.00) return 'mil_spec'
+    if (skinGrade >= 0 && skinGrade < 5.00) return 'classified' 
+    else if (skinGrade >= 5.00 && skinGrade < 16.00) return 'restricted'
+    else if (skinGrade >= 16.00) return 'mil_spec'
   }
 
   skinGrade = getGrade()
@@ -526,20 +526,20 @@ router.post('/buy-case', auth, async(req, res) => {
 router.get('/check-profitability', async(req, res) => {
   const key = req.body.key // secret key
 
-  const casePrice = 0.55
+  const casePrice = 0.6
 
   let skinPrices = 0
   let caseIncome = 0
   let querySkins = []
   let casesOpened = 0
 
-  const amountOfDrops = 15
+  const amountOfDrops = 1000
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
 
   const skins = [
-    "desert eagle_mecha industries",
+    "desert_eagle_mecha_industries",
     "mp5-sd_phosphor",
     "ump-45_momentum",
     "usp-s_flashback",
@@ -680,7 +680,9 @@ router.get('/check-profitability', async(req, res) => {
     price = pricesOfSkins[query]
     log(`${query} ${pricesOfSkins[query]}`)
 
-    skinPrices += price
+    if (data.skinGrade !== 'mil_spec') {
+      skinPrices += price
+    }
     casesOpened++
   }
 
