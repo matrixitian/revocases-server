@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const skinSchema = new mongoose.Schema({
-  uid: {
+  userID: {
     type: String,
     required: true
   },
@@ -23,6 +23,10 @@ const skinSchema = new mongoose.Schema({
     required: false
   },
   requestedTrade: {
+    type: Boolean,
+    default: false
+  },
+  tradeOfferSnet: {
     type: Boolean,
     default: false
   }

@@ -504,7 +504,7 @@ router.post('/buy-case', auth, async(req, res) => {
         skin,
         grade: skinGrade,
         condition: skinCon,
-        uid: userUID
+        userID: id
       })
 
       saveSkin.save()
