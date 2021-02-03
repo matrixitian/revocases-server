@@ -34,7 +34,12 @@ const userSchema = new mongoose.Schema({
       minlength: 7,
       trim: true,
       required: true
-      },
+    },
+    refferedTo: {
+      type: String,
+      trim: true,
+      required: false
+    },
     tokens: [{
       token: {
         type: String,
@@ -76,7 +81,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
   return user
 }
-
 
 userSchema.pre('save', async function(next) {
   const user = this

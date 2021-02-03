@@ -10,23 +10,16 @@ router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
 })
 
-router.post('/create-user', async(req, res) => {
-    const userUID = req.body.userUID
-    const tradeURL = req.body.tradeURL
+router.post('/set-referral', auth, async(req, res) => {
+  const referralCode = req.body.referralCode
 
-    try {
-        const userForSave = new User({
-          uid: userUID,
-          tradeURL
-        })
+  try {
+    req.user.referredTo = referralCode
 
-        const user = await userForSave.save()
-
-        return res.status(201).send({ user })
-    } catch(err) {
-      log(err)
-      return res.status(500).send(err)
-    }
+    res.status(200).send()
+  } catch(err) {
+    res.status(400).send(err)
+  }
 })
 
 router.post('/signup', async (req, res) => {
@@ -34,8 +27,6 @@ router.post('/signup', async (req, res) => {
   const email = req.body.email
   const password = req.body.password
   const tradeURL = req.body.tradeURL
-
-  log(req.body)
 
   try {
     let emailTaken = await User.findOne({ email })
@@ -751,18 +742,6 @@ router.get('/check-profitability', async(req, res) => {
     // 'MAC-10',  'MP5-SD',  'MP7',  'MP9',  'P90',  'PP-Bizon',  'UMP-45',
     // 'AK-47', 'AUG', 'FAMAS', 'Galil AR', 'M4A1-S', 'M4A4', 'SG 553',
     // 'AWP', 'G3SG1', 'SCAR-20', 'SSG 08']
-
-    // const wpns = wpnsFormatted.map(wpn => {
-    //   return wpn.replace(' ', '_').toLowerCase()
-    // })
-
-    // console.log(wpns)
-
-    // let formattedSkin = skin.replace('_', ' ')
-    // formattedSkin = `${formattedSkin} `
-
-    // skins.push(`${}`)
-  // }
 
 router.post('/request-trade', auth, async(req, res) => {
   const skinID = req.body.skinID
