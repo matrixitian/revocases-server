@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    email: {
+      type: String,
+      required: true
+    },
     adsOpened: {
       type: Number,
       default: 0
@@ -58,9 +62,9 @@ userSchema.methods.generateAuthToken = async function() {
   return token
 }
 
-userSchema.statics.findByCredentials = async (username, password) => {
-  const user = await User.findOne({ username })
-  log(username, password)
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email })
+
   let isMatch
   if (!user) { 
     throw new Error('Wrong e-mail or password.')

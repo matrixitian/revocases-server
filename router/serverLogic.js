@@ -35,6 +35,8 @@ router.post('/signup', async (req, res) => {
   const password = req.body.password
   const tradeURL = req.body.tradeURL
 
+  log(req.body)
+
   try {
     let emailTaken = await User.findOne({ email })
     let usernameTaken = await User.findOne({ username })
@@ -46,6 +48,7 @@ router.post('/signup', async (req, res) => {
     if (!emailTaken) {
       const userForSave = new User({
         username,
+        email,
         password,
         tradeURL
       })
@@ -64,13 +67,12 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-router.post('/signin', async (req, res) => {
-  const username = req.body.username.toLowerCase()
-  log(username)
+router.post('/login', async (req, res) => {
+  const email = req.body.email
   const password = req.body.password
 
   try {
-      const user = await User.findByCredentials(username, password)
+      const user = await User.findByCredentials(email, password)
       const token = await user.generateAuthToken()
       res.status(200).send({ user, token })
   } catch(err) {
@@ -79,7 +81,7 @@ router.post('/signin', async (req, res) => {
   }
 })
 
-router.post('/logout', auth, async(req, res) => {
+router.get('/logout', auth, async(req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
