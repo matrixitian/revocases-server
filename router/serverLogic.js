@@ -245,7 +245,7 @@ const getWeapon = (caseName) => {
         'pp-bizon_night_riot',
         'p2000_urban_hazard',
         'five-seven_flame_test',
-        'g_553_aloha',
+        'sg_553_aloha',
         'r8_revolver_grip',
         'mp9_black_sand'
       ],
