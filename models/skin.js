@@ -26,7 +26,7 @@ const skinSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  tradeOfferSnet: {
+  tradeOfferSent: {
     type: Boolean,
     default: false
   }

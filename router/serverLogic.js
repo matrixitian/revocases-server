@@ -542,7 +542,7 @@ router.get('/check-profitability', async(req, res) => {
   let querySkins = []
   let casesOpened = 0
 
-  const amountOfDrops = 1000
+  const amountOfDrops = 15
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
@@ -698,9 +698,9 @@ router.get('/check-profitability', async(req, res) => {
   return res.status(200).send({
     brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice,
-    sveukupnaZaradaOdProdavanjaKutijaEUR: Math.floor(caseIncome),
-    sveukupnoIsplacenoSkinovaEUR: Math.floor(skinPrices),
-    profitEUR: Math.floor(caseIncome - skinPrices)
+    sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
+    sveukupnoIsplacenoSkinovaEUR: skinPrices,
+    profitEUR: caseIncome - skinPrices
   })
 
   // res.send(querySkins)
@@ -769,7 +769,8 @@ router.post('/request-trade', auth, async(req, res) => {
 
   try {
     await Skin.findByIdAndUpdate(skinID, {
-      requestedTrade: true
+      requestedTrade: true,
+      tradeRequestedAt: new Date()
     })
   
     return res.status(200).send()
@@ -777,7 +778,154 @@ router.post('/request-trade', auth, async(req, res) => {
     log(err)
     return res.status(400).send(err)
   }
+})
+
+function normalizeSkinName(skin, skinCon) {
+  const skins = {
+        "ak-47_asiimov": "AK-47 | Asiimov",
+        "awp_neo-noir": "AWP | Neo-Noir",
+        "desert_eagle_mecha_industries": "Desert Eagle | Mecha Industries",
+        "mp5-sd_phosphor": "MP5-SD | Phosphor",
+        "ump-45_momentum": "UMP-45 | Momentum",
+        "usp-s_flashback": "USP-S | Flashback",
+        "p250_nevermore": "P250 | Nevermore",
+        "galil_ar_signal": "Galil AR | Signal",
+        "mac-10_pipe_down": "MAC-10 | Pipe Down",
+        "g3sg1_scavenger": "G3SG1 | Scavenger",
+        "m4a4_magnesium": "M4A4 | Magnesium",
+        "glock-18_oxide_blaze": "Glock-18 | Oxide Blaze",
+        "tec-9_fubar": "Tec-9 | Fubar",
+        "mp9_modest_threat": "MP9 | Modest Threat",
+        "sg553_danger_close": "SG 553 | Danger Close",
+        "sawed-off_black_sand": "Sawed-Off | Black Sand",
+        "nova_wood_fired": "Nova | Wood Fired",
+        "awp_asiimov": "AWP | Asiimov",
+        "aug_chameleon": "AUG | Chameleon",
+        "ak-47_redline": "AK-47 | Redline",
+        "nova_antique": "Nova | Antique",
+        "p90_trigon": "P90 | Trigon",
+        "usp-s_guardian": "USP-S | Guardian",
+        "sg_553_pulse": "SG 553 | Pulse",
+        "mac-10_heat": "MAC-10 | Heat",
+        "famas_sergeant": "FAMAS | Sergeant",
+        "tec-9_sandstorm": "Tec-9 | Sandstorm",
+        "negev_terrain": "Negev | Terrain",
+        "mag-7_heaven_guard": "MAG-7 | Heaven Guard",
+        "ump-45_corporal": "UMP-45 | Corporal",
+        "m4a1-s_hyper_beast": "M4A1-S | Hyper Beast",
+        "mac-10_neon_rider": "MAC-10 | Neon Rider",
+        "galil_ar_eco": "Galil AR | Eco",
+        "five-seven_monkey_business": "Five-SeveN | Monkey Business",
+        "famas_djinn": "FAMAS | Djinn",
+        "awp_worm_god": "AWP | Worm God",
+        "mag-7_heat": "MAG-7 | Heat",
+        "cz75-auto_pole_position": "CZ75-Auto | Pole Position",
+        "ump-45_grand_prix": "UMP-45 | Grand Prix",
+        "ak-47_elite_build": "AK-47 | Elite Build",
+        "desert_eagle_bronze_deco": "Desert Eagle | Bronze Deco",
+        "p250_valence": "P250 | Valence",
+        "mp7_armor_core": "MP7 | Armor Core",
+        "sawed-off_origami": "Sawed-Off | Origami",
+        "negev_man-o-'war": "Negev | Man-o'-war",
+        "desert_eagle_printstream": "Desert Eagle | Printstream",
+        "ak-47_legion_of_anubis": "AK-47 | Legion of Anubis",
+        "m4a4_toothfairy": "M4A4 | Tooth Fairy",
+        "glock-18_vogue": "Glock-18 | Vogue",
+        "xm1014_entombed": "XM1014 | Entombed",
+        "mag-7_monster_call": "MAG-7 | Monster Call",
+        "mac-10_allure": "MAC-10 | Allure",
+        "tec-9_brother": "Tec-9 | Brother",
+        "mp5-sd_kitbash": "MP5-SD | Kitbash",
+        "galil_ar_connexion": "Galil AR | Connexion",
+        "ssg_08_mainframe_001": "SSG 08 | Mainframe 001",
+        "p250_cassette": "P250 | Cassette",
+        "pp-bizon_runic": "PP-Bizon | Runic",
+        "p90_freight": "P90 | Freight",
+        "p2000_gnarled": "P2000 | Gnarled",
+        "sg_553_ol'rusty": "SG 553 | Ol' Rusty",
+        "negev_ultralight": "Negev | Ultralight",
+        "m4a4_neo-noir": "M4A4 | Neo-Noir",
+        "mp7_bloodsport": "MP7 | Bloodsport",
+        "usp-s_cortex": "USP-S | Cortex",
+        "awp_mortis": "AWP | Mortis",
+        "aug_stymphalian": "AUG | Stymphalian",
+        "glock-18_moonrise": "Glock-18 | Moonrise",
+        "mag-7_swag-7": "MAG-7 | SWAG-7",
+        "ump-45_artic_wolf": "UMP-45 | Arctic Wolf",
+        "nova_wild_six": "Nova | Wild Six",
+        "negev_lionfish": "Negev | Lionfish",
+        "mp9_black_sand": "MP9 | Black Sand",
+        "r8_revolver_grip": "R8 Revolver | Grip",
+        "sg_553_aloha": "SG 553 | Aloha",
+        "five-seven_flame_test": "Five-SeveN | Flame Test",
+        "p2000_urban_hazard": "P2000 | Urban Hazard",
+        "pp-bizon_night_riot": "PP-Bizon | Night Riot",
+        "xm1014_oxide_blaze": "XM1014 | Oxide Blaze"
+    }
+
+
+  // condition
+  const conditions = {
+    "fn": "Factory New",
+    "mw": "Minimal Wear",
+    "ft": "Field-Tested",
+    "ww": "Well-Worn",
+    "bs": "Battle-Scarred"
+  }
+
+  const condition = conditions[skinCon]
+
+  return `${skins[skin]} | (${condition})`
+}
+
+router.post('/view-trade-requests', async(req, res) => {
+  const fetchSkinsSecret = req.body.fetchSkinsSecret
+
+  if (fetchSkinsSecret !== process.env.FETCH_SKINS_SECRET) {
+    throw new Error ('Unauthorized.')
+  }
+
+  try {
+    const skins = await Skin.find({ requestedTrade: true },
+      `_id skin condition userID`)
+
+    let skinIDsForDeletion = []
+    let skinsWTradeURL = []
+    await Promise.all(skins.map(async (skin) => {
+      const user = await User.findById(skin.userID, `-_id tradeURL`)
+      
+      let normalizedSkinName = normalizeSkinName(skin.skin, skin.condition)
+
+      let skinWTradeURL = {
+        skinID: skin._id,
+        skinName: normalizedSkinName,
+        tradeURL: user.tradeURL
+      }
+      
+      skinIDsForDeletion.push(skin._id)
+      skinsWTradeURL.push(skinWTradeURL)
+    }))
+
+    return res.status(200).send({ skinsWTradeURL, skinIDsForDeletion })
+  } catch(err) {
+    log(err)
+    return res.status(400).send(err)
+  }
+})
+
+router.post('/sell-skin', auth, async(req, res) => {
+  const skinID = req.body.skinID
+
+  try {
+    await Skin.deleteOne(skinID)
+
+
   
+    return res.status(200).send()
+  } catch(err) {
+    log(err)
+    return res.status(400).send(err)
+  }
 })
 
 router.post('/tag', async(req, res) => {
