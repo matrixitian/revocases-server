@@ -1,9 +1,14 @@
 const express = require('express')
+const auth = require('../middleware/auth')
 const steamprice = require('steam-price-api');
 const router = new express.Router()
 const User = require('../models/user')
 const Skin = require('../models/skin')
 const log = console.log
+
+router.get('/get-user', auth, async(req, res) => {
+  return res.status(200).send(req.user)
+})
 
 router.post('/create-user', async(req, res) => {
     const userUID = req.body.userUID
@@ -24,11 +29,73 @@ router.post('/create-user', async(req, res) => {
     }
 })
 
-router.post('/get-user-credits', async(req, res) => {
-  const uid = req.body.userUID
+router.post('/signup', async (req, res) => {
+  const username = req.body.username
+  const email = req.body.email
+  const password = req.body.password
+  const tradeURL = req.body.tradeURL
 
   try {
-    const user = await User.findOne({ uid }, `credits -_id`)
+    let emailTaken = await User.findOne({ email })
+    let usernameTaken = await User.findOne({ username })
+
+    if (usernameTaken) {
+      return res.status(400).send('Username is taken.')
+    }
+
+    if (!emailTaken) {
+      const userForSave = new User({
+        username,
+        password,
+        tradeURL
+      })
+
+      const user = await userForSave.save()
+
+      const token = await userForSave.generateAuthToken()
+
+      return res.status(201).send({ user, token })
+    } else {
+      return res.status(400).send('E-mail already exists.')
+    }
+  } catch(err) {
+    log(err)
+    return res.status(500).send(err)
+  }
+})
+
+router.post('/signin', async (req, res) => {
+  const username = req.body.username.toLowerCase()
+  log(username)
+  const password = req.body.password
+
+  try {
+      const user = await User.findByCredentials(username, password)
+      const token = await user.generateAuthToken()
+      res.status(200).send({ user, token })
+  } catch(err) {
+      log(err)
+      res.status(400).send("error") 
+  }
+})
+
+router.post('/logout', auth, async(req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.send()
+    } catch(err) {
+        res.status(500).send()
+    }
+})
+
+router.get('/get-user-credits', auth, async(req, res) => {
+  const id = req.user._id
+
+  try {
+    const user = await User.findById(id, `credits -_id`)
     
     res.status(200).send(user)
   } catch(err) {
@@ -37,7 +104,7 @@ router.post('/get-user-credits', async(req, res) => {
 })
 
 router.post('/get-wpn-prices', async(req, res) => {
-  const uid = req.body.userUID
+  const id = req.user._id
   const wpns = req.body.wpns
 
   try {
@@ -54,11 +121,11 @@ router.post('/get-wpn-prices', async(req, res) => {
   }
 })
 
-router.post('/get-user-skins', async(req, res) => {
-  const uid = req.body.userUID
-console.log(uid)
+router.get('/get-user-skins', auth, async(req, res) => {
+  const id = req.user._id
+
   try {
-    const user = await User.findOne({ uid }, `skins -_id`)
+    const user = await User.findById(id, `skins -_id`)
 
     return res.status(200).send(user.skins)
   } catch(err) {
@@ -387,7 +454,7 @@ const getWeapon = (caseName) => {
   return { formattedSkin, skin, skinGrade, skinCon }
 }
 
-router.post('/buy-case', async(req, res) => {
+router.post('/buy-case', auth, async(req, res) => {
   // % to get gun grade
   // mil_spec: 89.0, // blue
   // restricted: 10.8, // purple
@@ -402,7 +469,7 @@ router.post('/buy-case', async(req, res) => {
   // ww: 30,
   // bs: 20
 
-  const userUID = req.body.userUID
+  const id = req.user._id
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
@@ -410,7 +477,7 @@ router.post('/buy-case', async(req, res) => {
 
   const caseIndex = cases.indexOf(caseName)
 
-  const user = await User.findOne({ uid: userUID }, `credits tradeURL -_id`)
+  const user = await User.findById(id, `credits tradeURL -_id`)
   const userCredits = user.credits
   const creditsRequired = casePrices[caseIndex]
 
@@ -427,7 +494,7 @@ router.post('/buy-case', async(req, res) => {
     formattedSkin = data.formattedSkin
 
     try {
-      await User.updateOne({ uid: userUID }, {
+      await User.findByIdAndUpdate(id, {
         credits: userCredits - creditsRequired
       })
 
@@ -441,7 +508,7 @@ router.post('/buy-case', async(req, res) => {
       saveSkin.save()
 
       // Save Skin reference to User
-      const userSaveSkinRef = await User.findOne({ uid: userUID })
+      const userSaveSkinRef = await User.findById(id)
       userSaveSkinRef.skins.push(saveSkin._id)
       await userSaveSkinRef.save()
     } catch(err) {

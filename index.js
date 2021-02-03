@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000
 
 // Enables CORS
 app.use(cors({
-    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'allowedHeaders': ['sessionId', 'Content-Type', 'Authorization'],
     'exposedHeaders': ['sessionId'],
     'origin': '*',
     'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
