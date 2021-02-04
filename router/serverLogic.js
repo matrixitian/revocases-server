@@ -2,6 +2,7 @@ const express = require('express')
 const auth = require('../middleware/auth')
 const steamprice = require('steam-price-api');
 const router = new express.Router()
+const moment = require('moment')
 const User = require('../models/user')
 const Skin = require('../models/skin')
 const log = console.log
@@ -860,54 +861,69 @@ function normalizeSkinName(skin, skinCon) {
 }
 
 router.post('/view-trade-requests', async(req, res) => {
-  const fetchSkinsSecret = req.body.fetchSkinsSecret
+  const powerSecret = req.body.powerSecret
 
-  if (fetchSkinsSecret !== process.env.FETCH_SKINS_SECRET) {
+  if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
     throw new Error ('Unauthorized.')
   }
 
   try {
-    const skins = await Skin.find({ requestedTrade: true },
-      `_id skin condition userID`)
+    let skins = await Skin.find({ requestedTrade: true },
+      `_id skin condition userID tradeRequestedAt`)
 
-    let skinIDsForDeletion = []
+    skins.sort(function(a, b){
+      // Turn your strings into dates, and then subtract them
+      // to get a value that is either negative, positive, or zero.
+      return new Date(a.tradeRequestedAt) - new Date(b.tradeRequestedAt)
+    })
+
+    function openedAgo(timestamp) {
+      return moment(timestamp).fromNow()
+    }
+
+    // console.log(skins)
+
+    let skinIDs = []
     let skinsWTradeURL = []
     await Promise.all(skins.map(async (skin) => {
       const user = await User.findById(skin.userID, `-_id tradeURL`)
-      
+
       let normalizedSkinName = normalizeSkinName(skin.skin, skin.condition)
 
       let skinWTradeURL = {
         skinID: skin._id,
         skinName: normalizedSkinName,
-        tradeURL: user.tradeURL
+        tradeURL: user.tradeURL,
+        tradeRequestedAt: openedAgo(skin.tradeRequestedAt)
       }
       
-      skinIDsForDeletion.push(skin._id)
+      skinIDs.push(skin._id)
       skinsWTradeURL.push(skinWTradeURL)
     }))
 
-    return res.status(200).send({ skinsWTradeURL, skinIDsForDeletion })
+    return res.status(200).send({ skinsWTradeURL, skinIDs })
   } catch(err) {
     log(err)
     return res.status(400).send(err)
   }
 })
 
-router.post('/delete-skins', async(req, res) => {
-  const fetchSkinsSecret = req.body.fetchSkinsSecret
-  const skinIDs = req.body.skinIDsForDeletion
+router.post('/finish-trade-offers', async(req, res) => {
+  const powerSecret = req.body.powerSecret
+  const skinIDs = req.body.skinIDs
 
-  if (fetchSkinsSecret !== process.env.FETCH_SKINS_SECRET) {
+  if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
     throw new Error ('Unauthorized.')
   }
 
   try {
     await Promise.all(skinIDs.map(async (skinID) => {
-      await Skin.deleteOne(skinID)
+      await Skin.findByIdAndUpdate(skinID, {
+        tradeOfferSent: true
+      })
     }))
 
-    res.status(200).send("Skinovi su izbrisani.")
+    res.status(200).send("Trade offers su označeni kao poslani.")
   } catch(err) {
     res.status(400).send("Nešto si pogrešno unjeo.")
   }
