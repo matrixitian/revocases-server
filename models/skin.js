@@ -18,6 +18,11 @@ const skinSchema = new mongoose.Schema({
     maxlength: 2,
     required: true
   },
+  caseName: {
+    type: String,
+    maxlength: 20,
+    required: true
+  },
   tradeRequestedAt: {
     type: Number,
     required: false

@@ -504,6 +504,7 @@ router.post('/buy-case', auth, async(req, res) => {
         skin,
         grade: skinGrade,
         condition: skinCon,
+        caseName,
         userID: id
       })
 
@@ -912,13 +913,135 @@ router.post('/delete-skins', async(req, res) => {
   }
 })
 
+function getSkinPrice(caseName, grade, condition) {
+  const skinPrices = {
+    "dangerZone": {
+      "mil_spec": {
+        "fn": 195,
+        "mw": 110,
+        "ft": 17,
+        "ww": 15,
+        "bs": 13
+      },
+      "restricted": {
+        "fn": 270,
+        "mw": 180,
+        "ft": 120,
+        "ww": 100,
+        "bs": 90
+      },
+      "classified": {
+        "ww": 950,
+        "bs": 890
+      }
+    },
+    "chroma2": {
+      "mil_spec": {
+        "fn": 60,
+        "mw": 40,
+        "ft": 30,
+        "ww": 20,
+        "bs": 15
+      },
+      "restricted": {
+        "fn": 300,
+        "mw": 160,
+        "ft": 90,
+        "ww": 60,
+        "bs": 35
+      },
+      "classified": {
+        "ww": 450,
+        "bs": 325
+      }
+    },
+    "clutch": {
+      "mil_spec": {
+        "fn": 35,
+        "mw": 30,
+        "ft": 25,
+        "ww": 20,
+        "bs": 15
+      },
+      "restricted": {
+        "fn": 300,
+        "mw": 160,
+        "ft": 90,
+        "ww": 80,
+        "bs": 60
+      },
+      "classified": {
+        "ww": 520,
+        "bs": 500
+      }
+    },
+    "fracture": {
+      "mil_spec": {
+        "fn": 100,
+        "mw": 40,
+        "ft": 30,
+        "ww": 25,
+        "bs": 20
+      },
+      "restricted": {
+        "fn": 500,
+        "mw": 320,
+        "ft": 200,
+        "ww": 130,
+        "bs": 115
+      },
+      "classified": {
+        "ww": 1800,
+        "bs": 1600
+      }
+    },
+    "phoenix": {
+      "mil_spec": {
+        "fn": 80,
+        "mw": 60,
+        "ft": 40,
+        "ww": 30,
+        "bs": 20
+      },
+      "restricted": {
+        "fn": 750,
+        "mw": 605,
+        "ft": 320,
+        "ww": 290,
+        "bs": 230
+      },
+      "classified": {
+        "ww": 1500,
+        "bs": 1200
+      }
+    }
+  }
+
+  return skinPrices[caseName][grade][condition]
+}
+
 router.post('/sell-skin', auth, async(req, res) => {
   const skinID = req.body.skinID
+  const userID = req.user._id
 
   try {
-    await Skin.deleteOne(skinID)
+    const skin = await Skin.findById(skinID)
 
+    const price = getSkinPrice(skin.caseName, skin.grade, skin.condition)
 
+    await User.findByIdAndUpdate(userID, {
+      $inc: {
+        credits: price
+      }
+    })
+
+    await User.findByIdAndUpdate(userID, {
+      $pull: {
+        skins: skinID
+      }
+    })
+
+    await Skin.findByIdAndDelete(skinID)
   
     return res.status(200).send()
   } catch(err) {
