@@ -22,7 +22,9 @@ router.post('/signup', async (req, res) => {
     let usernameTaken = await User.findOne({ username })
 
     if (usernameTaken) {
-      return res.status(400).send('Username is taken.')
+      console.log('hi')
+
+      return res.status(200).send('Username is taken.')
     }
 
     if (!emailTaken) {
@@ -39,7 +41,7 @@ router.post('/signup', async (req, res) => {
 
       return res.status(201).send({ user, token })
     } else {
-      return res.status(400).send('E-mail already exists.')
+      return res.status(200).send('E-mail is already used by another account.')
     }
   } catch(err) {
     return res.status(500).send(err)
