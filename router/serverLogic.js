@@ -445,20 +445,6 @@ const getWeapon = (caseName) => {
 }
 
 router.post('/buy-case', auth, async(req, res) => {
-  // % to get gun grade
-  // mil_spec: 89.0, // blue
-  // restricted: 10.8, // purple
-  // classified: 0.20, // pink
-  // covert: 0.00, // red
-  // exceedingly_rare: 0.00 // yellow
-
-  // % to get gun condition
-  // fn: 3,
-  // mw: 7,
-  // ft: 40,
-  // ww: 30,
-  // bs: 20
-
   const id = req.user._id
   const caseName = req.body.caseName
 
@@ -1081,6 +1067,21 @@ router.post('/set-referral', auth, async(req, res) => {
     return res.status(200).send()
   } catch(err) {
     return res.status(400).send()
+  }
+})
+
+router.post('/update-trade-url', auth, async(req, res) => {
+  const user = req.user
+  const tradeURL = req.body.tradeURL
+
+  user.tradeURL = tradeURL
+
+  try {
+    await user.save()
+
+    res.status(200).send()
+  } catch(err) {
+    res.status(400).send()
   }
 })
 
