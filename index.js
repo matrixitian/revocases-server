@@ -36,7 +36,6 @@ const io = require('socket.io')(server, {
 io.on('connection', function(socket) {
     socket.join('main')
 
-
     function sendUserCount() {
         socket.emit('get user count', { userCount: io.engine.clientsCount  + 112})
         socket.to('main').emit('get user count', { userCount: io.engine.clientsCount + 112 })
@@ -44,8 +43,7 @@ io.on('connection', function(socket) {
 
     sendUserCount()
 
-    socket.on('disconnect', function(socket) {
-        console.log('disconnected')
+    socket.on('disconnect', function() {
         sendUserCount()
     })
 })

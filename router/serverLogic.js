@@ -401,13 +401,13 @@ const getWeapon = (caseName) => {
     "galil_ar_signal": ["ft"],
     "mac-10_pipe_down": ["ww", "bs"],
     "g3sg1_scavenger": ["ww", "bs"],
-    "m4a4_magnesium": ["bs"],
-    "glock-18_oxide_blaze": ["ft", "bs", "mw"],
-    "tec-9_fubar": ["bs", "ww", "ft"],
-    "mp9_modest_threat": ["bs", "ft"],
-    "sg553_danger_close": ["bs", "ww", "ft"],
-    "sawed-off_black_sand": ["bs", "ww", "ft", "mw"],
-    "nova_wood_fired": ["bs", "ww", "ft"],
+    "m4a4_magnesium": ["*"],
+    "glock-18_oxide_blaze": ["*"],
+    "tec-9_fubar": ["*"],
+    "mp9_modest_threat": ["*"],
+    "sg553_danger_close": ["*"],
+    "sawed-off_black_sand": ["*"],
+    "nova_wood_fired": ["*"],
     "awp_asiimov": ["bs"],
     "aug_chameleon": ["ft"],
     "ak-47_redline": ["bs"],
@@ -417,10 +417,10 @@ const getWeapon = (caseName) => {
     "sg_553_pulse": ["bs"],
     "mac-10_heat": ["bs"],
     "famas_sergeant": ["bs"],
-    "tec-9_sandstorm": ["bs", "ft"],
-    "negev_terrain": ["ww", "ft"],
-    "mag-7_heaven_guard": ["ft"],
-    "ump-45_corporal": ["bs", "ft"],
+    "tec-9_sandstorm": ["*"],
+    "negev_terrain": ["*"],
+    "mag-7_heaven_guard": ["*"],
+    "ump-45_corporal": ["*"],
     "m4a1-s_hyper_beast": ["ww", "bs"],
     "mac-10_neon_rider": ["ft"],
     "galil_ar_eco": ["ww", "bs"],
@@ -430,12 +430,12 @@ const getWeapon = (caseName) => {
     "mag-7_heat": ["ww", "bs"],
     "cz75-auto_pole_position": ["bs", "ft"],
     "ump-45_grand_prix": ["ft"],
-    "ak-47_elite_build": ["bs"],
-    "desert_eagle_bronze_deco": ["ft"],
-    "p250_valence": ["bs", "ft"],
-    "mp7_armor_core": ["ft"],
-    "sawed-off_origami": ["bs", "ft"],
-    "negev_man-o-'war": ["ft", "mw"],
+    "ak-47_elite_build": ["*"],
+    "desert_eagle_bronze_deco": ["*"],
+    "p250_valence": ["*"],
+    "mp7_armor_core": ["*"],
+    "sawed-off_origami": ["*"],
+    "negev_man-o-'war": ["*"],
     "desert_eagle_printstream": ["bs"],
     "ak-47_legion_of_anubis": ["bs"],
     "m4a4_toothfairy": ["bs"],
@@ -445,14 +445,14 @@ const getWeapon = (caseName) => {
     "mac-10_allure": ["bs", "ww"],
     "tec-9_brother": ["bs", "ww"],
     "mp5-sd_kitbash": ["bs"],
-    "galil_ar_connexion": ["bs, ft, ww"],
-    "ssg_08_mainframe_001": ["bs", "ww", "ft"],
-    "p250_cassette": ["bs", "ft"],
-    "pp-bizon_runic": ["ww", "bs", "ft"],
-    "p90_freight": ["ww", "bs", "ft", "mw"],
-    "p2000_gnarled": ["bs", "ww", "ft"],
-    "sg_553_ol'rusty": ["bs", "ft", "ww"],
-    "negev_ultralight": ["bs", "ft", "ww"],
+    "galil_ar_connexion": ["bs"],
+    "ssg_08_mainframe_001": ["*"],
+    "p250_cassette": ["*"],
+    "pp-bizon_runic": ["*"],
+    "p90_freight": ["*"],
+    "p2000_gnarled": ["*"],
+    "sg_553_ol'rusty": ["*"],
+    "negev_ultralight": ["*"],
     "m4a4_neo-noir": ["bs"],
     "mp7_bloodsport": ["bs"],
     "usp-s_cortex": ["bs"],
@@ -463,13 +463,13 @@ const getWeapon = (caseName) => {
     "ump-45_artic_wolf": ["bs", "ft"],
     "nova_wild_six": ["bs", "ft"],
     "negev_lionfish": ["ft", "bs"],
-    "mp9_black_sand": ["ft", "bs", "ww"],
-    "r8_revolver_grip": ["ww", "bs", "ft"],
-    "sg_553_aloha": ["ft", "bs"],
-    "five-seven_flame_test": ["ft", "bs", "ww"],
-    "p2000_urban_hazard": ["ft", "bs", "ww", "mw"],
-    "pp-bizon_night_riot": ["bs", "ww", "ft"],
-    "xm1014_oxide_blaze": ["ft", "ww", "bs"]
+    "mp9_black_sand": ["*"],
+    "r8_revolver_grip": ["*"],
+    "sg_553_aloha": ["*"],
+    "five-seven_flame_test": ["*"],
+    "p2000_urban_hazard": ["*"],
+    "pp-bizon_night_riot": ["*"],
+    "xm1014_oxide_blaze": ["*"]
   }
 
   let skinGrade
@@ -495,41 +495,41 @@ const getWeapon = (caseName) => {
 
   // Get Skin Condition
   // For Covert
-  if (skinGrade === 'covert') {
-    skinCon = 'bs'
-  }
-  // For Classified
-  else if (skinGrade === 'classified') {
-    const num = Math.round(skinCon * 100) / 100
+  // if (skinGrade === 'covert') {
+  //   skinCon = 'bs'
+  // }
+  // // For Classified
+  // else if (skinGrade === 'classified') {
+  //   const num = Math.round(skinCon * 100) / 100
 
-    if (num < 15) {
-      skinCon = 'ww'
-    } else {
-      skinCon = 'bs'
-    }
-  }
-  // For below Classified shuffle condition normally
-  else {
-    // Get Skin condition
-    skinCon = Math.random() * 100
-    skinCon = Math.round(skinCon * 100) / 100
+  //   if (num < 15) {
+  //     skinCon = 'ww'
+  //   } else {
+  //     skinCon = 'bs'
+  //   }
+  // }
+  // // For below Classified shuffle condition normally
+  // else {
+  //   // Get Skin condition
+  //   skinCon = Math.random() * 100
+  //   skinCon = Math.round(skinCon * 100) / 100
 
-    const getCondition = () => {
-      if (skinCon <= 1) return 'fn'
-      else if (skinCon >= 1 && skinCon < 7) return 'mw'
-      else if (skinCon >= 7 && skinCon < 35) return 'ft'
-      else if (skinCon >= 35 && skinCon < 70) return 'ww'
-      else if (skinCon >= 70) return 'bs'
-    }
+  //   const getCondition = () => {
+  //     if (skinCon <= 1) return 'fn'
+  //     else if (skinCon >= 1 && skinCon < 7) return 'mw'
+  //     else if (skinCon >= 7 && skinCon < 35) return 'ft'
+  //     else if (skinCon >= 35 && skinCon < 70) return 'ww'
+  //     else if (skinCon >= 70) return 'bs'
+  //   }
 
-    skinCon = getCondition()
-  }
+  //   skinCon = getCondition()
+  // }
 
-  // skinCon = gunConditions[skin]
+  skinCon = gunConditions[skin]
 
-  // if (skinCon === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
+  if (skinCon === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
 
-  // skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
+  skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
 
   return { formattedSkin, skin, skinGrade, skinCon }
 }
