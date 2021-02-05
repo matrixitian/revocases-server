@@ -42,7 +42,6 @@ router.post('/signup', async (req, res) => {
       return res.status(400).send('E-mail already exists.')
     }
   } catch(err) {
-    log(err)
     return res.status(500).send(err)
   }
 })
@@ -468,7 +467,7 @@ router.post('/buy-case', auth, async(req, res) => {
 
   const caseIndex = cases.indexOf(caseName)
 
-  const user = await User.findById(id, `credits tradeURL -_id`)
+  const user = await User.findById(id, `-_id  credits tradeURL referredTo`)
   const userCredits = user.credits
   const creditsRequired = casePrices[caseIndex]
 
@@ -504,15 +503,18 @@ router.post('/buy-case', auth, async(req, res) => {
       userSaveSkinRef.skins.push(saveSkin._id)
       await userSaveSkinRef.save()
 
-      if (user.referredTo) {
-        const referredUser = await User.findOne({ username: user.referredTo })
-     
-        referredUser.credits = referredUser.credits + 25
-
-        referredUser.save()
+      log('bfr')
+      log(user.referredTo)
+      if (user) {
+      log('afr')
+        await User.findOneAndUpdate({ username: user.referredTo }, {
+          $inc : {
+            'credits': 25
+          }
+        })
       }
     } catch(err) {
-      log(err)
+      return res.status(500).send(err)
     }
   } else {
     return res.status(400).send("Not enough moneros Sunny. And cheating ain't nice")
@@ -1066,8 +1068,9 @@ router.post('/set-referral', auth, async(req, res) => {
   const user = req.user
   const referralCode = req.body.referralCode
 
-  console.log(referralCode)
-  console.log(user)
+  if (user.referredTo) {
+    return res.status(400).send('Bad request.')
+  }
 
   user.referredTo = referralCode
   user.credits = user.credits + 200
@@ -1079,7 +1082,6 @@ router.post('/set-referral', auth, async(req, res) => {
   } catch(err) {
     return res.status(400).send()
   }
-
 })
 
 module.exports = router
