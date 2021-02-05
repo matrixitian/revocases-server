@@ -443,7 +443,7 @@ const getWeapon = (caseName) => {
     "mac-10_allure": ["bs", "ww"],
     "tec-9_brother": ["bs", "ww"],
     "mp5-sd_kitbash": ["bs"],
-    "galil_ar_connexion": ["bs"],
+    "galil_ar_connexion": ["bs, ft, ww"],
     "ssg_08_mainframe_001": ["bs", "ww", "ft"],
     "p250_cassette": ["bs", "ft"],
     "pp-bizon_runic": ["ww", "bs", "ft"],
@@ -491,47 +491,43 @@ const getWeapon = (caseName) => {
   const skin = wpnCases[caseName][skinGrade][skinIndex]
   const formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
 
-    // Get Skin Condition
+  // Get Skin Condition
   // For Covert
-  // if (skinGrade === 'covert') {
-  //   skinCon = 'bs'
-  // }
-  // // For Classified
-  // else if (skinGrade === 'classified') {
-  //   const num = Math.round(skinCon * 100) / 100
+  if (skinGrade === 'covert') {
+    skinCon = 'bs'
+  }
+  // For Classified
+  else if (skinGrade === 'classified') {
+    const num = Math.round(skinCon * 100) / 100
 
-  //   if (num < 15) {
-  //     skinCon = 'ww'
-  //   } else {
-  //     skinCon = 'bs'
-  //   }
-  // }
-  // // For below Classified shuffle condition normally
-  // else {
-  //   // Get Skin condition
-  //   // skinCon = Math.random() * 100
-  //   // skinCon = Math.round(skinCon * 100) / 100
+    if (num < 15) {
+      skinCon = 'ww'
+    } else {
+      skinCon = 'bs'
+    }
+  }
+  // For below Classified shuffle condition normally
+  else {
+    // Get Skin condition
+    skinCon = Math.random() * 100
+    skinCon = Math.round(skinCon * 100) / 100
 
-  //   // const getCondition = () => {
-  //   //   if (skinCon <= 1) return 'fn'
-  //   //   else if (skinCon >= 1 && skinCon < 7) return 'mw'
-  //   //   else if (skinCon >= 7 && skinCon < 35) return 'ft'
-  //   //   else if (skinCon >= 35 && skinCon < 70) return 'ww'
-  //   //   else if (skinCon >= 70) return 'bs'
-  //   // }
+    const getCondition = () => {
+      if (skinCon <= 1) return 'fn'
+      else if (skinCon >= 1 && skinCon < 7) return 'mw'
+      else if (skinCon >= 7 && skinCon < 35) return 'ft'
+      else if (skinCon >= 35 && skinCon < 70) return 'ww'
+      else if (skinCon >= 70) return 'bs'
+    }
 
-    
+    skinCon = getCondition()
+  }
 
-  //   // skinCon = getCondition()
+  // skinCon = gunConditions[skin]
 
-  //   // skinCon = gunConditions[skin]
-  // }
+  // if (skinCon === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
 
-  skinCon = gunConditions[skin]
-
-  if (skinCon === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
-
-  skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
+  // skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
 
   return { formattedSkin, skin, skinGrade, skinCon }
 }
@@ -611,7 +607,7 @@ router.get('/check-profitability', async(req, res) => {
   let querySkins = []
   let casesOpened = 0
 
-  const amountOfDrops = 1000
+  const amountOfDrops = 200000
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
