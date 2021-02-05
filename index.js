@@ -22,16 +22,41 @@ app.use(express.json())
 
 app.use(serverLogic)
 
-// try {
-//     setTimeout(async () => {
-//         const data = await axios.get('http://steamcommunity.com/market/priceoverview/?currency=3&appid=730&market_hash_name=StatTrak%E2%84%A2%20P250%20%7C%20Steel%20Disruption%20%28Factory%20New%29')
-//         console.log(data.data)
-//     }, 5000)
-// } catch(err) {
-//     console.log(err)
-// }
-
-
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
+})
+
+// Sockets
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*'
+    }
+})
+
+io.on('connection', function(socket) {
+    // console.log(socket.id)
+    console.log("Socket connected.")
+
+    let userCount = 27
+
+    socket.on('enter server', function(room) {
+        socket.join(room)
+        userCount++
+        console.log(userCount)
+
+        socket.broadcast.to(room).emit('get user count', {
+            userCount: userCount
+        })
+    })
+    
+    socket.on('enter server', function(data) {
+        userCount++
+        socket.broadcast.to(data.room).emit('get user count', {
+            userCount: userCount
+        })
+    })
+
+    socket.on('leave server', function(data) {
+        userCount--
+    })
 })
