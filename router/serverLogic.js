@@ -11,18 +11,6 @@ router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
 })
 
-router.post('/set-referral', auth, async(req, res) => {
-  const referralCode = req.body.referralCode
-
-  try {
-    req.user.referredTo = referralCode
-
-    res.status(200).send()
-  } catch(err) {
-    res.status(400).send(err)
-  }
-})
-
 router.post('/signup', async (req, res) => {
   const username = req.body.username
   const email = req.body.email
@@ -515,6 +503,14 @@ router.post('/buy-case', auth, async(req, res) => {
       const userSaveSkinRef = await User.findById(id)
       userSaveSkinRef.skins.push(saveSkin._id)
       await userSaveSkinRef.save()
+
+      if (user.referredTo) {
+        const referredUser = await User.findOne({ username: user.referredTo })
+     
+        referredUser.credits = referredUser.credits + 25
+
+        referredUser.save()
+      }
     } catch(err) {
       log(err)
     }
@@ -1064,6 +1060,26 @@ router.post('/sell-skin', auth, async(req, res) => {
     log(err)
     return res.status(400).send(err)
   }
+})
+
+router.post('/set-referral', auth, async(req, res) => {
+  const user = req.user
+  const referralCode = req.body.referralCode
+
+  console.log(referralCode)
+  console.log(user)
+
+  user.referredTo = referralCode
+  user.credits = user.credits + 200
+
+  try {
+    await user.save()
+
+    return res.status(200).send()
+  } catch(err) {
+    return res.status(400).send()
+  }
+
 })
 
 module.exports = router

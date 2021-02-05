@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
       trim: true,
       required: true
     },
-    refferedTo: {
+    referredTo: {
       type: String,
       trim: true,
       required: false
