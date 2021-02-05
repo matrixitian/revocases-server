@@ -34,29 +34,8 @@ const io = require('socket.io')(server, {
 })
 
 io.on('connection', function(socket) {
-    // console.log(socket.id)
-    console.log("Socket connected.")
+    socket.join('main')
 
-    let userCount = 27
-
-    socket.on('enter server', function(room) {
-        socket.join(room)
-        userCount++
-        console.log(userCount)
-
-        socket.broadcast.to(room).emit('get user count', {
-            userCount: userCount
-        })
-    })
-    
-    socket.on('enter server', function(data) {
-        userCount++
-        socket.broadcast.to(data.room).emit('get user count', {
-            userCount: userCount
-        })
-    })
-
-    socket.on('leave server', function(data) {
-        userCount--
-    })
+    socket.emit('get user count', { userCount: io.engine.clientsCount })
+    socket.to('main').emit('get user count', { userCount: io.engine.clientsCount })
 })
