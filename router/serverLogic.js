@@ -527,7 +527,7 @@ const getWeapon = (caseName) => {
 
   skinCon = gunConditions[skin]
 
-  if (skinCon === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
+  if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
 
   skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
 
@@ -609,7 +609,7 @@ router.get('/check-profitability', async(req, res) => {
   let querySkins = []
   let casesOpened = 0
 
-  const amountOfDrops = 200000
+  const amountOfDrops = 1000
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
