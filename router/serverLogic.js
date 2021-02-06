@@ -6,7 +6,10 @@ const router = new express.Router()
 const moment = require('moment')
 const User = require('../models/user')
 const Skin = require('../models/skin')
+const data = require('../data/usernames')
 const log = console.log
+
+console.log(data.usernames[5])
 
 firebase.initializeApp({ 
   apiKey: "AIzaSyDMWb56THHAiz7jqRT2dyDbIq2R3ux3Mp0",
