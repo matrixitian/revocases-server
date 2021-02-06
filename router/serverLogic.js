@@ -7,6 +7,10 @@ const User = require('../models/user')
 const Skin = require('../models/skin')
 const log = console.log
 
+router.get('/', async(req, res) => {
+  return res.status(200).send('Server active.')
+})
+
 router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
 })
