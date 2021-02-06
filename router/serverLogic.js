@@ -484,9 +484,9 @@ const getWeapon = (caseName) => {
   skinGrade = Math.round(skinGrade * 100) / 100
 
   const getGrade = () => {
-    if (skinGrade >= 0 && skinGrade < 5.00) return 'classified' 
-    else if (skinGrade >= 5.00 && skinGrade < 16.00) return 'restricted'
-    else if (skinGrade >= 16.00) return 'mil_spec'
+    if (skinGrade >= 0 && skinGrade < 3) return 'classified' 
+    else if (skinGrade >= 3 && skinGrade < 15.00) return 'restricted'
+    else if (skinGrade >= 15.00) return 'mil_spec'
   }
 
   skinGrade = getGrade()
@@ -496,38 +496,6 @@ const getWeapon = (caseName) => {
 
   const skin = wpnCases[caseName][skinGrade][skinIndex]
   const formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
-
-  // Get Skin Condition
-  // For Covert
-  // if (skinGrade === 'covert') {
-  //   skinCon = 'bs'
-  // }
-  // // For Classified
-  // else if (skinGrade === 'classified') {
-  //   const num = Math.round(skinCon * 100) / 100
-
-  //   if (num < 15) {
-  //     skinCon = 'ww'
-  //   } else {
-  //     skinCon = 'bs'
-  //   }
-  // }
-  // // For below Classified shuffle condition normally
-  // else {
-  //   // Get Skin condition
-  //   skinCon = Math.random() * 100
-  //   skinCon = Math.round(skinCon * 100) / 100
-
-  //   const getCondition = () => {
-  //     if (skinCon <= 1) return 'fn'
-  //     else if (skinCon >= 1 && skinCon < 7) return 'mw'
-  //     else if (skinCon >= 7 && skinCon < 35) return 'ft'
-  //     else if (skinCon >= 35 && skinCon < 70) return 'ww'
-  //     else if (skinCon >= 70) return 'bs'
-  //   }
-
-  //   skinCon = getCondition()
-  // }
 
   skinCon = gunConditions[skin]
 
@@ -543,7 +511,7 @@ router.post('/buy-case', auth, async(req, res) => {
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [600, 750, 900, 1400, 1800]
+  const casePrices = [400, 450, 600, 800, 1000]
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -586,7 +554,7 @@ router.post('/buy-case', auth, async(req, res) => {
       if (user) {
         await User.findOneAndUpdate({ username: user.referredTo }, {
           $inc : {
-            'credits': 25
+            'credits': 15
           }
         })
       }
@@ -603,14 +571,14 @@ router.post('/buy-case', auth, async(req, res) => {
 router.get('/check-profitability', async(req, res) => {
   const key = req.body.key // secret key
 
-  const casePrice = 0.6
+  const casePrice = 0.4
 
   let skinPrices = 0
   let caseIncome = 0
   let querySkins = []
   let casesOpened = 0
 
-  const amountOfDrops = 1000
+  const amountOfDrops = 25000
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
@@ -1008,102 +976,102 @@ function getSkinPrice(caseName, grade, condition) {
   const skinPrices = {
     "dangerZone": {
       "mil_spec": {
-        "fn": 195,
-        "mw": 110,
-        "ft": 17,
-        "ww": 15,
-        "bs": 13
+        "fn": 20,
+        "mw": 15,
+        "ft": 12,
+        "ww": 9,
+        "bs": 7
       },
       "restricted": {
-        "fn": 270,
-        "mw": 180,
-        "ft": 120,
-        "ww": 100,
-        "bs": 90
+        "fn": 135,
+        "mw": 90,
+        "ft": 60,
+        "ww": 50,
+        "bs": 45
       },
       "classified": {
-        "ww": 950,
-        "bs": 890
+        "ww": 475,
+        "bs": 400
       }
     },
     "chroma2": {
       "mil_spec": {
-        "fn": 60,
-        "mw": 40,
-        "ft": 30,
-        "ww": 20,
-        "bs": 15
+        "fn": 30,
+        "mw": 20,
+        "ft": 15,
+        "ww": 12,
+        "bs": 10
       },
       "restricted": {
-        "fn": 300,
-        "mw": 160,
-        "ft": 90,
-        "ww": 60,
-        "bs": 35
+        "fn": 135,
+        "mw": 80,
+        "ft": 45,
+        "ww": 30,
+        "bs": 15
       },
       "classified": {
-        "ww": 450,
-        "bs": 325
+        "ww": 350,
+        "bs": 200
       }
     },
     "clutch": {
       "mil_spec": {
-        "fn": 35,
-        "mw": 30,
-        "ft": 25,
-        "ww": 20,
-        "bs": 15
+        "fn": 17,
+        "mw": 15,
+        "ft": 12,
+        "ww": 10,
+        "bs": 8
       },
       "restricted": {
-        "fn": 300,
-        "mw": 160,
-        "ft": 90,
-        "ww": 80,
-        "bs": 60
+        "fn": 150,
+        "mw": 80,
+        "ft": 45,
+        "ww": 25,
+        "bs": 15
       },
       "classified": {
-        "ww": 520,
-        "bs": 500
+        "ww": 260,
+        "bs": 150
       }
     },
     "fracture": {
       "mil_spec": {
-        "fn": 100,
-        "mw": 40,
-        "ft": 30,
-        "ww": 25,
-        "bs": 20
+        "fn": 30,
+        "mw": 20,
+        "ft": 15,
+        "ww": 12,
+        "bs": 10
       },
       "restricted": {
-        "fn": 500,
-        "mw": 320,
-        "ft": 200,
-        "ww": 130,
-        "bs": 115
+        "fn": 250,
+        "mw": 180,
+        "ft": 100,
+        "ww": 70,
+        "bs": 60
       },
       "classified": {
-        "ww": 1800,
-        "bs": 1600
+        "ww": 900,
+        "bs": 800
       }
     },
     "phoenix": {
       "mil_spec": {
-        "fn": 80,
-        "mw": 60,
-        "ft": 40,
-        "ww": 30,
-        "bs": 20
+        "fn": 40,
+        "mw": 30,
+        "ft": 20,
+        "ww": 15,
+        "bs": 12
       },
       "restricted": {
-        "fn": 750,
-        "mw": 605,
-        "ft": 320,
-        "ww": 290,
-        "bs": 230
+        "fn": 500,
+        "mw": 360,
+        "ft": 160,
+        "ww": 145,
+        "bs": 215
       },
       "classified": {
-        "ww": 1500,
-        "bs": 1200
+        "ww": 750,
+        "bs": 600
       }
     }
   }
@@ -1150,7 +1118,7 @@ router.post('/set-referral', auth, async(req, res) => {
   }
 
   user.referredTo = referralCode
-  user.credits = user.credits + 200
+  user.credits = user.credits + 100
 
   try {
     await user.save()
