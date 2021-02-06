@@ -22,14 +22,18 @@ require('firebase/firestore')
 
 const firestore = firebase.firestore()
 
-firestore.collection("drops").add({
-  uname: 'John',
-  skin: 'Redline',
-  skin_longhand: 'ak-47_redline',
-  grade: 'classified',
-  condition: 'fn',
-  timeOpened: Number(Date.now())
-})
+function addSkinToLiveDrops(skin) {
+  firestore.collection("drops").add({
+    uname: 'John',
+    skin: 'Redline',
+    skin_longhand: 'ak-47_redline',
+    grade: 'classified',
+    condition: 'fn',
+    timeOpened: Number(Date.now())
+  })
+}
+
+addSkinToLiveDrops({})
 
 router.get('/', async(req, res) => {
   return res.status(200).send('Server active.')
