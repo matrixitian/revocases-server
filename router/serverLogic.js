@@ -579,10 +579,7 @@ router.post('/buy-case', auth, async(req, res) => {
       userSaveSkinRef.skins.push(saveSkin._id)
       await userSaveSkinRef.save()
 
-      log('bfr')
-      log(user.referredTo)
       if (user) {
-      log('afr')
         await User.findOneAndUpdate({ username: user.referredTo }, {
           $inc : {
             'credits': 25
