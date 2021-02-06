@@ -82,8 +82,8 @@ casesOpenedRef.onSnapshot((snap) => {
 })
 
 function updateCasesOpened(caseName) {
-  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw') 
-console.log('hello')
+  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
+  
   if (caseName === 'dangerZone') {
       docRef.update({
         dangerZone: casesOpened[0] + 1
