@@ -511,7 +511,7 @@ router.post('/buy-case', auth, async(req, res) => {
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [400, 450, 600, 800, 1000]
+  const casePrices = [400, 500, 600, 800, 1000]
 
   const caseIndex = cases.indexOf(caseName)
 
