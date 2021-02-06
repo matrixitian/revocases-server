@@ -68,9 +68,52 @@ setTimeout(() => {
   iterator()
 }, interval)
 
-// setTimeout(() => {
+const casesOpenedRef = firestore.collection('casesOpened')
 
-// }, Math.floor(Math.random()))
+let casesOpened = [0, 0, 0, 0, 0]
+casesOpenedRef.onSnapshot((snap) => {
+  snap.docs.forEach(doc => {
+    casesOpened[0] = doc.data().dangerZone
+    casesOpened[1] = doc.data().chroma2
+    casesOpened[2] = doc.data().clutch
+    casesOpened[3] = doc.data().fracture
+    casesOpened[4] = doc.data().phoenix
+  })
+})
+
+function updateCasesOpened(caseName) {
+  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw') 
+console.log('hello')
+  if (caseName === 'dangerZone') {
+      docRef.update({
+        dangerZone: casesOpened[0] + 1
+    })
+  }
+
+  else if (caseName === 'chroma2') {
+      docRef.update({
+        chroma2: casesOpened[1] + 1
+    })
+  }
+
+  else if (caseName === 'clutch') {
+    docRef.update({
+        clutch: casesOpened[2] + 1
+    })
+  }
+
+  else if (caseName === 'fracture') {
+    docRef.update({
+        fracture: casesOpened[3] + 1
+    })
+  }
+
+  else if (caseName === 'phoenix') {
+      docRef.update({
+        phoenix: casesOpened[4] + 1
+    })
+  }
+}
 
 router.get('/', async(req, res) => {
   return res.status(200).send('Server active.')
@@ -641,6 +684,8 @@ router.post('/buy-case', auth, async(req, res) => {
           }
         })
       }
+
+      updateCasesOpened(caseName)
     } catch(err) {
       return res.status(500).send(err)
     }
