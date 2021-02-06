@@ -37,7 +37,7 @@ io.on('connection', function(socket) {
     socket.join('main')
 
     function sendUserCount() {
-        socket.emit('get user count', { userCount: io.engine.clientsCount  + 112})
+        socket.emit('get user count', { userCount: io.engine.clientsCount  + 212})
         socket.to('main').emit('get user count', { userCount: io.engine.clientsCount + 112 })
     }
 

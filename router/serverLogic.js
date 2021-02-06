@@ -9,8 +9,6 @@ const Skin = require('../models/skin')
 const data = require('../data/usernames')
 const log = console.log
 
-console.log(data.usernames[5])
-
 firebase.initializeApp({ 
   apiKey: "AIzaSyDMWb56THHAiz7jqRT2dyDbIq2R3ux3Mp0",
   authDomain: "revo-skins.firebaseapp.com",
@@ -26,17 +24,55 @@ require('firebase/firestore')
 const firestore = firebase.firestore()
 
 function addSkinToLiveDrops(skin) {
-  firestore.collection("drops").add({
-    uname: 'John',
-    skin: 'Redline',
-    skin_longhand: 'ak-47_redline',
-    grade: 'classified',
-    condition: 'fn',
-    timeOpened: Number(Date.now())
-  })
+  firestore.collection("drops").add(skin)
 }
 
+let interval = Math.floor(Math.random() * 100000)
+
+const iterator = () => {
+  // Choose Case
+  let caseName = Math.random() * 100
+  caseName = Math.round(caseName * 100) / 100
+
+  const chooseCase = () => {
+    if (caseName >= 0 && caseName < 5) return 'phoenix' 
+    else if (caseName >= 5 && caseName < 12.00) return 'fracture'
+    else if (caseName >= 12.00 && caseName < 30.00) return 'clutch'
+    else if (caseName >= 30.00 && caseName < 55.00) return 'chroma2'
+    else if (caseName > 55.00) return 'dangerZone'
+  }
+
+  caseName = chooseCase()
+
+  const wpn = getWeapon(caseName, true)
+
+  let uname = data.usernames[Math.floor(Math.random() * data.usernames.length)]
+
+  addSkinToLiveDrops({
+    uname,
+    skin: wpn.formattedSkin,
+    skin_longhand: wpn.skin,
+    grade: wpn.skinGrade,
+    condition: wpn.skinCon,
+    timeOpened: Number(Date.now())
+  })
+
+  // console.log('Skin added.')
+  interval = Math.floor(Math.random() * 45000)
+  // console.log(interval)
+
+  setTimeout(iterator, interval)
+}
+
+setTimeout(() => {
+  iterator()
+}, interval)
+
 addSkinToLiveDrops({})
+
+// setTimeout(() => {
+
+// }, Math.floor(Math.random()))
 
 router.get('/', async(req, res) => {
   return res.status(200).send('Server active.')
@@ -160,7 +196,7 @@ router.get('/get-user-skins', auth, async(req, res) => {
 
 })
 
-const getWeapon = (caseName) => {
+const getWeapon = (caseName, fromGenerator) => {
   const wpnCases = {
     dangerZone: {
       mil_spec: [
@@ -514,25 +550,43 @@ const getWeapon = (caseName) => {
   skinGrade = Math.random() * 100
   skinGrade = Math.round(skinGrade * 100) / 100
 
-  const getGrade = () => {
-    if (skinGrade >= 0 && skinGrade < 3) return 'classified' 
-    else if (skinGrade >= 3 && skinGrade < 15.00) return 'restricted'
-    else if (skinGrade >= 15.00) return 'mil_spec'
+  if (fromGenerator) {
+    const getGrade = () => {
+      if (skinGrade >= 0 && skinGrade < 0.3) return 'exceedingly_rare' 
+      else if (skinGrade >= 0.3 && skinGrade < 1.50) return 'covert'
+      else if (skinGrade >= 1.50 && skinGrade < 7.00) return 'classified'
+      else if (skinGrade >= 7 && skinGrade < 20.00) return 'restricted'
+      else if (skinGrade >= 20.00) return 'mil_spec'
+    }
+    console.log(skinGrade)
+    skinGrade = getGrade()
+  } else {
+    const getGrade = () => {
+      if (skinGrade >= 0 && skinGrade < 3) return 'classified' 
+      else if (skinGrade >= 3 && skinGrade < 15.00) return 'restricted'
+      else if (skinGrade >= 15.00) return 'mil_spec'
+    }
+  
+    skinGrade = getGrade()
   }
-
-  skinGrade = getGrade()
-
+  
   const arrLen = wpnCases[caseName][skinGrade].length
   const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
 
   const skin = wpnCases[caseName][skinGrade][skinIndex]
   const formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
 
-  skinCon = gunConditions[skin]
+  if (fromGenerator) {
+    const generatorSkinConditions = ['bs', 'ww', 'ft', 'mw', 'fn']
 
-  if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
+    skinCon = generatorSkinConditions[Math.floor(Math.random() * generatorSkinConditions.length)];
+  } else {
+    skinCon = gunConditions[skin]
 
-  skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
+    if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
+  
+    skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
+  }
 
   return { formattedSkin, skin, skinGrade, skinCon }
 }
@@ -556,7 +610,7 @@ router.post('/buy-case', auth, async(req, res) => {
   let skin
   let formattedSkin
   if (userCredits >= creditsRequired) {
-    const data = getWeapon(caseName)
+    const data = getWeapon(caseName, false)
     skinGrade = data.skinGrade
     skinCon = data.skinCon
     skin = data.skin
@@ -738,7 +792,7 @@ router.get('/check-profitability', async(req, res) => {
 
   let i
   for (i = 0; i < amountOfDrops; i++) {
-    let data = getWeapon('dangerZone')
+    let data = getWeapon('dangerZone', false)
 
     skin = data.skin
     skinCon = data.skinCon
