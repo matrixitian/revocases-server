@@ -57,9 +57,7 @@ const iterator = () => {
     timeOpened: Number(Date.now())
   })
 
-  // console.log('Skin added.')
   interval = Math.floor(Math.random() * 45000)
-  // console.log(interval)
 
   setTimeout(iterator, interval)
 }
@@ -83,7 +81,7 @@ casesOpenedRef.onSnapshot((snap) => {
 
 function updateCasesOpened(caseName) {
   const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
-  
+
   if (caseName === 'dangerZone') {
       docRef.update({
         dangerZone: casesOpened[0] + 1
@@ -134,8 +132,6 @@ router.post('/signup', async (req, res) => {
     let usernameTaken = await User.findOne({ username })
 
     if (usernameTaken) {
-      console.log('hi')
-
       return res.status(200).send('Username is taken.')
     }
 
@@ -208,8 +204,6 @@ router.post('/get-wpn-prices', async(req, res) => {
     let price
     price = await steamprice.getprices(730, wpns, '1')
 
-
-    console.log(price)
     res.status(200).send(price)
   } catch(err) {
     res.status(400).send(err)
@@ -599,7 +593,6 @@ const getWeapon = (caseName, fromGenerator) => {
       else if (skinGrade >= 7 && skinGrade < 20.00) return 'restricted'
       else if (skinGrade >= 20.00) return 'mil_spec'
     }
-    // console.log(skinGrade)
     skinGrade = getGrade()
   } else {
     const getGrade = () => {
@@ -856,7 +849,6 @@ router.get('/check-profitability', async(req, res) => {
 
     const skinIndex = skins.indexOf(skin)
     skin = skinsFormatted[skinIndex]
-    console.log(data.skin)
 
     const query = `${skin} (${skinCon})`
 
@@ -1062,8 +1054,6 @@ router.post('/view-trade-requests', async(req, res) => {
     function openedAgo(timestamp) {
       return moment(timestamp).fromNow()
     }
-
-    // console.log(skins)
 
     let skinIDs = []
     let skinsWTradeURL = []

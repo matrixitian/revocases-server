@@ -51,12 +51,11 @@ io.on('connection', function(socket) {
     const userCounts = [
         268, 254, 125, 45, 34, 17, 12, 26,
         56, 87, 125, 147, 216, 246, 215, 220,
-        266, 284, 312, 352, 321, 275, 234
+        266, 284, 312, 352, 321, 275, 234, 254
     ]
 
     const changeUserCount = () => {
         defaultUserCount = Math.floor(userCounts[currentHour] + Math.random() * 10)
-        // console.log(defaultUserCount)
         sendUserCount()
     }
 
