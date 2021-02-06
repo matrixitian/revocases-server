@@ -68,8 +68,6 @@ setTimeout(() => {
   iterator()
 }, interval)
 
-addSkinToLiveDrops({})
-
 // setTimeout(() => {
 
 // }, Math.floor(Math.random()))
@@ -647,8 +645,19 @@ router.post('/buy-case', auth, async(req, res) => {
       return res.status(500).send(err)
     }
   } else {
-    return res.status(400).send("Not enough moneros Sunny. And cheating ain't nice")
+    return res.status(400).send()
   }
+  
+  const readyDrop = {
+    uname: req.user.username,
+    skin: formattedSkin,
+    skin_longhand: skin, 
+    grade: skinGrade, 
+    condition: skinCon,
+    timeOpened: Number(Date.now())
+  }
+
+  addSkinToLiveDrops(readyDrop)
 
   res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
 })
