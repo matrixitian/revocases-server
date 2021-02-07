@@ -22,6 +22,22 @@ app.use(express.json())
 
 app.use(serverLogic)
 
+// production path
+// const path = __dirname + '/dist/'
+
+// development path
+const path = __dirname + '/client/'
+
+app.use(express.static(path));
+
+app.get('/', async(req, res) => {
+    // production path
+    // res.sendFile(path + "index.html")
+
+    // development path
+    res.sendFile(path + "index.html")
+})
+
 const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })

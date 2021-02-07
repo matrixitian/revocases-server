@@ -80,7 +80,7 @@ casesOpenedRef.onSnapshot((snap) => {
 })
 
 function updateCasesOpened(caseName) {
-  const docRef = firestore.collection("casesOpened").doc('WytVm4nJXbOE3K27EUxK')
+  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
 
   if (caseName === 'dangerZone') {
       docRef.update({
@@ -113,9 +113,9 @@ function updateCasesOpened(caseName) {
   }
 }
 
-router.get('/', async(req, res) => {
-  return res.status(200).send('Server active.')
-})
+// router.get('/', async(req, res) => {
+//   return res.status(200).send('Server active.')
+// })
 
 router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
