@@ -1,9 +1,7 @@
 require('dotenv').config()
-// require('./db.js')
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const axios = require('axios')
 const app = express();
 
 const serverLogic = require('./router/serverLogic')
