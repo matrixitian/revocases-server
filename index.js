@@ -10,7 +10,7 @@ const serverLogic = require('./router/serverLogic')
 
 const port = process.env.PORT || 3000
 
-mongoose.connect('mongodb+srv://tradeadminrevo:3crbSYmzvH876P17@revocase.wehoa.mongodb.net/revo?retryWrites=true&w=majority', {
+mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
