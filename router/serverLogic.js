@@ -51,7 +51,7 @@ const iterator = () => {
   addSkinToLiveDrops({
     uname,
     skin: wpn.formattedSkin,
-    skin_longhand: wpn.skin,
+    longhand: wpn.skin,
     grade: wpn.skinGrade,
     condition: wpn.skinCon,
     timeOpened: Number(Date.now())
@@ -80,7 +80,7 @@ casesOpenedRef.onSnapshot((snap) => {
 })
 
 function updateCasesOpened(caseName) {
-  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
+  const docRef = firestore.collection("casesOpened").doc('WytVm4nJXbOE3K27EUxK')
 
   if (caseName === 'dangerZone') {
       docRef.update({
@@ -195,8 +195,16 @@ router.get('/get-user-credits', auth, async(req, res) => {
 })
 
 router.post('/get-wpn-prices', async(req, res) => {
-  const id = req.user._id
-  const wpns = req.body.wpns
+  // const id = req.user._id
+
+  const wpns = [
+    'M4A1-S | Hyper Beast (Factory New)',
+    'MAC-10 | Neon Rider (Factory New)',
+    'Galil AR | Eco (Factory New)',
+    'Five-SeveN | Monkey Business (Factory New)',
+    'Famas | Djinn (Factory New)',
+    'AWP | Worm God (Factory New)'
+  ]
 
   try {
     // const user = await User.findOne({ uid }, `credits -_id`)
@@ -689,7 +697,7 @@ router.post('/buy-case', auth, async(req, res) => {
   const readyDrop = {
     uname: req.user.username,
     skin: formattedSkin,
-    skin_longhand: skin, 
+    longhand: skin, 
     grade: skinGrade, 
     condition: skinCon,
     timeOpened: Number(Date.now())
