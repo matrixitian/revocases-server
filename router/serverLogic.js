@@ -1,4 +1,5 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const auth = require('../middleware/auth')
 const firebase = require('firebase');
 const steamprice = require('steam-price-api');
