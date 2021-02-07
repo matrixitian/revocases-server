@@ -606,31 +606,63 @@ const getWeapon = (caseName, fromGenerator) => {
     skinGrade = getGrade()
   } else {
     const getGrade = () => {
-      if (skinGrade >= 0 && skinGrade < 3) return 'classified' 
-      else if (skinGrade >= 3 && skinGrade < 15.00) return 'restricted'
-      else if (skinGrade >= 15.00) return 'mil_spec'
+      if (skinGrade >= 0 && skinGrade < 2.5) return 'classified' 
+      else if (skinGrade >= 2.5 && skinGrade < 13.00) return 'restricted'
+      else if (skinGrade >= 13.00) return 'mil_spec'
     }
   
     skinGrade = getGrade()
   }
   
+  // Get Skin Condition
+  // For Covert
+  if (skinGrade === 'covert') {
+    skinCon = 'bs'
+  }
+  // For Classified
+  else if (skinGrade === 'classified') {
+    const num = Math.round(skinCon * 100) / 100
+
+    if (num < 15) {
+      skinCon = 'ww'
+    } else {
+      skinCon = 'bs'
+    }
+  }
+  // For below Classified shuffle condition normally
+  else {
+    // Get Skin condition
+    skinCon = Math.random() * 100
+    skinCon = Math.round(skinCon * 100) / 100
+
+    const getCondition = () => {
+      if (skinCon <= 1) return 'fn'
+      else if (skinCon >= 1 && skinCon < 7) return 'mw'
+      else if (skinCon >= 7 && skinCon < 35) return 'ft'
+      else if (skinCon >= 35 && skinCon < 70) return 'ww'
+      else if (skinCon >= 70) return 'bs'
+    }
+
+    skinCon = getCondition()
+  }
+
   const arrLen = wpnCases[caseName][skinGrade].length
   const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
 
   const skin = wpnCases[caseName][skinGrade][skinIndex]
   const formattedSkin = formattedSkinName[caseName][skinGrade][skinIndex]
 
-  if (fromGenerator) {
-    const generatorSkinConditions = ['bs', 'ww', 'ft', 'mw', 'fn']
+  // if (fromGenerator) {
+  //   const generatorSkinConditions = ['bs', 'ww', 'ft', 'mw', 'fn']
 
-    skinCon = generatorSkinConditions[Math.floor(Math.random() * generatorSkinConditions.length)];
-  } else {
-    skinCon = gunConditions[skin]
+  //   skinCon = generatorSkinConditions[Math.floor(Math.random() * generatorSkinConditions.length)];
+  // } else {
+  //   skinCon = gunConditions[skin]
 
-    if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
+  //   if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
   
-    skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
-  }
+  //   skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
+  // }
 
   return { formattedSkin, skin, skinGrade, skinCon }
 }
@@ -717,7 +749,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.4
+  const casePrice = 0.45
 
   let skinPrices = 0
   let caseIncome = 0
@@ -868,9 +900,9 @@ router.get('/check-profitability', async(req, res) => {
     price = pricesOfSkins[query]
     log(`${query} ${pricesOfSkins[query]}`)
 
-    if (data.skinGrade !== 'mil_spec') {
+    // if (data.skinGrade !== 'mil_spec') {
       skinPrices += price
-    }
+    // }
     casesOpened++
   }
 
