@@ -22,19 +22,11 @@ app.use(express.json())
 
 app.use(serverLogic)
 
-// production path
-// const path = __dirname + '/dist/'
-
-// development path
-const path = __dirname + '/client/'
+const path = __dirname + '/dist/'
 
 app.use(express.static(path));
 
 app.get('/', async(req, res) => {
-    // production path
-    // res.sendFile(path + "index.html")
-
-    // development path
     res.sendFile(path + "index.html")
 })
 
