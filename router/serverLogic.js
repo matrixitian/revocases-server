@@ -57,6 +57,8 @@ const iterator = () => {
     timeOpened: Number(Date.now())
   })
 
+  updateCasesOpened(caseName)
+
   interval = Math.floor(Math.random() * 45000)
 
   setTimeout(iterator, interval)
@@ -709,16 +711,19 @@ router.post('/buy-case', auth, async(req, res) => {
 })
 
 router.get('/check-profitability', async(req, res) => {
-  const key = req.body.key // secret key
+  const powerSecret = req.body.powerSecret
+
+  if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
+    return res.status(401).send()
+  }
 
   const casePrice = 0.4
 
   let skinPrices = 0
   let caseIncome = 0
-  let querySkins = []
   let casesOpened = 0
 
-  const amountOfDrops = 25000
+  const amountOfDrops = 100000
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
@@ -878,46 +883,6 @@ router.get('/check-profitability', async(req, res) => {
     sveukupnoIsplacenoSkinovaEUR: skinPrices,
     profitEUR: caseIncome - skinPrices
   })
-
-  // res.send(querySkins)
-  // return res.send(querySkins)
-
-  // querySkins = [
-  //   "Sawed-Off | Black Sand (Minimal Wear)", "Galil AR | Signal (Well-Worn)", "Nova | Wood Fired (Factory New)"
-  // ]
-
-  // let price = 0
-  // try {
-  //   price = await steamprice.getprices(730, "Sawed-Off | Black Sand (Minimal Wear)", '1')
-  // } catch(err) {
-  //   log(err)
-  // }
-
-  // res.status(200).send(price)
-
-  // try {
-  //   let price
-  //   await Promise.all(querySkins.map(async (newQuery) => {
-  //     price = await steamprice.getprices(730, "Sawed-Off | Black Sand (Minimal Wear)", '1')
-
-  //     price = price[0].lowest_price
-  //     price = price.substring(1)
-
-  //     skinPrices += price
-  //     casesOpened++
-  //   }))
-
-  //   caseIncome = casePrice * amountOfDrops
-
-  //   res.status(200).send({
-  //     casePrice,
-  //     caseIncome,
-  //     profit: caseIncome - casePrice,
-  //     casesOpened
-  //   })
-  // } catch(err) {
-  //   res.status(400).send(err)
-  // }
 })
 
 // const wpnsFormatted = 
@@ -1046,7 +1011,7 @@ router.post('/view-trade-requests', async(req, res) => {
   const powerSecret = req.body.powerSecret
 
   if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
-    throw new Error ('Unauthorized.')
+    return res.status(401).send()
   }
 
   try {
@@ -1093,7 +1058,7 @@ router.post('/finish-trade-offers', async(req, res) => {
   const skinIDs = req.body.skinIDs
 
   if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
-    throw new Error ('Unauthorized.')
+    return res.status(401).send()
   }
 
   try {
