@@ -1,5 +1,5 @@
 require('dotenv').config()
-require('./db.js')
+// require('./db.js')
 const express = require('express')
 const cors = require('cors')
 const axios = require('axios')
@@ -8,6 +8,13 @@ const app = express();
 const serverLogic = require('./router/serverLogic')
 
 const port = process.env.PORT || 3000
+
+mongoose.connect('mongodb+srv://tradeadminrevo:3crbSYmzvH876P17@revocase.wehoa.mongodb.net/revo?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true 
+})
 
 // Enables CORS
 app.use(cors({
