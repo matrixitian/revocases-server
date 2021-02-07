@@ -166,7 +166,7 @@ router.post('/login', async (req, res) => {
       res.status(200).send({ user, token })
   } catch(err) {
       log(err)
-      res.status(400).send("error") 
+      res.status(201).send({ message: 'Wrong e-mail or password!' }) 
   }
 })
 
