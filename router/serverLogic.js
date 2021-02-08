@@ -885,7 +885,7 @@ router.get('/check-profitability', async(req, res) => {
   let pricesBlue = 0
   let pricesPurple = 0
   let pricesPink = 0
-  let pricesOther = 0
+  let pricesPurpleAndPink = 0
   let i
   for (i = 0; i < amountOfDrops; i++) {
     let data = getWeapon('dangerZone', false)
@@ -900,28 +900,26 @@ router.get('/check-profitability', async(req, res) => {
     skin = skinsFormatted[skinIndex]
 
     const query = `${skin} (${skinCon})`
-// 
-    price = pricesOfSkins[query]
     // log(`${query} ${pricesOfSkins[query]}`)
-// 
-    // if (data.skinGrade !== 'mil_spec') {
-      const num = Math.floor(Math.random() * 100)
-      // log(num)
-      if (num <= 40 && data.skinGrade === 'mil_spec') {
-        skinPrices += price
-        pricesBlue += price
-      }
 
-      if (data.skinGrade !== 'mil_spec') {
-        skinPrices += price
-        pricesOther += price
-        if (data.skinGrade === 'restricted') {
-          pricesPurple += price
-        } else if (data.skinGrade === 'classified') {
-          pricesPink += price
-        }
+    price = pricesOfSkins[query]
+    
+    const num = Math.floor(Math.random() * 100)
+    if (num <= 40 && data.skinGrade === 'mil_spec') {
+      skinPrices += price
+      pricesBlue += price
+    }
+
+    if (data.skinGrade !== 'mil_spec') {
+      skinPrices += price
+      pricesPurpleAndPink += price
+      if (data.skinGrade === 'restricted') {
+        pricesPurple += price
+      } else if (data.skinGrade === 'classified') {
+        pricesPink += price
       }
-    // }
+    }
+
     casesOpened++
   }
 
@@ -931,7 +929,7 @@ router.get('/check-profitability', async(req, res) => {
     pricesBlue,
     pricesPurple,
     pricesPink,
-    pricesOther,
+    pricesPurpleAndPink,
     brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice,
     sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
@@ -939,14 +937,6 @@ router.get('/check-profitability', async(req, res) => {
     profitEUR: caseIncome - skinPrices
   })
 })
-
-// const wpnsFormatted = 
-    // ['Desert Eagle', 'Dual Berettas', 'Five-SeveN', 'Glock-18',
-    // 'CZ75-Auto', 'P2000', 'P250', 'R8 Revolver', 'Tec-9', 'USP-S',
-    // 'MAG-7', 'Nova', 'Sawed-Off', 'XM1014', 'M249', 'Negev',
-    // 'MAC-10',  'MP5-SD',  'MP7',  'MP9',  'P90',  'PP-Bizon',  'UMP-45',
-    // 'AK-47', 'AUG', 'FAMAS', 'Galil AR', 'M4A1-S', 'M4A4', 'SG 553',
-    // 'AWP', 'G3SG1', 'SCAR-20', 'SSG 08']
 
 router.post('/request-trade', auth, async(req, res) => {
   const skinID = req.body.skinID
