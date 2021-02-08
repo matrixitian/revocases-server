@@ -756,7 +756,7 @@ router.get('/check-profitability', async(req, res) => {
   let caseIncome = 0
   let casesOpened = 0
 
-  const amountOfDrops = 100000
+  const amountOfDrops = 250
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
