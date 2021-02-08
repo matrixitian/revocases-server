@@ -268,6 +268,9 @@ const getWeapon = (caseName, fromGenerator) => {
       covert: [
         'awp_neo-noir',
         'ak-47_asiimov'
+      ],
+      exceedingly_rare: [
+        'rare_item'
       ]
     },
     phoenix: {
@@ -291,6 +294,9 @@ const getWeapon = (caseName, fromGenerator) => {
       covert: [
         'aug_chameleon',
         'awp_asiimov'
+      ],
+      exceedingly_rare: [
+        'rare_item'
       ]
     },
     chroma2: {
@@ -316,6 +322,9 @@ const getWeapon = (caseName, fromGenerator) => {
       covert: [
         'mac-10_neon_rider',
         'm4a1-s_hyper_beast'
+      ],
+      exceedingly_rare: [
+        'rare_item'
       ]
     },
     fracture: {
@@ -343,6 +352,9 @@ const getWeapon = (caseName, fromGenerator) => {
       covert: [
         'ak-47_legion_of_anubis',
         'desert_eagle_printstream'
+      ],
+      exceedingly_rare: [
+        'rare_item'
       ]
     },
     clutch: {
@@ -370,6 +382,9 @@ const getWeapon = (caseName, fromGenerator) => {
       covert: [
         'mp7_bloodsport',
         'm4a4_neo-noir'
+      ],
+      exceedingly_rare: [
+        'rare_item'
       ]
     }
   }
