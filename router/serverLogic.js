@@ -882,8 +882,10 @@ router.get('/check-profitability', async(req, res) => {
     "Nova | Wood Fired (Well-Worn)": 0.09,
     "Nova | Wood Fired (Battle-Scarred)": 0.08
   }
-  let nums = 0
-
+  let pricesBlue = 0
+  let pricesPurple = 0
+  let pricesPink = 0
+  let pricesOther = 0
   let i
   for (i = 0; i < amountOfDrops; i++) {
     let data = getWeapon('dangerZone', false)
@@ -905,22 +907,31 @@ router.get('/check-profitability', async(req, res) => {
     // if (data.skinGrade !== 'mil_spec') {
       const num = Math.floor(Math.random() * 100)
       // log(num)
-      if (num < 40 && data.skinGrade === 'mil_spec') {
+      if (num <= 40 && data.skinGrade === 'mil_spec') {
         skinPrices += price
-        nums++
+        pricesBlue += price
       }
 
       if (data.skinGrade !== 'mil_spec') {
         skinPrices += price
+        pricesOther += price
+        if (data.skinGrade === 'restricted') {
+          pricesPurple += price
+        } else if (data.skinGrade === 'classified') {
+          pricesPink += price
+        }
       }
     // }
     casesOpened++
   }
-  log(nums)
 
   caseIncome = casePrice * amountOfDrops
 
   return res.status(200).send({
+    pricesBlue,
+    pricesPurple,
+    pricesPink,
+    pricesOther,
     brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice,
     sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
