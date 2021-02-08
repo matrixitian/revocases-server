@@ -646,6 +646,8 @@ const getWeapon = (caseName, fromGenerator) => {
   skinGrade = Math.random() * 100
   skinGrade = Math.round(skinGrade * 100) / 100
 
+  console.log(skinGrade)
+
   if (fromGenerator) {
     const getGrade = () => {
       if (skinGrade >= 0 && skinGrade < 0.3) return 'exceedingly_rare' 
@@ -1268,6 +1270,7 @@ function getSkinPrice(caseName, grade, condition) {
         "bs": 215
       },
       "classified": {
+        "ft": 1450,
         "ww": 750,
         "bs": 600
       }
