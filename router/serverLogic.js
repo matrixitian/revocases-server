@@ -78,7 +78,7 @@ const iterator = () => {
 
   let userCount = getHour()
 
-  interval = Math.floor(Math.random() * (90000 - (100 * userCount)))
+  interval = Math.floor(Math.random() * (200000 - (100 * userCount)))
 
   console.log(interval)
 
