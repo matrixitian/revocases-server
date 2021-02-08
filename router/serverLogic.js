@@ -27,7 +27,24 @@ function addSkinToLiveDrops(skin) {
   firestore.collection("drops").add(skin)
 }
 
-let interval = Math.floor(Math.random() * 100000)
+ // for drop speed by userCount
+ let defaultUserCount = 0
+ let currentHour = 18
+
+function getHour() {
+    let d = new Date();
+    currentHour = d.getHours();
+
+    const userCounts = [
+      268, 254, 125, 45, 34, 17, 12, 26,
+      56, 87, 125, 147, 216, 246, 215, 220,
+      266, 284, 312, 352, 321, 275, 234, 254
+  ]
+
+  return userCounts[currentHour]
+}
+
+let interval = Math.floor(Math.random() * (90000 - (100 * getHour())))
 
 const iterator = () => {
   // Choose Case
@@ -59,30 +76,11 @@ const iterator = () => {
 
   updateCasesOpened(caseName)
 
-  // for drop speed by userCount
-  let defaultUserCount = 0
-  let currentHour = 18
-
-  function getHour() {
-      let d = new Date();
-      currentHour = d.getHours();
-
-      const userCounts = [
-        268, 254, 125, 45, 34, 17, 12, 26,
-        56, 87, 125, 147, 216, 246, 215, 220,
-        266, 284, 312, 352, 321, 275, 234, 254
-    ]
-
-    return userCounts[currentHour]
-  }
-  
-  setInterval(() => {
-
-  }, 10000)
-
   let userCount = getHour()
 
-  interval = Math.floor(Math.random() * (450 - (1000 * userCount)))
+  interval = Math.floor(Math.random() * (90000 - (100 * userCount)))
+
+  console.log(interval)
 
   setTimeout(iterator, interval)
 }
