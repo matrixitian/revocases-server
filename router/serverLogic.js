@@ -658,8 +658,8 @@ const getWeapon = (caseName, fromGenerator) => {
   } else {
     const getGrade = () => {
       if (skinGrade >= 0 && skinGrade < 2) return 'classified' 
-      else if (skinGrade >= 2 && skinGrade < 12.00) return 'restricted'
-      else if (skinGrade >= 12.00) return 'mil_spec'
+      else if (skinGrade >= 2 && skinGrade < 17.00) return 'restricted'
+      else if (skinGrade >= 17.00) return 'mil_spec'
     }
   
     skinGrade = getGrade()
@@ -724,7 +724,7 @@ router.post('/buy-case', auth, async(req, res) => {
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [449, 599, 699, 799, 999]
+  const casePrices = [399, 499, 599, 749, 999]
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -807,7 +807,7 @@ router.get('/check-profitability', async(req, res) => {
   let caseIncome = 0
   let casesOpened = 0
 
-  const amountOfDrops = 250
+  const amountOfDrops = 100000
 
   const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
