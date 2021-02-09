@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    adsOpened: {
+    adsViewed: {
       type: Number,
       default: 0
     },
@@ -28,6 +28,30 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: false
     }],
+    blues: {
+      type: Number,
+      default: 0
+    },
+    purples: {
+      type: Number,
+      default: 0
+    },
+    pinks: {
+      type: Number,
+      default: 0
+    },
+    reds: {
+      type: Number,
+      default: 0
+    },
+    yellows: {
+      type: Number,
+      default: 0
+    },
+    casesOpened: {
+      type: Number,
+      default: 0
+    },
     password: {
       type: String,
       minlength: 7,
@@ -36,6 +60,11 @@ const userSchema = new mongoose.Schema({
     },
     referredTo: {
       type: String,
+      trim: true,
+      required: false
+    },
+    adLastViewed: {
+      type: Date,
       trim: true,
       required: false
     },

@@ -80,7 +80,7 @@ const iterator = () => {
 
   interval = Math.floor(Math.random() * (200000 - (100 * userCount)))
 
-  console.log(interval)
+  // console.log(interval)
 
   setTimeout(iterator, interval)
 }
@@ -176,6 +176,33 @@ router.post('/signup', async (req, res) => {
     }
   } catch(err) {
     return res.status(500).send(err)
+  }
+})
+
+router.post('/give-user-point', auth, async(req, res) => {
+  const user = req.user
+
+  try {
+    const currentTime = new Date()
+    const thirteenSeconds = 13000
+
+    let timeElapsed
+    if (user.adLastViewed) {
+      timeElapsed = currentTime - user.adLastViewed
+    }
+
+    if (timeElapsed > thirteenSeconds || !user.adLastViewed) {
+      user.credits += 1
+      user.adLastViewed = new Date()
+      user.adsViewed += 1
+
+      await user.save()
+    }
+
+    return res.status(200).send()
+  } catch(err) {
+    log(err)
+    return res.send(err)
   }
 })
 
@@ -649,8 +676,6 @@ const getWeapon = (caseName, fromGenerator) => {
   skinGrade = Math.random() * 100
   skinGrade = Math.round(skinGrade * 100) / 100
 
-  console.log(skinGrade)
-
   if (fromGenerator) {
     const getGrade = () => {
       if (skinGrade >= 0 && skinGrade < 0.3) return 'exceedingly_rare' 
@@ -778,6 +803,18 @@ router.post('/buy-case', auth, async(req, res) => {
       }
 
       updateCasesOpened(caseName)
+
+      if (skinGrade === 'mil_spec') {
+        req.user.blues += 1
+      } else if (skinGrade === 'restricted') {
+        req.user.purples += 1
+      } else if (skinGrade === 'classified') {
+        req.user.pinks += 1
+      }
+
+      req.user.casesOpened += 1
+
+      req.user.save()
     } catch(err) {
       return res.status(500).send(err)
     }
