@@ -826,8 +826,8 @@ const getWeapon = (caseName, fromGenerator) => {
   } else {
     const getGrade = () => {
       if (skinGrade < 0) return 'covert' 
-      else if (skinGrade >= 0 && skinGrade < 2.5) return 'classified' 
-      else if (skinGrade >= 2.5 && skinGrade < 18) return 'restricted'
+      else if (skinGrade >= 0 && skinGrade < 3) return 'classified' 
+      else if (skinGrade >= 3 && skinGrade < 18) return 'restricted'
       else if (skinGrade >= 18) return 'mil_spec'
     }
   
@@ -986,7 +986,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 1
+  const casePrice = 0.8
 
   let skinPrices = 0
   let caseIncome = 0
