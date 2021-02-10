@@ -825,10 +825,10 @@ const getWeapon = (caseName, fromGenerator) => {
     skinGrade = getGrade()
   } else {
     const getGrade = () => {
-      if (skinGrade >= 0 && skinGrade < 0.1) return 'covert' 
-      if (skinGrade >= 0.1 && skinGrade < 2.5) return 'classified' 
-      else if (skinGrade >= 2.5 && skinGrade < 17.50) return 'restricted'
-      else if (skinGrade >= 17.50) return 'mil_spec'
+      if (skinGrade < 0) return 'covert' 
+      else if (skinGrade >= 0 && skinGrade < 2.5) return 'classified' 
+      else if (skinGrade >= 2.5 && skinGrade < 18) return 'restricted'
+      else if (skinGrade >= 18) return 'mil_spec'
     }
   
     skinGrade = getGrade()
