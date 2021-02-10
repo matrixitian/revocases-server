@@ -2,6 +2,7 @@ const express = require('express')
 const auth = require('../middleware/auth')
 const firebase = require('firebase');
 const steamprice = require('steam-price-api');
+const csgomarket = require('csgo-market')
 const router = new express.Router()
 const moment = require('moment')
 const User = require('../models/user')
@@ -140,6 +141,141 @@ function updateCasesOpened(caseName) {
 //   return res.status(200).send('Server active.')
 // })
 
+const gunNames = {
+  dangerZone: [
+      'Nova',
+      'Sawed-Off',
+      'SG 553',
+      'MP9',
+      'Tec-9',
+      'Glock-18',
+      'M4A4',
+      'G3SG!',
+      'MAC-10',
+      'Galil AR',
+      'P250',
+      'USP-S',
+      'MP5-SD',
+      'UMP-45',
+      'Desert Eagle',
+      'AWP',
+      'AK-47'
+  ],
+  phoenix: [
+      'UMP-45',
+      'MAG-7',
+      'Negev',
+      'Tec-9',
+      'Famas',
+      'MAC-10',
+      'SG 553',
+      'USP-S',
+      'P90',
+      'Nova',
+      'AK-47',
+      'AUG',
+      'AWP'
+  ],
+  chroma2: {
+    mil_spec: [
+      "Negev",
+      "Sawed-Off",
+      "MP7",
+      "P250",
+      "Desert Eagle",
+      "AK-47"
+    ],
+    restricted: [
+      "UMP-45",
+      "CZ75-Auto",
+      "MAG-7",
+      "AWP"
+    ],
+    classified: [
+      "FAMAS",
+      "Five-SeveN",
+      "Galil AR"
+    ],
+    covert: [
+      "MAC-10",
+      "M4A1-S"
+    ]
+  },
+  fracture: {
+    mil_spec: [
+      'Negev',
+      "SG 553",
+      'P2000',
+      'P90',
+      'PP-Bizon',
+      'P250',
+      'SSG 08'
+    ],
+    restricted: [
+      'Galil AR',
+      'MP5-SD',
+      'Tec-9',
+      'MAC-10',
+      'MAG-7'
+    ],
+    classified: [
+      'XM1014',
+      'Glock-18',
+      'M4A4',
+    ],
+    covert: [
+      'AK-47',
+      'Desert Eagle'
+    ]
+  },
+  clutch: {
+    mil_spec: [
+      'XM1014',
+      'PP-Bizon',
+      'P2000',
+      'FFive-SeveN',
+      'SG 553',
+      'R8 Revolver',
+      'MP9'
+    ],
+    restricted: [
+      'Negev',
+      'Nova',
+      'UMP-45',
+      'MAG-7',
+      'Glock-18'
+    ],
+    classified: [
+      'AUG',
+      'AWP',
+      'USP-S',
+    ],
+    covert: [
+      'MP7',
+      'M4A4'
+    ]
+  }
+}
+
+// const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
+
+// function getPrices() {
+//   let gi
+//   for (gi = 0; gi < gunNames.dangerZone.mil_spec.length; gi++) {
+//     csgomarket.getSinglePrice('AK-47', 'Vulcan', 'Factory New', null, function (err, data) {
+ 
+//       if (err) {
+//         console.error('ERROR', err);
+//       } else {
+//         console.log(data);
+//       }
+     
+//     })
+//   }
+// }
+
+// getPrices()
+
 router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
 })
@@ -178,6 +314,8 @@ router.post('/signup', async (req, res) => {
     return res.status(500).send(err)
   }
 })
+
+
 
 router.post('/give-user-point', auth, async(req, res) => {
   const user = req.user
@@ -485,7 +623,7 @@ const getWeapon = (caseName, fromGenerator) => {
         'Guardian',
       ],
       classified: [
-        'Guardian',
+        'Trigon',
         'Antique',
         'Redline',
       ],
@@ -687,9 +825,10 @@ const getWeapon = (caseName, fromGenerator) => {
     skinGrade = getGrade()
   } else {
     const getGrade = () => {
-      if (skinGrade >= 0 && skinGrade < 2) return 'classified' 
-      else if (skinGrade >= 2 && skinGrade < 14.00) return 'restricted'
-      else if (skinGrade >= 14.00) return 'mil_spec'
+      if (skinGrade >= 0 && skinGrade < 0.1) return 'covert' 
+      if (skinGrade >= 0.1 && skinGrade < 2.5) return 'classified' 
+      else if (skinGrade >= 2.5 && skinGrade < 17.50) return 'restricted'
+      else if (skinGrade >= 17.50) return 'mil_spec'
     }
   
     skinGrade = getGrade()
@@ -744,6 +883,10 @@ const getWeapon = (caseName, fromGenerator) => {
     if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
   
     skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
+  }
+
+  if (skinGrade === 'covert') {
+    log({ formattedSkin, skin, skinGrade, skinCon })
   }
 
   return { formattedSkin, skin, skinGrade, skinCon }
@@ -843,7 +986,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.4
+  const casePrice = 1
 
   let skinPrices = 0
   let caseIncome = 0
@@ -855,6 +998,8 @@ router.get('/check-profitability', async(req, res) => {
   const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
 
   const skins = [
+    "ak-47_asiimov",
+    "awp_neo-noir",
     "desert_eagle_mecha_industries",
     "mp5-sd_phosphor",
     "ump-45_momentum",
@@ -873,6 +1018,8 @@ router.get('/check-profitability', async(req, res) => {
   ]
   
   const skinsFormatted = [
+    "AK-47 | Asiimov",
+    "AWP | Neo-Noir",
     "Desert Eagle | Mecha Industries",
     "UMP-45 | Momentum",
     "MP5-SD | Phosphor",
@@ -891,6 +1038,11 @@ router.get('/check-profitability', async(req, res) => {
   ]
 
   const pricesOfSkins = {
+    "AK-47 | Asiimov (Battle-Scarred)": 21.83,
+    "AK-47 | Asiimov (Well-Worn)": 21.83,
+    "AWP | Neo-Noir (Well-Worn)": 22.90,
+    "AWP | Neo-Noir (Battle-Scarred)": 22.90,
+
     "Desert Eagle | Mecha Industries (Well-Worn)": 5.08,
     "Desert Eagle | Mecha Industries (Battle-Scarred)": 4,
 
@@ -975,10 +1127,13 @@ router.get('/check-profitability', async(req, res) => {
     "Nova | Wood Fired (Well-Worn)": 0.09,
     "Nova | Wood Fired (Battle-Scarred)": 0.08
   }
+  
   let pricesBlue = 0
   let pricesPurple = 0
   let pricesPink = 0
   let pricesPurpleAndPink = 0
+  let pricesRed = 0
+
   let i
   for (i = 0; i < amountOfDrops; i++) {
     let data = getWeapon('dangerZone', false)
@@ -1010,6 +1165,8 @@ router.get('/check-profitability', async(req, res) => {
         pricesPurple += price
       } else if (data.skinGrade === 'classified') {
         pricesPink += price
+      } else if (data.skinGrade === 'covert') {
+        pricesRed += price
       }
     }
 
@@ -1023,6 +1180,7 @@ router.get('/check-profitability', async(req, res) => {
     pricesPurple,
     pricesPink,
     pricesPurpleAndPink,
+    pricesRed,
     brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice,
     sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
