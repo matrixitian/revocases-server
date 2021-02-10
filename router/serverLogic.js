@@ -141,8 +141,6 @@ function updateCasesOpened(caseName) {
 //   return res.status(200).send('Server active.')
 // })
 
-log('testing')
-
 const gunNames = {
   dangerZone: [
       'Nova',
@@ -502,7 +500,7 @@ router.get('/get-user-skins', auth, async(req, res) => {
 
 })
 
-const getWeapon = (caseName, fromGenerator) => {
+const getWeapon = (caseName, fromGenerator, predefinedGrade) => {
   const wpnCases = {
     dangerZone: {
       mil_spec: [
@@ -882,28 +880,32 @@ const getWeapon = (caseName, fromGenerator) => {
   let skinGrade
   let skinCon
 
-  // Get Skin Grade
-  skinGrade = Math.random() * 100
-  skinGrade = Math.round(skinGrade * 100) / 100
+  if (!predefinedGrade) {
+    // Get Skin Grade
+    skinGrade = Math.random() * 100
+    skinGrade = Math.round(skinGrade * 100) / 100
 
-  if (fromGenerator) {
-    const getGrade = () => {
-      if (skinGrade >= 0 && skinGrade < 0.3) return 'exceedingly_rare' 
-      else if (skinGrade >= 0.3 && skinGrade < 1.50) return 'covert'
-      else if (skinGrade >= 1.50 && skinGrade < 7.00) return 'classified'
-      else if (skinGrade >= 7 && skinGrade < 20.00) return 'restricted'
-      else if (skinGrade >= 20.00) return 'mil_spec'
+    if (fromGenerator) {
+      const getGrade = () => {
+        if (skinGrade >= 0 && skinGrade < 0.3) return 'exceedingly_rare' 
+        else if (skinGrade >= 0.3 && skinGrade < 1.50) return 'covert'
+        else if (skinGrade >= 1.50 && skinGrade < 7.00) return 'classified'
+        else if (skinGrade >= 7 && skinGrade < 20.00) return 'restricted'
+        else if (skinGrade >= 20.00) return 'mil_spec'
+      }
+      skinGrade = getGrade()
+    } else {
+      const getGrade = () => {
+        if (skinGrade < 0) return 'covert' 
+        else if (skinGrade >= 0 && skinGrade < 2) return 'classified' 
+        else if (skinGrade >= 2 && skinGrade < 15) return 'restricted'
+        else if (skinGrade >= 15) return 'mil_spec'
+      }
+    
+      skinGrade = getGrade()
     }
-    skinGrade = getGrade()
   } else {
-    const getGrade = () => {
-      if (skinGrade < 0) return 'covert' 
-      else if (skinGrade >= 0 && skinGrade < 3) return 'classified' 
-      else if (skinGrade >= 3 && skinGrade < 18) return 'restricted'
-      else if (skinGrade >= 18) return 'mil_spec'
-    }
-  
-    skinGrade = getGrade()
+    skinGrade = predefinedGrade
   }
   
   // Get Skin Condition
@@ -947,7 +949,7 @@ const getWeapon = (caseName, fromGenerator) => {
   if (fromGenerator) {
     const generatorSkinConditions = ['bs', 'ww', 'ft', 'mw', 'fn']
 
-    skinCon = generatorSkinConditions[Math.floor(Math.random() * generatorSkinConditions.length)];
+    skinCon = generatorSkinConditions[Math.floor(Math.random() * generatorSkinConditions.length)]
   } 
   else {
     skinCon = gunConditions[skin]
@@ -1610,6 +1612,49 @@ router.post('/update-trade-url', auth, async(req, res) => {
     await user.save()
 
     res.status(200).send()
+  } catch(err) {
+    res.status(400).send()
+  }
+})
+
+router.post('/trade-up', auth, async(req, res) => {
+  const user = req.user
+  const skinIDs = req.body.skinIDs
+
+  try {
+
+    await Promise.all(skinIDs.map(async (skinID) => {
+      if (!user.skins.includes(skinID)) {
+        return res.status(400).send()
+      }
+    }))
+
+    const data = await Skin.findById(skinIDs[0], `grade -_id`)
+    let grade = data.grade
+
+    if (grade === 'mil_spec') grade = 'restricted'
+    else if (grade === 'restricted') grade === 'classified'
+    else if (grade === 'classified') grade === 'covert'
+
+    const cases = ['dangerZone', 'chroma2', 'clutch']
+    const randomCase = cases[Math.floor(Math.random() * cases.length)];
+
+    const skinDrop = getWeapon(randomCase, false, grade)
+
+    user.skins = user.skins.filter(skinID => {
+      if (skinIDs.includes(skinID) === false) {
+        return skinID
+      }
+    })
+
+    await user.save()
+
+    await Promise.all(skinIDs.map(async (skinID) => {
+      Skin.findByIdAndDelete(skinID)
+    }))
+
+    res.status(200).send(skinDrop)
+
   } catch(err) {
     res.status(400).send()
   }
