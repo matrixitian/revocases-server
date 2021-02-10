@@ -176,93 +176,163 @@ const gunNames = {
       'AUG',
       'AWP'
   ],
-  chroma2: {
-    mil_spec: [
+  chroma2: [
       "Negev",
       "Sawed-Off",
       "MP7",
       "P250",
       "Desert Eagle",
-      "AK-47"
-    ],
-    restricted: [
+      "AK-47",
       "UMP-45",
       "CZ75-Auto",
       "MAG-7",
-      "AWP"
-    ],
-    classified: [
+      "AWP",
       "FAMAS",
       "Five-SeveN",
-      "Galil AR"
-    ],
-    covert: [
+      "Galil AR",
       "MAC-10",
       "M4A1-S"
-    ]
-  },
-  fracture: {
-    mil_spec: [
+  ],
+  fracture: [
       'Negev',
       "SG 553",
       'P2000',
       'P90',
       'PP-Bizon',
       'P250',
-      'SSG 08'
-    ],
-    restricted: [
+      'SSG 08',
       'Galil AR',
       'MP5-SD',
       'Tec-9',
       'MAC-10',
-      'MAG-7'
-    ],
-    classified: [
+      'MAG-7',
       'XM1014',
       'Glock-18',
       'M4A4',
-    ],
-    covert: [
       'AK-47',
       'Desert Eagle'
-    ]
-  },
-  clutch: {
-    mil_spec: [
-      'XM1014',
-      'PP-Bizon',
-      'P2000',
-      'FFive-SeveN',
-      'SG 553',
-      'R8 Revolver',
-      'MP9'
-    ],
-    restricted: [
-      'Negev',
-      'Nova',
-      'UMP-45',
-      'MAG-7',
-      'Glock-18'
-    ],
-    classified: [
-      'AUG',
-      'AWP',
-      'USP-S',
-    ],
-    covert: [
-      'MP7',
-      'M4A4'
-    ]
-  }
+  ],
+  clutch: [
+    'XM1014',
+    'PP-Bizon',
+    'P2000',
+    'FFive-SeveN',
+    'SG 553',
+    'R8 Revolver',
+    'MP9',
+    'Negev',
+    'Nova',
+    'UMP-45',
+    'MAG-7',
+    'Glock-18',
+    'AUG',
+    'AWP',
+    'USP-S',
+    'MP7',
+    'M4A4'
+  ]
+}
+
+const gunSkinNames = {
+  dangerZone: [
+    'Wood Fired',
+    'Black Sand',
+    'Danger Close',
+    'Modest Threat',
+    'Fubar',
+    'Oxide Blaze',
+    'Magnesium',
+    'Scavenger',
+    'Pipe Down',
+    'Signal',
+    'Nevermore',
+    'Flashback',
+    'Phosphor',
+    'Momentum',
+    'Mecha Industries',
+    'Neo-Noir',
+    'Asiimov'
+  ],
+  phoenix: [
+    'Corporal',
+    'Heaven Guard',
+    'Terrain',
+    'Sandstorm',
+    'Sergeant',
+    'Heat',
+    'Pulse',
+    'Guardian',
+    'Trigon',
+    'Antique',
+    'Redline',
+    'Chameleon',
+    'Asiimov'
+  ],
+  chroma2: [
+      "Man-o'-war",
+      'Origami',
+      'Armor Core',
+      'Valence',
+      'Bronze Deco',
+      'Elite Build',
+      'Grand Prix',
+      'Pole Position',
+      'Heat',
+      'Worm God',
+      'Djinn',
+      'Monkey Business',
+      'Eco',
+      'Neon Rider',
+      'Hyper Beast'
+  ],
+  fracture: [
+      'Ultralight',
+      "Ol' Rusty",
+      'Gnarled',
+      'Freight',
+      'Runic',
+      'Cassette',
+      'Mainframe 001',
+      'Connexion',
+      'Kitbash',
+      'Brother',
+      'Allure',
+      'Monster Call',
+      'Entombed',
+      'Vogue',
+      'Tooth Fairy',
+      'Legion of Anubis',
+      'Printstream'
+  ],
+  clutch: [
+      'Oxide Blaze',
+      'Night Riot',
+      'Urban Hazard',
+      'Flame Test',
+      'Aloha',
+      'Grip',
+      'Black Sand',
+      'Lionfish',
+      'Wild Six',
+      'Arctic Wolf',
+      'SWAG-7',
+      'Moonrise',
+      'Stymphalian',
+      'Mortis',
+      'Cortex',
+      'Bloodsport',
+      'Neo-Noir'
+  ]
 }
 
 // const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
 
 // function getPrices() {
 //   let gi
-//   for (gi = 0; gi < gunNames.dangerZone.mil_spec.length; gi++) {
-//     csgomarket.getSinglePrice('AK-47', 'Vulcan', 'Factory New', null, function (err, data) {
+//   for (gi = 0; gi < gunNames.dangerZone.length; gi++) {
+//     csgomarket.getSinglePrice(
+//       gunNames.dangerZone[gi], gunSkinNames.dangerZone[gi], 'Battle-Scarred', null, function (err, data) 
+//     {
  
 //       if (err) {
 //         console.error('ERROR', err);
