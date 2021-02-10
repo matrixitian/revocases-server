@@ -141,6 +141,8 @@ function updateCasesOpened(caseName) {
 //   return res.status(200).send('Server active.')
 // })
 
+log('testing')
+
 const gunNames = {
   dangerZone: [
       'Nova',
