@@ -1042,14 +1042,6 @@ router.post('/buy-case', auth, async(req, res) => {
   res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
 })
 
-router.post('/hello', async(req, res) => {
-  const username = req.header('Authorization')
-
-  console.log(username)
-
-  // console.log(req.body)
-})
-
 router.get('/check-profitability', async(req, res) => {
   const powerSecret = req.body.powerSecret
 
@@ -1656,6 +1648,24 @@ router.post('/trade-up', auth, async(req, res) => {
   } catch(err) {
     res.status(400).send()
   }
+})
+
+router.post('/give-user-points', async(req, res) => {
+  const username = req.header('Authorization')
+  
+  try {
+    const user = await User.findOneAndUpdate({ username })
+    user.credits += 5
+
+    console.log(user.credits)
+
+    await user.save()
+
+    return res.status(200).send(user.credits)
+  } catch (error) {
+    return res.status(400).send()
+  }
+  
 })
 
 module.exports = router
