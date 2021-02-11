@@ -63,8 +63,13 @@ const userSchema = new mongoose.Schema({
       trim: true,
       required: false
     },
-    adLastViewed: {
+    googleAdsFinishedAt: {
       type: Date,
+      trim: true,
+      required: false
+    },
+    adsFinished: {
+      type: Boolean,
       trim: true,
       required: false
     },

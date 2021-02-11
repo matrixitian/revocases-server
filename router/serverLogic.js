@@ -387,25 +387,14 @@ router.post('/signup', async (req, res) => {
 
 
 
-router.post('/give-user-point', auth, async(req, res) => {
+router.post('/finish-daily-ads', auth, async(req, res) => {
   const user = req.user
 
   try {
-    const currentTime = new Date()
-    const thirteenSeconds = 13000
+    user.adsFinished = true
+    user.adsViewed += 50
 
-    let timeElapsed
-    if (user.adLastViewed) {
-      timeElapsed = currentTime - user.adLastViewed
-    }
-
-    if (timeElapsed > thirteenSeconds || !user.adLastViewed) {
-      user.credits += 1
-      user.adLastViewed = new Date()
-      user.adsViewed += 1
-
-      await user.save()
-    }
+    await user.save()
 
     return res.status(200).send()
   } catch(err) {
