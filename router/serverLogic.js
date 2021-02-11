@@ -1042,6 +1042,14 @@ router.post('/buy-case', auth, async(req, res) => {
   res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
 })
 
+router.post('/hello', async(req, res) => {
+  const username = req.header('Authorization')
+
+  console.log(username)
+
+  // console.log(req.body)
+})
+
 router.get('/check-profitability', async(req, res) => {
   const powerSecret = req.body.powerSecret
 
@@ -1049,7 +1057,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.8
+  const casePrice = 0.3
 
   let skinPrices = 0
   let caseIncome = 0
@@ -1248,7 +1256,8 @@ router.get('/check-profitability', async(req, res) => {
     cijenaJedneKutijeKodNas: casePrice,
     sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
     sveukupnoIsplacenoSkinovaEUR: skinPrices,
-    profitEUR: caseIncome - skinPrices
+    profitEUR: caseIncome - skinPrices,
+    profitPerc: ((caseIncome - skinPrices) / caseIncome) * 100 + ' %'
   })
 })
 
