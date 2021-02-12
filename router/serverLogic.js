@@ -1652,9 +1652,10 @@ router.post('/trade-up', auth, async(req, res) => {
 
 router.post('/give-user-points', async(req, res) => {
   const username = req.header('Authorization')
+  console.log(username)
   
   try {
-    const user = await User.findOneAndUpdate({ username })
+    const user = await User.findOne({ username })
     user.credits += 5
 
     console.log(user.credits)
