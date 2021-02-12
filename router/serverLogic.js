@@ -1650,22 +1650,26 @@ router.post('/trade-up', auth, async(req, res) => {
   }
 })
 
+router.get('/test-active', async(req, res) => {
+  res.status(200).send("test active.")
+})
+
 router.post('/give-user-points', async(req, res) => {
-  // const username = req.header('Authorization')
-  // console.log(username)
-  console.log('hello')
-  // try {
-  //   const user = await User.findOne({ username })
-  //   user.credits += 5
+  const username = req.header('Authorization')
+  console.log(username)
+  
+  try {
+    const user = await User.findOne({ username })
+    user.credits += 5
 
-  //   console.log(user.credits)
+    console.log(user.credits)
 
-  //   await user.save()
+    await user.save()
 
-  //   return res.status(200).send(user.credits)
-  // } catch (error) {
-  //   return res.status(400).send()
-  // }
+    return res.status(200).send(user.credits)
+  } catch (error) {
+    return res.status(400).send()
+  }
   
 })
 
