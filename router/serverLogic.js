@@ -956,10 +956,6 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade) => {
     skinCon = skinCon[Math.floor(Math.random()*skinCon.length)]
   }
 
-  if (skinGrade === 'covert') {
-    log({ formattedSkin, skin, skinGrade, skinCon })
-  }
-
   return { formattedSkin, skin, skinGrade, skinCon }
 }
 
@@ -1011,7 +1007,7 @@ router.post('/buy-case', auth, async(req, res) => {
       if (user) {
         await User.findOneAndUpdate({ username: user.referredTo }, {
           $inc : {
-            'credits': 15
+            'rp': 1
           }
         })
       }
@@ -1024,6 +1020,10 @@ router.post('/buy-case', auth, async(req, res) => {
         req.user.purples += 1
       } else if (skinGrade === 'classified') {
         req.user.pinks += 1
+      } else if (skinGrade === 'covert') {
+        req.user.reds += 1
+      } else if (skinGrade === 'exceedingly_rare') {
+        req.user.yellows += 1
       }
 
       req.user.casesOpened += 1
@@ -1637,7 +1637,8 @@ router.post('/trade-up', auth, async(req, res) => {
     const cases = ['dangerZone', 'chroma2', 'clutch']
     const randomCase = cases[Math.floor(Math.random() * cases.length)];
 
-    const skinDrop = getWeapon(randomCase, false, grade)
+    let skinDrop = getWeapon(randomCase, false, grade)
+    skinDrop.caseName = randomCase
 
     user.skins = user.skins.filter(skinID => {
       if (skinIDs.includes(skinID) === false) {
