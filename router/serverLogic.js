@@ -964,7 +964,7 @@ router.post('/buy-case', auth, async(req, res) => {
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [399, 499, 599, 749, 999]
+  const casePrices = [149, 199, 249, 399, 599]
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -1633,12 +1633,26 @@ router.post('/trade-up', auth, async(req, res) => {
     if (grade === 'mil_spec') grade = 'restricted'
     else if (grade === 'restricted') grade === 'classified'
     else if (grade === 'classified') grade === 'covert'
+    else if (grade === 'covert') grade === 'exceedingly_rare'
 
     const cases = ['dangerZone', 'chroma2', 'clutch']
     const randomCase = cases[Math.floor(Math.random() * cases.length)];
 
     let skinDrop = getWeapon(randomCase, false, grade)
-    skinDrop.caseName = randomCase
+
+    await Promise.all(skinIDs.map(async (skinID) => {
+      Skin.findByIdAndDelete(skinID)
+    }))
+
+    const skinForSave = new Skin({
+      userID: user._id,
+      skin: skinDrop.skin,
+      grade: skinDrop.skinGrade,
+      condition: skinDrop.skinCon,
+      caseName: randomCase
+    })
+
+    const savedSkin = await skinForSave.save()
 
     user.skins = user.skins.filter(skinID => {
       if (skinIDs.includes(skinID) === false) {
@@ -1646,13 +1660,11 @@ router.post('/trade-up', auth, async(req, res) => {
       }
     })
 
+    user.skins.unshift(savedSkin._id)
+
     await user.save()
 
-    await Promise.all(skinIDs.map(async (skinID) => {
-      Skin.findByIdAndDelete(skinID)
-    }))
-
-    res.status(200).send(skinDrop)
+    res.status(200).send(savedSkin)
 
   } catch(err) {
     res.status(400).send()
