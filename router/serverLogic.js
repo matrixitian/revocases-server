@@ -355,6 +355,13 @@ router.post('/signup', async (req, res) => {
   const email = req.body.email
   const password = req.body.password
   const tradeURL = req.body.tradeURL
+  let referral = req.body.referral
+
+  if (referral === null) {
+    referral = null
+  } else {
+    referral= referral[0]
+  }
 
   try {
     let emailTaken = await User.findOne({ email })
@@ -369,7 +376,8 @@ router.post('/signup', async (req, res) => {
         username,
         email,
         password,
-        tradeURL
+        tradeURL,
+        referredTo: referral
       })
 
       const user = await userForSave.save()

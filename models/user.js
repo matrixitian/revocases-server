@@ -60,15 +60,10 @@ const userSchema = new mongoose.Schema({
     },
     referredTo: {
       type: String,
-      trim: true,
-      required: false
+      default: null
     },
-    googleAdsFinished: {
-      type: Boolean,
-      default: false
-    },
-    adsFinished: {
-      type: Boolean,
+    boosterAdsFinishedAt: {
+      type: Date,
       required: false
     },
     tokens: [{
