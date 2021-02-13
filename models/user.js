@@ -71,6 +71,10 @@ const userSchema = new mongoose.Schema({
       type: Date,
       required: false
     },
+    accountType: {
+      type: String,
+      default: 'user'
+    },
     tokens: [{
       token: {
         type: String,

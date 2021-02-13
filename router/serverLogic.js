@@ -393,8 +393,6 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-
-
 router.post('/finish-daily-ads', auth, async(req, res) => {
   const user = req.user
 
@@ -1277,7 +1275,7 @@ router.post('/request-trade', auth, async(req, res) => {
   }
 })
 
-function normalizeSkinName(skin, skinCon) {
+function normalizeSkinName(skinName) {
   const skins = {
         "ak-47_asiimov": "AK-47 | Asiimov",
         "awp_neo-noir": "AWP | Neo-Noir",
@@ -1360,7 +1358,10 @@ function normalizeSkinName(skin, skinCon) {
         "xm1014_oxide_blaze": "XM1014 | Oxide Blaze"
     }
 
+  return `${skins[skinName]}`
+}
 
+function normalizeCondition(condition) {
   // condition
   const conditions = {
     "fn": "Factory New",
@@ -1370,24 +1371,20 @@ function normalizeSkinName(skin, skinCon) {
     "bs": "Battle-Scarred"
   }
 
-  const condition = conditions[skinCon]
-
-  return `${skins[skin]} | (${condition})`
+  return conditions[condition]
 }
 
-router.post('/view-trade-requests', async(req, res) => {
-  const powerSecret = req.body.powerSecret
-
-  if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
+router.get('/view-trade-requests', auth, async(req, res) => {
+  if (req.user.accountType !== 'admin') {
     return res.status(401).send()
   }
 
   try {
     let skins = await Skin.find({ requestedTrade: true },
-      `_id skin condition userID tradeRequestedAt`)
+      `_id skin grade condition userID tradeRequestedAt`)
 
     skins.sort(function(a, b){
-      // Turn your strings into dates, and then subtract them
+      // Turn strings into dates, and then subtract them
       // to get a value that is either negative, positive, or zero.
       return new Date(a.tradeRequestedAt) - new Date(b.tradeRequestedAt)
     })
@@ -1397,24 +1394,29 @@ router.post('/view-trade-requests', async(req, res) => {
     }
 
     let skinIDs = []
-    let skinsWTradeURL = []
+    let tradeRequests = []
     await Promise.all(skins.map(async (skin) => {
-      const user = await User.findById(skin.userID, `-_id tradeURL`)
+      const user = await User.findById(skin.userID, `-_id username tradeURL`)
 
-      let normalizedSkinName = normalizeSkinName(skin.skin, skin.condition)
+      let normalizedSkinName = normalizeSkinName(skin.skin)
 
-      let skinWTradeURL = {
+      // let normalizedCondition = normalizeCondition(skin.condition)
+
+      let tradeRequest = {
         skinID: skin._id,
+        username: user.username,
         skinName: normalizedSkinName,
+        grade: skin.grade,
+        condition: skin.condition,
         tradeURL: user.tradeURL,
         tradeRequestedAt: openedAgo(skin.tradeRequestedAt)
       }
       
       skinIDs.push(skin._id)
-      skinsWTradeURL.push(skinWTradeURL)
+      tradeRequests.push(tradeRequest)
     }))
 
-    return res.status(200).send({ skinsWTradeURL, skinIDs })
+    return res.status(200).send({ tradeRequests, skinIDs })
   } catch(err) {
     log(err)
     return res.status(400).send(err)
