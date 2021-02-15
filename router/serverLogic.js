@@ -495,7 +495,7 @@ router.get('/get-user-skins', auth, async(req, res) => {
 
 })
 
-const getWeapon = (caseName, fromGenerator, predefinedGrade) => {
+const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false) => {
   const wpnCases = {
     dangerZone: {
       mil_spec: [
@@ -890,11 +890,15 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade) => {
       }
       skinGrade = getGrade()
     } else {
+      let restrictedChance = 15
+
+      if (isYouTuber) restrictedChance = 20
+
       const getGrade = () => {
         if (skinGrade < 0) return 'covert' 
         else if (skinGrade >= 0 && skinGrade < 2) return 'classified' 
-        else if (skinGrade >= 2 && skinGrade < 15) return 'restricted'
-        else if (skinGrade >= 15) return 'mil_spec'
+        else if (skinGrade >= 2 && skinGrade < restrictedChance) return 'restricted'
+        else if (skinGrade >= restrictedChance) return 'mil_spec'
       }
     
       skinGrade = getGrade()
@@ -976,7 +980,9 @@ router.post('/buy-case', auth, async(req, res) => {
   let skin
   let formattedSkin
   if (userCredits >= creditsRequired) {
-    const data = getWeapon(caseName, false)
+    const isYouTuber = user.accountType === 'youtuber'
+
+    const data = getWeapon(caseName, false, null, isYouTuber)
     skinGrade = data.skinGrade
     skinCon = data.skinCon
     skin = data.skin
@@ -1380,12 +1386,11 @@ router.get('/view-trade-requests', auth, async(req, res) => {
   }
 
   try {
-    let skins = await Skin.find({ requestedTrade: true },
-      `_id skin grade condition userID tradeRequestedAt`)
+    let skins = await Skin.find({ requestedTrade: true, tradeOfferSent: false },
+      `_id skin grade condition userID tradeRequestedAt tradeOfferSent`)
 
+    // Sort skins by oldest DateTime
     skins.sort(function(a, b){
-      // Turn strings into dates, and then subtract them
-      // to get a value that is either negative, positive, or zero.
       return new Date(a.tradeRequestedAt) - new Date(b.tradeRequestedAt)
     })
 
@@ -1393,14 +1398,11 @@ router.get('/view-trade-requests', auth, async(req, res) => {
       return moment(timestamp).fromNow()
     }
 
-    let skinIDs = []
     let tradeRequests = []
     await Promise.all(skins.map(async (skin) => {
       const user = await User.findById(skin.userID, `-_id username tradeURL`)
 
       let normalizedSkinName = normalizeSkinName(skin.skin)
-
-      // let normalizedCondition = normalizeCondition(skin.condition)
 
       let tradeRequest = {
         skinID: skin._id,
@@ -1409,38 +1411,36 @@ router.get('/view-trade-requests', auth, async(req, res) => {
         grade: skin.grade,
         condition: skin.condition,
         tradeURL: user.tradeURL,
+        tradeOfferSent: skin.tradeOfferSent,
         tradeRequestedAt: openedAgo(skin.tradeRequestedAt)
       }
       
-      skinIDs.push(skin._id)
       tradeRequests.push(tradeRequest)
     }))
 
-    return res.status(200).send({ tradeRequests, skinIDs })
+    return res.status(200).send({ tradeRequests })
   } catch(err) {
     log(err)
     return res.status(400).send(err)
   }
 })
 
-router.post('/finish-trade-offers', async(req, res) => {
-  const powerSecret = req.body.powerSecret
-  const skinIDs = req.body.skinIDs
+router.post('/finish-trade-offer', auth, async(req, res) => {
+  const user = req.user
+  const skinID = req.body.skinID
 
-  if (powerSecret !== process.env.FETCH_SKINS_SECRET) {
+  if (user.accountType !== 'admin') {
     return res.status(401).send()
   }
 
   try {
-    await Promise.all(skinIDs.map(async (skinID) => {
-      await Skin.findByIdAndUpdate(skinID, {
-        tradeOfferSent: true
-      })
-    }))
+    await Skin.findByIdAndUpdate(skinID, {
+      tradeOfferSent: true
+    })
 
-    res.status(200).send("Trade offers su označeni kao poslani.")
+    return res.status(200).send()
   } catch(err) {
-    res.status(400).send("Nešto si pogrešno unjeo.")
+    return res.status(400).send()
   }
 })
 
