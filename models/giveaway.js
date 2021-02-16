@@ -21,14 +21,6 @@ const giveawaySchema = new mongoose.Schema({
   currentWeeklyWinner: {
     type: String,
     required: false
-  },
-  lastDailyWinner: {
-    type: String,
-    required: false
-  },
-  lastWeeklyWinner: {
-    type: String,
-    required: false
   }
 })
 

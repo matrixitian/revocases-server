@@ -25,7 +25,7 @@ setInterval(() => {
 
   }
 
-}, 5000)
+}, 60000)
 
 const getDailyEntrants = async () => {
    
