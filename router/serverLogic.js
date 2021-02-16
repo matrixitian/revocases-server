@@ -11,6 +11,7 @@ const Giveaway = require('../models/giveaway')
 const data = require('../data/usernames')
 const log = console.log
 
+// Giveaways interval
 setInterval(async () => {
   let day = moment().day()
   let hour = moment().hour()
