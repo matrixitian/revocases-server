@@ -11,24 +11,54 @@ const Giveaway = require('../models/giveaway')
 const data = require('../data/usernames')
 const log = console.log
 
-setInterval(() => {
+setInterval(async () => {
   let day = moment().day()
   let hour = moment().hour()
 
-  // If Monday 00:00
-  if (day === 1 && hour === 0) {
+  // If Sunday 00:00
+  if (day === 6 && hour === 0) {
+    let weeklyEntrantsCount = getWeeklyEntrants()
 
+    let winner = weeklyEntrantsCount[Math.floor(Math.random() * weeklyEntrantsCount.length)]
+    
+    await Giveaway.findOneAndUpdate(giveawayDocID, {
+      currentDailyWinner: winner
+    })
+
+    await User.updateMany({}, { tickets: 0 })
+
+    await Giveaway.findOneAndUpdate(giveawayDocID, {
+      weeklyUserPool: []
+    })
   }
 
   // Choose daily winner
   if (hour === 0) {
+    let dailyEntrantsCount = getDailyEntrants()
 
+    let winner = dailyEntrantsCount[Math.floor(Math.random() * dailyEntrantsCount.length)]
+    
+    await Giveaway.findOneAndUpdate(giveawayDocID, {
+      currentWeeklyWinner: winner
+    })
   }
 
 }, 60000)
 
 const getDailyEntrants = async () => {
-   
+  let giveaway = await Giveaway.findById(giveawayDocID, `-_id dailyUserPool`)
+
+  const dailyUserPoolCount = giveaway.dailyUserPool
+
+  return dailyUserPoolCount
+}
+
+const getWeeklyEntrants = async () => {
+  let giveaway = await Giveaway.findById(giveawayDocID, `-_id weeklyUserPool`)
+
+  const weeklyUserPoolCount = giveaway.weeklyUserPool
+
+  return weeklyUserPoolCount
 }
 
 const giveawayDocID = '602bb5f27d5b6c0c10d3b04b'
