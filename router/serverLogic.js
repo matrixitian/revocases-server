@@ -7,8 +7,56 @@ const router = new express.Router()
 const moment = require('moment')
 const User = require('../models/user')
 const Skin = require('../models/skin')
+const Giveaway = require('../models/giveaway')
 const data = require('../data/usernames')
 const log = console.log
+
+setInterval(() => {
+  let day = moment().day()
+  let hour = moment().hour()
+
+  // If Monday 00:00
+  if (day === 1 && hour === 0) {
+
+  }
+
+  // Choose daily winner
+  if (hour === 0) {
+
+  }
+
+}, 5000)
+
+const getDailyEntrants = async () => {
+   
+}
+
+const giveawayDocID = '602bb5f27d5b6c0c10d3b04b'
+router.post('/buy-ticket', auth, async(req, res) => {
+  const user = req.user
+  const ticketPrice = 30
+
+  try {
+    if (user.credits >= ticketPrice) {
+      user.credits =- ticketPrice
+      user.tickets += 1
+  
+      const giveaway = Giveaway.findByIdAndUpdate(giveawayDocID, 
+        { $push: { weeklyUserPool: user.username } }
+      )
+  
+      await user.save()
+      
+      await giveaway.save()
+
+      return res.status(200).send()
+    }
+
+    return res.status(400).send()
+  } catch(err) {
+    return res.status(500).send()
+  }
+})
 
 firebase.initializeApp({ 
   apiKey: "AIzaSyDMWb56THHAiz7jqRT2dyDbIq2R3ux3Mp0",
@@ -1016,6 +1064,14 @@ router.post('/buy-case', auth, async(req, res) => {
         })
       }
 
+      if (user.referredTo) {
+        await Giveaway.findByIdAndUpdate(giveawayDocID, {
+          $push: {
+            dailyUserPool: user.referredTo
+          }
+        })
+      }
+
       updateCasesOpened(caseName)
 
       if (skinGrade === 'mil_spec') {
@@ -1052,6 +1108,19 @@ router.post('/buy-case', auth, async(req, res) => {
   addSkinToLiveDrops(readyDrop)
 
   res.status(200).send({ skin: formattedSkin, skinLonghand: skin, skinGrade, skinCon })
+})
+
+router.get('/get-giveaway-data', auth, async(req, res) => {
+  const user = req.user
+
+  try {
+    const giveaway = await Giveaway.findById(giveawayDocID)
+    
+    return res.status(200).send({ giveaway, rp: user.rp, tickets: user.tickets })
+  } catch(err) {
+    return res.status(400).send()
+  }
+
 })
 
 router.get('/check-profitability', async(req, res) => {
