@@ -37,23 +37,23 @@ router.post('/buy-ticket', auth, async(req, res) => {
   const ticketPrice = 30
 
   try {
+    console.log(user.credits)
     if (user.credits >= ticketPrice) {
-      user.credits =- ticketPrice
+      user.credits -= ticketPrice
       user.tickets += 1
   
-      const giveaway = Giveaway.findByIdAndUpdate(giveawayDocID, 
+      await Giveaway.findByIdAndUpdate(giveawayDocID, 
         { $push: { weeklyUserPool: user.username } }
       )
   
       await user.save()
-      
-      await giveaway.save()
 
       return res.status(200).send()
     }
 
     return res.status(400).send()
   } catch(err) {
+    console.log(err)
     return res.status(500).send()
   }
 })
@@ -1467,6 +1467,27 @@ router.get('/view-trade-requests', auth, async(req, res) => {
       return moment(timestamp).fromNow()
     }
 
+    const giveaway = await Giveaway.findById(giveawayDocID,
+      `-_id currentDailyWinner currentWeeklyWinner`)
+
+    console.log(giveaway)
+    const dailyWinnerTradeURL = await User.findOne(
+      { username: giveaway.currentDailyWinner }, `-_id tradeURL`)
+
+    const weeklyWinnerTradeURL = await User.findOne(
+      { username: giveaway.currentWeeklyWinner }, `-_id tradeURL`)
+
+    const giveawayData = {
+      currentDailyWinner: {
+        username: giveaway.currentDailyWinner,
+        tradeURL: dailyWinnerTradeURL
+      },
+      currentWeeklyWinner: {
+        username: giveaway.currentWeeklyWinner,
+        tradeURL: weeklyWinnerTradeURL
+      }
+    }
+
     let tradeRequests = []
     await Promise.all(skins.map(async (skin) => {
       const user = await User.findById(skin.userID, `-_id username tradeURL`)
@@ -1487,7 +1508,7 @@ router.get('/view-trade-requests', auth, async(req, res) => {
       tradeRequests.push(tradeRequest)
     }))
 
-    return res.status(200).send({ tradeRequests })
+    return res.status(200).send({ tradeRequests, giveawayData })
   } catch(err) {
     log(err)
     return res.status(400).send(err)
