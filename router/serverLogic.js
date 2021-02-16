@@ -16,13 +16,14 @@ setInterval(async () => {
   let hour = moment().hour()
 
   // If Sunday 00:00
-  if (day === 6 && hour === 0) {
-    let weeklyEntrantsCount = getWeeklyEntrants()
+  if (day === 7 && hour === 0) {
+    let giveaway = await Giveaway.findById(giveawayDocID, `-_id weeklyUserPool`)
+    let weeklyEntrants = giveaway.weeklyUserPool
 
-    let winner = weeklyEntrantsCount[Math.floor(Math.random() * weeklyEntrantsCount.length)]
-    
+    let winner = weeklyEntrants[Math.floor(Math.random() * weeklyEntrants.length)]
+
     await Giveaway.findOneAndUpdate(giveawayDocID, {
-      currentDailyWinner: winner
+      currentWeeklyWinner: winner
     })
 
     await User.updateMany({}, { tickets: 0 })
@@ -34,32 +35,17 @@ setInterval(async () => {
 
   // Choose daily winner
   if (hour === 0) {
-    let dailyEntrantsCount = getDailyEntrants()
+    let giveaway = await Giveaway.findById(giveawayDocID, `-_id dailyUserPool`)
+    dailyEntrants = giveaway.dailyUserPool
 
-    let winner = dailyEntrantsCount[Math.floor(Math.random() * dailyEntrantsCount.length)]
-    
+    let winner = dailyEntrants[Math.floor(Math.random() * dailyEntrants.length)]
+
     await Giveaway.findOneAndUpdate(giveawayDocID, {
-      currentWeeklyWinner: winner
+      currentDailyWinner: winner
     })
   }
 
-}, 60000)
-
-const getDailyEntrants = async () => {
-  let giveaway = await Giveaway.findById(giveawayDocID, `-_id dailyUserPool`)
-
-  const dailyUserPoolCount = giveaway.dailyUserPool
-
-  return dailyUserPoolCount
-}
-
-const getWeeklyEntrants = async () => {
-  let giveaway = await Giveaway.findById(giveawayDocID, `-_id weeklyUserPool`)
-
-  const weeklyUserPoolCount = giveaway.weeklyUserPool
-
-  return weeklyUserPoolCount
-}
+}, 3600000)
 
 const giveawayDocID = '602bb5f27d5b6c0c10d3b04b'
 router.post('/buy-ticket', auth, async(req, res) => {
