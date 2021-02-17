@@ -462,7 +462,7 @@ router.post('/finish-daily-ads', auth, async(req, res) => {
   const user = req.user
 
   try {
-    user.adsFinished = true
+    user.boosterAdsFinishedAt = new Date()
     user.adsViewed += 50
 
     await user.save()
@@ -1780,19 +1780,22 @@ router.post('/trade-up', auth, async(req, res) => {
   }
 })
 
-router.get('/test-active', async(req, res) => {
-  res.status(200).send("test active.")
-})
-
 router.post('/give-user-points', async(req, res) => {
   const username = req.header('Authorization')
-  console.log(username)
   
   try {
     const user = await User.findOne({ username })
-    user.credits += 5
 
-    console.log(user.credits)
+    const a = moment(new Date())
+    const b = moment(user.boosterAdsFinishedAt)
+
+    const hourDiff = a.diff(b, 'hours')
+
+    if (hourDiff < 24) {
+      user.credits += 5
+    } else {
+      user.credits += 3
+    }
 
     await user.save()
 
