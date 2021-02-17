@@ -103,8 +103,6 @@ skinGradesOpenedRef.onSnapshot((snap) => {
 })
 
 function updateCasesOpened(caseName, grade) {
-  console.log('called')
-
   const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
   const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
 
@@ -137,8 +135,6 @@ function updateCasesOpened(caseName, grade) {
         phoenix: casesOpened[4] + 1
     })
   }
-
-  log(grade)
 
   switch (grade) {
     case 'mil_spec':
@@ -1825,6 +1821,37 @@ router.post('/give-user-points', async(req, res) => {
     return res.status(400).send()
   }
   
+})
+
+router.post('/open-daily-reward', auth, async(req, res) => {
+  const user = req.user
+
+  // Drop
+  let num = Math.random() * 100
+  num = Math.round(num * 100) / 100
+
+  const getDrop = () => {
+    if (num >= 0 && num < 0.35) return 50 
+    else if (num >= 0.35 && num < 0.95) return 20 
+    else if (num >= 0.95 && num < 4.15) return 15 
+    else if (num >= 4.15 && num < 20.00) return 10
+    else if (num >= 20.00) return 5
+  }
+
+  const drop = getDrop()
+
+  log(drop)
+
+  user.credits += drop
+  // req.user.dailyRewardOpened = new Date()
+
+  try {
+    await user.save()
+    
+    return res.status(200).send(String(drop))
+  } catch(err) {
+    return res.status(400).send()
+  }
 })
 
 module.exports = router

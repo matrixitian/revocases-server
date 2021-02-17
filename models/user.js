@@ -71,6 +71,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: null
     },
+    dailyRewardOpened: {
+      type: Date,
+      default: new Date()
+    },
     boosterAdsFinishedAt: {
       type: Date,
       required: false
