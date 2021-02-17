@@ -1840,10 +1840,17 @@ router.post('/open-daily-reward', auth, async(req, res) => {
 
   const drop = getDrop()
 
-  log(drop)
-
   user.credits += drop
-  // req.user.dailyRewardOpened = new Date()
+  user.dailyRewardOpened = new Date()
+
+  let a = moment(new Date())
+  let b = moment(user.dailyRewardOpened)
+
+  let hourDiff = a.diff(b, 'hours')
+
+  if (hourDiff < 24) {
+    return res.status(400).send()
+  }
 
   try {
     await user.save()
