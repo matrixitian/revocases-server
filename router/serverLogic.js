@@ -89,6 +89,88 @@ require('firebase/firestore')
 
 const firestore = firebase.firestore()
 
+const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
+
+let skinGradesOpened = [0, 0, 0, 0, 0]
+skinGradesOpenedRef.onSnapshot((snap) => {
+  snap.docs.forEach(doc => {
+    skinGradesOpened[0] = doc.data().mil_spec
+    skinGradesOpened[1] = doc.data().restricted
+    skinGradesOpened[2] = doc.data().classified
+    skinGradesOpened[3] = doc.data().covert
+    skinGradesOpened[4] = doc.data().exceedingly_rare
+  })
+})
+
+function updateCasesOpened(caseName, grade) {
+  console.log('called')
+
+  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
+  const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
+
+  if (caseName === 'dangerZone') {
+      docRef.update({
+        dangerZone: casesOpened[0] + 1
+    })
+  }
+
+  else if (caseName === 'chroma2') {
+      docRef.update({
+        chroma2: casesOpened[1] + 1
+    })
+  }
+
+  else if (caseName === 'clutch') {
+    docRef.update({
+        clutch: casesOpened[2] + 1
+    })
+  }
+
+  else if (caseName === 'fracture') {
+    docRef.update({
+        fracture: casesOpened[3] + 1
+    })
+  }
+
+  else if (caseName === 'phoenix') {
+      docRef.update({
+        phoenix: casesOpened[4] + 1
+    })
+  }
+
+  log(grade)
+
+  switch (grade) {
+    case 'mil_spec':
+      docSkinGrades.update({
+        mil_spec: skinGradesOpened[0] + 1
+      })
+      break;
+    case 'restricted':
+      docSkinGrades.update({
+        restricted: skinGradesOpened[1] + 1
+      })
+      break;
+    case 'classified':
+      docSkinGrades.update({
+        classified: skinGradesOpened[2] + 1
+      })
+      break;
+    case 'covert':
+      docSkinGrades.update({
+        covert: skinGradesOpened[3] + 1
+      })
+      break;
+    case 'exceedingly_rare':
+      docSkinGrades.update({
+        exceedingly_rare: skinGradesOpened[4] + 1
+      })
+      break;
+    default:
+      break;
+  }
+}
+
 function addSkinToLiveDrops(skin) {
   firestore.collection("drops").add(skin)
 }
@@ -146,8 +228,6 @@ const iterator = () => {
 
   interval = Math.floor(Math.random() * (200000 - (100 * userCount)))
 
-  // console.log(interval)
-
   setTimeout(iterator, interval)
 }
 
@@ -167,88 +247,6 @@ casesOpenedRef.onSnapshot((snap) => {
     casesOpened[4] = doc.data().phoenix
   })
 })
-
-const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
-
-let skinGradesOpened = [0, 0, 0, 0, 0]
-skinGradesOpenedRef.onSnapshot((snap) => {
-  snap.docs.forEach(doc => {
-    skinGradesOpened[0] = doc.data().mil_spec
-    skinGradesOpened[1] = doc.data().restricted
-    skinGradesOpened[2] = doc.data().classified
-    skinGradesOpened[3] = doc.data().covert
-    skinGradesOpened[4] = doc.data().exceedingly_rare
-  })
-})
-
-function updateCasesOpened(caseName, grade) {
-  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
-  const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
-
-  if (caseName === 'dangerZone') {
-      docRef.update({
-        dangerZone: casesOpened[0] + 1
-    })
-  }
-
-  else if (caseName === 'chroma2') {
-      docRef.update({
-        chroma2: casesOpened[1] + 1
-    })
-  }
-
-  else if (caseName === 'clutch') {
-    docRef.update({
-        clutch: casesOpened[2] + 1
-    })
-  }
-
-  else if (caseName === 'fracture') {
-    docRef.update({
-        fracture: casesOpened[3] + 1
-    })
-  }
-
-  else if (caseName === 'phoenix') {
-      docRef.update({
-        phoenix: casesOpened[4] + 1
-    })
-  }
-
-  switch (grade) {
-    case 'mil_spec':
-      docSkinGrades.update({
-        mil_spec: skinGradesOpened[0] + 1
-      })
-      break;
-    case 'restricted':
-      docSkinGrades.update({
-        restricted: skinGradesOpened[1] + 1
-      })
-      break;
-    case 'classified':
-      docSkinGrades.update({
-        classified: skinGradesOpened[2] + 1
-      })
-      break;
-    case 'covert':
-      docSkinGrades.update({
-        covert: skinGradesOpened[3] + 1
-      })
-      break;
-      case 'covert':
-        docSkinGrades.update({
-          covert: skinGradesOpened[4] + 1
-        })
-        break;
-    default:
-      break;
-  }
-}
-
-// router.get('/', async(req, res) => {
-//   return res.status(200).send('Server active.')
-// })
 
 const gunNames = {
   dangerZone: [
@@ -433,27 +431,6 @@ const gunSkinNames = {
       'Neo-Noir'
   ]
 }
-
-// const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
-
-// function getPrices() {
-//   let gi
-//   for (gi = 0; gi < gunNames.dangerZone.length; gi++) {
-//     csgomarket.getSinglePrice(
-//       gunNames.dangerZone[gi], gunSkinNames.dangerZone[gi], 'Battle-Scarred', null, function (err, data) 
-//     {
- 
-//       if (err) {
-//         console.error('ERROR', err);
-//       } else {
-//         console.log(data);
-//       }
-     
-//     })
-//   }
-// }
-
-// getPrices()
 
 router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
