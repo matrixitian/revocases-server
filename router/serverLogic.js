@@ -140,7 +140,7 @@ const iterator = () => {
     timeOpened: Number(Date.now())
   })
 
-  updateCasesOpened(caseName)
+  updateCasesOpened(caseName, wpn.skinGrade)
 
   let userCount = getHour()
 
@@ -168,8 +168,22 @@ casesOpenedRef.onSnapshot((snap) => {
   })
 })
 
-function updateCasesOpened(caseName) {
+const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
+
+let skinGradesOpened = [0, 0, 0, 0, 0]
+skinGradesOpenedRef.onSnapshot((snap) => {
+  snap.docs.forEach(doc => {
+    skinGradesOpened[0] = doc.data().mil_spec
+    skinGradesOpened[1] = doc.data().restricted
+    skinGradesOpened[2] = doc.data().classified
+    skinGradesOpened[3] = doc.data().covert
+    skinGradesOpened[4] = doc.data().exceedingly_rare
+  })
+})
+
+function updateCasesOpened(caseName, grade) {
   const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
+  const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
 
   if (caseName === 'dangerZone') {
       docRef.update({
@@ -199,6 +213,36 @@ function updateCasesOpened(caseName) {
       docRef.update({
         phoenix: casesOpened[4] + 1
     })
+  }
+
+  switch (grade) {
+    case 'mil_spec':
+      docSkinGrades.update({
+        mil_spec: skinGradesOpened[0] + 1
+      })
+      break;
+    case 'restricted':
+      docSkinGrades.update({
+        restricted: skinGradesOpened[1] + 1
+      })
+      break;
+    case 'classified':
+      docSkinGrades.update({
+        classified: skinGradesOpened[2] + 1
+      })
+      break;
+    case 'covert':
+      docSkinGrades.update({
+        covert: skinGradesOpened[3] + 1
+      })
+      break;
+      case 'covert':
+        docSkinGrades.update({
+          covert: skinGradesOpened[4] + 1
+        })
+        break;
+    default:
+      break;
   }
 }
 
@@ -1089,7 +1133,7 @@ router.post('/buy-case', auth, async(req, res) => {
         })
       }
 
-      updateCasesOpened(caseName)
+      updateCasesOpened(caseName, skinGrade)
 
       if (skinGrade === 'mil_spec') {
         req.user.blues += 1
