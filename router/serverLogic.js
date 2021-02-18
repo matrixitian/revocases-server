@@ -456,12 +456,11 @@ const sendConfirmationEmail = async(email, emailVerificationCode) => {
   </td></tr><tr><td align="center" style="padding:0;Margin:0;padding-top:15px;padding-bottom:15px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:24px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:36px;color:#FF6600"><strong>${emailVerificationCode}</strong></p></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>
   `
 
-  // send mail with defined transport object
+  // Send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Revo Cases 👻" support@revo-cases.com', // sender address
+    from: '"Revo Cases Admin👻" support@revo-cases.com',
     to: email,
     subject: "Revo Cases E-mail Confirmation ✔",
-    // text: `Click to verify e-mail: ${emailVerificationCode}`, // plain text body
     html: myHTML
   })
 
