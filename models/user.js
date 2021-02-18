@@ -71,6 +71,14 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: null
     },
+    emailVerificationCode: {
+      type: String,
+      required: true
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false
+    },
     dailyRewardOpened: {
       type: Date,
       default: new Date()

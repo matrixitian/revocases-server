@@ -1,10 +1,12 @@
 const express = require('express')
 const auth = require('../middleware/auth')
-const firebase = require('firebase');
-const steamprice = require('steam-price-api');
+const firebase = require('firebase')
+const steamprice = require('steam-price-api')
 const csgomarket = require('csgo-market')
 const router = new express.Router()
 const moment = require('moment')
+const nodemailer = require("nodemailer")
+const generator = require('generate-password')
 const User = require('../models/user')
 const Skin = require('../models/skin')
 const Giveaway = require('../models/giveaway')
@@ -432,6 +434,29 @@ router.get('/get-user', auth, async(req, res) => {
   return res.status(200).send(req.user)
 })
 
+const sendConfirmationEmail = async(userEmail, emailVerificationCode) => {
+  let transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'support@revo-cases.com',
+      pass: '!!Winter99!!'
+    },
+  })
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Revo Cases Admin👻" support@revo-cases.com', // sender address
+    to: userEmail,
+    subject: "Revo Cases E-mail Confirmation ✔",
+    text: `This is your confirmation code: ${emailVerificationCode}`, // plain text body
+    // html: "<b>Hello world?</b>", // html body
+  })
+
+  console.log(info)
+}
+
 router.post('/signup', async (req, res) => {
   const username = req.body.username
   const email = req.body.email
@@ -453,10 +478,16 @@ router.post('/signup', async (req, res) => {
       return res.status(200).send('Username is taken.')
     }
 
+    const emailVerificationCode = generator.generate({
+      length: 10,
+      numbers: true
+    })
+
     if (!emailTaken) {
       const userForSave = new User({
         username,
         email,
+        emailVerificationCode,
         password,
         tradeURL,
         referredTo: referral
@@ -465,6 +496,8 @@ router.post('/signup', async (req, res) => {
       const user = await userForSave.save()
 
       const token = await userForSave.generateAuthToken()
+
+      sendConfirmationEmail(email, emailVerificationCode)
 
       return res.status(201).send({ user, token })
     } else {
