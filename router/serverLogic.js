@@ -336,7 +336,7 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
       classified: [
         'p90_trigon',
         'nova_antique',
-        'dak-47_redline',
+        'ak-47_redline',
       ],
       covert: [
         'aug_chameleon',
@@ -1035,13 +1035,13 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.3
+  const casePrice = 0.55
 
   let skinPrices = 0
   let caseIncome = 0
   let casesOpened = 0
 
-  const amountOfDrops = 100000
+  const amountOfDrops = 30000
 
   const gunPrices = {
     "ak-47_asiimov": 21.85,
@@ -1094,7 +1094,6 @@ router.get('/check-profitability', async(req, res) => {
     "negev_lionfish": 0.36,
   }
   
-  let pricesBlue = 0
   let pricesPurple = 0
   let pricesPink = 0
   let pricesPurpleAndPink = 0
@@ -1133,7 +1132,6 @@ router.get('/check-profitability', async(req, res) => {
   }
 
   blues = Math.floor(blues / 10)
-
   let gi
   const cases = ['dangerZone', 'chroma2']
   for (gi = 0; gi < blues; gi++) {
@@ -1149,16 +1147,16 @@ router.get('/check-profitability', async(req, res) => {
   caseIncome = casePrice * amountOfDrops
 
   return res.status(200).send({
-    blues,
-    pricesPurple: Math.round(pricesPurple),
-    pricesPink: Math.round(pricesPink),
-    pricesPurpleAndPink: Math.round(pricesPurpleAndPink),
-    pricesRed: Math.round(pricesRed),
+    blues: blues * 10,
+    pricesPurple: Math.round(pricesPurple) + ' €',
+    pricesPink: Math.round(pricesPink) + ' €',
+    pricesPurpleAndPink: Math.round(pricesPurpleAndPink) + ' €',
+    pricesRed: Math.round(pricesRed) + ' €',
     brojOtvorenihKutija: casesOpened,
-    cijenaJedneKutijeKodNas: casePrice,
-    sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome),
-    sveukupnoIsplacenoSkinovaEUR: Math.round(skinPrices),
-    profitEUR: Math.round(caseIncome - skinPrices),
+    cijenaJedneKutijeKodNas: casePrice + ' €',
+    sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome) + ' €',
+    sveukupnoIsplacenoSkinovaEUR: Math.round(skinPrices) + ' €',
+    profitEUR: Math.round(caseIncome - skinPrices) + ' €',
     profitPerc: Math.round(((caseIncome - skinPrices) / caseIncome) * 100) + ' %'
   })
 })
