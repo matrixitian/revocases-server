@@ -588,40 +588,40 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
     "awp_neo-noir": ["bs"],
     "desert_eagle_mecha_industries": ["bs"],
     "mp5-sd_phosphor": ["bs"],
-    "ump-45_momentum": ["ww"],
+    "ump-45_momentum": ["bs"],
     "usp-s_flashback": ["ft"],
     "p250_nevermore": ["ft"],
     "galil_ar_signal": ["ft"],
-    "mac-10_pipe_down": ["bs"],
+    "mac-10_pipe_down": ["ww"],
     "g3sg1_scavenger": ["bs"],
-    "m4a4_magnesium": ["bs"],
-    "glock-18_oxide_blaze": ["ft"],
-    "tec-9_fubar": ["ft"],
-    "mp9_modest_threat": ["ft"],
-    "sg553_danger_close": ["bs"],
-    "sawed-off_black_sand": ["ft"],
-    "nova_wood_fired": ["bs"],
+    "m4a4_magnesium": ["*"],
+    "glock-18_oxide_blaze": ["*"],
+    "tec-9_fubar": ["*"],
+    "mp9_modest_threat": ["*"],
+    "sg553_danger_close": ["*"],
+    "sawed-off_black_sand": ["*"],
+    "nova_wood_fired": ["*"],
     "awp_asiimov": ["bs"],
     "aug_chameleon": ["ft"],
     "ak-47_redline": ["bs"],
     "nova_antique": ["ft"],
     "p90_trigon": ["ft"],
     "usp-s_guardian": ["ft"],
-    "sg_553_pulse": ["bs"],
-    "mac-10_heat": ["bs"],
+    "sg_553_pulse": ["ft"],
+    "mac-10_heat": ["ww"],
     "famas_sergeant": ["bs"],
     "tec-9_sandstorm": ["*"],
     "negev_terrain": ["*"],
     "mag-7_heaven_guard": ["*"],
     "ump-45_corporal": ["*"],
-    "m4a1-s_hyper_beast": ["ww", "bs"],
+    "m4a1-s_hyper_beast": ["bs"],
     "mac-10_neon_rider": ["ft"],
-    "galil_ar_eco": ["ww", "bs"],
-    "five-seven_monkey_business": ["ww", "bs", "ft"],
-    "famas_djinn": ["ww", "ft"],
+    "galil_ar_eco": ["bs"],
+    "five-seven_monkey_business": ["ft"],
+    "famas_djinn": ["ft"],
     "awp_worm_god": ["ft"],
-    "mag-7_heat": ["ww", "bs"],
-    "cz75-auto_pole_position": ["bs", "ft"],
+    "mag-7_heat": ["ft"],
+    "cz75-auto_pole_position": ["ft"],
     "ump-45_grand_prix": ["ft"],
     "ak-47_elite_build": ["*"],
     "desert_eagle_bronze_deco": ["*"],
@@ -633,10 +633,10 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
     "ak-47_legion_of_anubis": ["bs"],
     "m4a4_toothfairy": ["bs"],
     "glock-18_vogue": ["bs"],
-    "xm1014_entombed": ["ww", "bs"],
+    "xm1014_entombed": ["bs"],
     "mag-7_monster_call": ["bs"],
-    "mac-10_allure": ["bs", "ww"],
-    "tec-9_brother": ["bs", "ww"],
+    "mac-10_allure": ["bs"],
+    "tec-9_brother": ["bs"],
     "mp5-sd_kitbash": ["bs"],
     "galil_ar_connexion": ["bs"],
     "ssg_08_mainframe_001": ["*"],
@@ -650,12 +650,12 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
     "mp7_bloodsport": ["bs"],
     "usp-s_cortex": ["bs"],
     "awp_mortis": ["ft"],
-    "aug_stymphalian": ["bs", "ft"],
-    "glock-18_moonrise": ["bs", "ft"],
-    "mag-7_swag-7": ["ft", "bs", "ww"],
-    "ump-45_artic_wolf": ["bs", "ft"],
-    "nova_wild_six": ["bs", "ft"],
-    "negev_lionfish": ["ft", "bs"],
+    "aug_stymphalian": ["ft"],
+    "glock-18_moonrise": ["ft"],
+    "mag-7_swag-7": ["ft"],
+    "ump-45_artic_wolf": ["ft"],
+    "nova_wild_six": ["ft"],
+    "negev_lionfish": ["ft"],
     "mp9_black_sand": ["*"],
     "r8_revolver_grip": ["*"],
     "sg_553_aloha": ["*"],
@@ -1035,7 +1035,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.2
+  const casePrice = 0.3
 
   let skinPrices = 0
   let caseIncome = 0
@@ -1044,54 +1044,54 @@ router.get('/check-profitability', async(req, res) => {
   const amountOfDrops = 100000
 
   const gunPrices = {
-    "ak-47_asiimov": ["bs"],
-    "awp_neo-noir": ["bs"],
-    "desert_eagle_mecha_industries": ["bs"],
-    "mp5-sd_phosphor": ["bs"],
-    "ump-45_momentum": ["ww"],
-    "usp-s_flashback": ["ft"],
-    "p250_nevermore": ["ft"],
-    "galil_ar_signal": ["ft"],
-    "mac-10_pipe_down": ["bs"],
-    "g3sg1_scavenger": ["bs"],
-    "awp_asiimov": ["bs"],
-    "aug_chameleon": ["ft"],
-    "ak-47_redline": ["bs"],
-    "nova_antique": ["ft"],
-    "p90_trigon": ["ft"],
-    "usp-s_guardian": ["ft"],
-    "sg_553_pulse": ["bs"],
-    "mac-10_heat": ["bs"],
-    "famas_sergeant": ["bs"],
-    "m4a1-s_hyper_beast": ["ww", "bs"],
-    "mac-10_neon_rider": ["ft"],
-    "galil_ar_eco": ["ww", "bs"],
-    "five-seven_monkey_business": ["ww", "bs", "ft"],
-    "famas_djinn": ["ww", "ft"],
-    "awp_worm_god": ["ft"],
-    "mag-7_heat": ["ww", "bs"],
-    "cz75-auto_pole_position": ["bs", "ft"],
-    "ump-45_grand_prix": ["ft"],
-    "desert_eagle_printstream": ["bs"],
-    "ak-47_legion_of_anubis": ["bs"],
-    "m4a4_toothfairy": ["bs"],
-    "glock-18_vogue": ["bs"],
-    "xm1014_entombed": ["ww", "bs"],
-    "mag-7_monster_call": ["bs"],
-    "mac-10_allure": ["bs", "ww"],
-    "tec-9_brother": ["bs", "ww"],
-    "mp5-sd_kitbash": ["bs"],
-    "galil_ar_connexion": ["bs"],
-    "m4a4_neo-noir": ["bs"],
-    "mp7_bloodsport": ["bs"],
-    "usp-s_cortex": ["bs"],
-    "awp_mortis": ["ft"],
-    "aug_stymphalian": ["bs", "ft"],
-    "glock-18_moonrise": ["bs", "ft"],
-    "mag-7_swag-7": ["ft", "bs", "ww"],
-    "ump-45_artic_wolf": ["bs", "ft"],
-    "nova_wild_six": ["bs", "ft"],
-    "negev_lionfish": ["ft", "bs"]
+    "ak-47_asiimov": 21.85,
+    "awp_neo-noir": 23.99,
+    "desert_eagle_mecha_industries": 3.80,
+    "mp5-sd_phosphor": 3.02,
+    "ump-45_momentum": 3.03,
+    "usp-s_flashback": 0.73,
+    "p250_nevermore": 0.43,
+    "galil_ar_signal": 0.48,
+    "mac-10_pipe_down": 0.36,
+    "g3sg1_scavenger": 0.39,
+    "awp_asiimov": 47.03,
+    "aug_chameleon": 3.88,
+    "ak-47_redline": 9.27,
+    "nova_antique": 4.29,
+    "p90_trigon": 4.20,
+    "usp-s_guardian": 1.11,
+    "sg_553_pulse": 1.15,
+    "mac-10_heat": 1.07,
+    "famas_sergeant": 0.82,
+    "m4a1-s_hyper_beast": 7.85,
+    "mac-10_neon_rider": 5.68,
+    "galil_ar_eco": 1.66,
+    "five-seven_monkey_business": 1.70,
+    "famas_djinn": 1.69,
+    "awp_worm_god": 1.08,
+    "mag-7_heat": 0.34,
+    "cz75-auto_pole_position": 0.28,
+    "ump-45_grand_prix": 0.29,
+    "desert_eagle_printstream": 64.99,
+    "ak-47_legion_of_anubis": 15.94,
+    "m4a4_toothfairy": 5.78,
+    "glock-18_vogue": 5.49,
+    "xm1014_entombed": 5.84,
+    "mag-7_monster_call": 0.54,
+    "mac-10_allure": 0.54,
+    "tec-9_brother": 0.52,
+    "mp5-sd_kitbash": 0.55,
+    "galil_ar_connexion": 0.51,
+    "m4a4_neo-noir": 8.54,
+    "mp7_bloodsport": 2.45,
+    "usp-s_cortex": 3.19,
+    "awp_mortis": 2.19,
+    "aug_stymphalian": 1.65,
+    "glock-18_moonrise": 0.36,
+    "mag-7_swag-7": 0.30,
+    "ump-45_artic_wolf": 0.32,
+    "nova_wild_six": 0.34,
+    "negev_lionfish": 0.36,
   }
   
   let pricesBlue = 0
@@ -1108,6 +1108,10 @@ router.get('/check-profitability', async(req, res) => {
 
     skin = data.skin
     skinCon = data.skinCon
+
+    if (data.skinGrade === 'mil_spec') {
+      blues++
+    }
 
     if (data.skinGrade !== 'mil_spec') {
       price = gunPrices[skin]
@@ -1128,32 +1132,34 @@ router.get('/check-profitability', async(req, res) => {
     casesOpened++
   }
 
-  // blues = Math.floor(blues / 10)
+  blues = Math.floor(blues / 10)
 
-  // let gi
-  // for (gi = 0; gi < blues; gi++) {
-  //   const cases = ['dangerZone', 'chroma2']
-  //   const randomCase = cases[Math.floor(Math.random() * cases.length)];
+  let gi
+  const cases = ['dangerZone', 'chroma2']
+  for (gi = 0; gi < blues; gi++) {
+    let randomCase = cases[Math.floor(Math.random() * cases.length)];
 
-  //   let skinDrop = getWeapon(randomCase, false, grade)
+    let skinDrop = getWeapon(randomCase, false, 'restricted')
 
-  //   pricesPurple += gunPrices[skinDrop.skin]
-  // }
+    pricesPurple += gunPrices[skinDrop.skin]
+    pricesPurpleAndPink += gunPrices[skinDrop.skin]
+    skinPrices += gunPrices[skinDrop.skin]
+  }
 
   caseIncome = casePrice * amountOfDrops
 
   return res.status(200).send({
     blues,
-    pricesPurple,
-    pricesPink,
-    pricesPurpleAndPink,
-    pricesRed,
+    pricesPurple: Math.round(pricesPurple),
+    pricesPink: Math.round(pricesPink),
+    pricesPurpleAndPink: Math.round(pricesPurpleAndPink),
+    pricesRed: Math.round(pricesRed),
     brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice,
-    sveukupnaZaradaOdProdavanjaKutijaEUR: caseIncome,
-    sveukupnoIsplacenoSkinovaEUR: skinPrices,
-    profitEUR: caseIncome - skinPrices,
-    profitPerc: ((caseIncome - skinPrices) / caseIncome) * 100 + ' %'
+    sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome),
+    sveukupnoIsplacenoSkinovaEUR: Math.round(skinPrices),
+    profitEUR: Math.round(caseIncome - skinPrices),
+    profitPerc: Math.round(((caseIncome - skinPrices) / caseIncome) * 100) + ' %'
   })
 })
 
