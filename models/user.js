@@ -81,7 +81,7 @@ const userSchema = new mongoose.Schema({
     },
     dailyRewardOpened: {
       type: Date,
-      default: new Date()
+      default: new Date((new Date()).valueOf() - 1000*60*60*24)
     },
     boosterAdsFinishedAt: {
       type: Date,
