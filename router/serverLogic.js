@@ -1,8 +1,6 @@
 const express = require('express')
 const auth = require('../middleware/auth')
 const firebase = require('firebase')
-const steamprice = require('steam-price-api')
-const csgomarket = require('csgo-market')
 const router = new express.Router()
 const moment = require('moment')
 const nodemailer = require("nodemailer")
@@ -13,6 +11,22 @@ const Giveaway = require('../models/giveaway')
 const PasswordReset = require('../models/passwordReset')
 const data = require('../data/usernames')
 const log = console.log
+
+require('firebase/firestore')
+
+firebase.initializeApp({ 
+  apiKey: "AIzaSyDMWb56THHAiz7jqRT2dyDbIq2R3ux3Mp0",
+  authDomain: "revo-skins.firebaseapp.com",
+  projectId: "revo-skins",
+  storageBucket: "revo-skins.appspot.com",
+  messagingSenderId: "850588837597",
+  appId: "1:850588837597:web:ef961e5390f73558241d34",
+  measurementId: "G-G43NV0CTSV"
+})
+
+const firestore = firebase.firestore()
+
+const giveawayDocID = '602bb5f27d5b6c0c10d3b04b'
 
 // Giveaways interval
 setInterval(async () => {
@@ -51,49 +65,7 @@ setInterval(async () => {
 
 }, 3600000)
 
-const giveawayDocID = '602bb5f27d5b6c0c10d3b04b'
-router.post('/buy-ticket', auth, async(req, res) => {
-  const user = req.user
-  const ticketPrice = 30
-
-  try {
-    console.log(user.credits)
-    if (user.credits >= ticketPrice) {
-      user.credits -= ticketPrice
-      user.tickets += 1
-  
-      await Giveaway.findByIdAndUpdate(giveawayDocID, 
-        { $push: { weeklyUserPool: user.username } }
-      )
-  
-      await user.save()
-
-      return res.status(200).send()
-    }
-
-    return res.status(400).send()
-  } catch(err) {
-    console.log(err)
-    return res.status(500).send()
-  }
-})
-
-firebase.initializeApp({ 
-  apiKey: "AIzaSyDMWb56THHAiz7jqRT2dyDbIq2R3ux3Mp0",
-  authDomain: "revo-skins.firebaseapp.com",
-  projectId: "revo-skins",
-  storageBucket: "revo-skins.appspot.com",
-  messagingSenderId: "850588837597",
-  appId: "1:850588837597:web:ef961e5390f73558241d34",
-  measurementId: "G-G43NV0CTSV"
-})
-
-require('firebase/firestore')
-
-const firestore = firebase.firestore()
-
 const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
-
 let skinGradesOpened = [0, 0, 0, 0, 0]
 skinGradesOpenedRef.onSnapshot((snap) => {
   snap.docs.forEach(doc => {
@@ -102,6 +74,18 @@ skinGradesOpenedRef.onSnapshot((snap) => {
     skinGradesOpened[2] = doc.data().classified
     skinGradesOpened[3] = doc.data().covert
     skinGradesOpened[4] = doc.data().exceedingly_rare
+  })
+})
+
+const casesOpenedRef = firestore.collection('casesOpened')
+let casesOpened = [0, 0, 0, 0, 0]
+casesOpenedRef.onSnapshot((snap) => {
+  snap.docs.forEach(doc => {
+    casesOpened[0] = doc.data().dangerZone
+    casesOpened[1] = doc.data().chroma2
+    casesOpened[2] = doc.data().clutch
+    casesOpened[3] = doc.data().fracture
+    casesOpened[4] = doc.data().phoenix
   })
 })
 
@@ -170,13 +154,9 @@ function updateCasesOpened(caseName, grade) {
   }
 }
 
-function addSkinToLiveDrops(skin) {
-  firestore.collection("drops").add(skin)
-}
-
- // for drop speed by userCount
- let defaultUserCount = 0
- let currentHour = 18
+// for drop speed by userCount
+let defaultUserCount = 0
+let currentHour = 18
 
 function getHour() {
     let d = new Date();
@@ -191,6 +171,11 @@ function getHour() {
   return userCounts[currentHour]
 }
 
+function addSkinToLiveDrops(skin) {
+  firestore.collection("drops").add(skin)
+}
+
+// Live Drops
 let interval = Math.floor(Math.random() * (90000 - (100 * getHour())))
 
 const iterator = () => {
@@ -233,207 +218,6 @@ const iterator = () => {
 setTimeout(() => {
   iterator()
 }, interval)
-
-const casesOpenedRef = firestore.collection('casesOpened')
-
-let casesOpened = [0, 0, 0, 0, 0]
-casesOpenedRef.onSnapshot((snap) => {
-  snap.docs.forEach(doc => {
-    casesOpened[0] = doc.data().dangerZone
-    casesOpened[1] = doc.data().chroma2
-    casesOpened[2] = doc.data().clutch
-    casesOpened[3] = doc.data().fracture
-    casesOpened[4] = doc.data().phoenix
-  })
-})
-
-const gunNames = {
-  dangerZone: [
-      'Nova',
-      'Sawed-Off',
-      'SG 553',
-      'MP9',
-      'Tec-9',
-      'Glock-18',
-      'M4A4',
-      'G3SG!',
-      'MAC-10',
-      'Galil AR',
-      'P250',
-      'USP-S',
-      'MP5-SD',
-      'UMP-45',
-      'Desert Eagle',
-      'AWP',
-      'AK-47'
-  ],
-  phoenix: [
-      'UMP-45',
-      'MAG-7',
-      'Negev',
-      'Tec-9',
-      'Famas',
-      'MAC-10',
-      'SG 553',
-      'USP-S',
-      'P90',
-      'Nova',
-      'AK-47',
-      'AUG',
-      'AWP'
-  ],
-  chroma2: [
-      "Negev",
-      "Sawed-Off",
-      "MP7",
-      "P250",
-      "Desert Eagle",
-      "AK-47",
-      "UMP-45",
-      "CZ75-Auto",
-      "MAG-7",
-      "AWP",
-      "FAMAS",
-      "Five-SeveN",
-      "Galil AR",
-      "MAC-10",
-      "M4A1-S"
-  ],
-  fracture: [
-      'Negev',
-      "SG 553",
-      'P2000',
-      'P90',
-      'PP-Bizon',
-      'P250',
-      'SSG 08',
-      'Galil AR',
-      'MP5-SD',
-      'Tec-9',
-      'MAC-10',
-      'MAG-7',
-      'XM1014',
-      'Glock-18',
-      'M4A4',
-      'AK-47',
-      'Desert Eagle'
-  ],
-  clutch: [
-    'XM1014',
-    'PP-Bizon',
-    'P2000',
-    'FFive-SeveN',
-    'SG 553',
-    'R8 Revolver',
-    'MP9',
-    'Negev',
-    'Nova',
-    'UMP-45',
-    'MAG-7',
-    'Glock-18',
-    'AUG',
-    'AWP',
-    'USP-S',
-    'MP7',
-    'M4A4'
-  ]
-}
-
-const gunSkinNames = {
-  dangerZone: [
-    'Wood Fired',
-    'Black Sand',
-    'Danger Close',
-    'Modest Threat',
-    'Fubar',
-    'Oxide Blaze',
-    'Magnesium',
-    'Scavenger',
-    'Pipe Down',
-    'Signal',
-    'Nevermore',
-    'Flashback',
-    'Phosphor',
-    'Momentum',
-    'Mecha Industries',
-    'Neo-Noir',
-    'Asiimov'
-  ],
-  phoenix: [
-    'Corporal',
-    'Heaven Guard',
-    'Terrain',
-    'Sandstorm',
-    'Sergeant',
-    'Heat',
-    'Pulse',
-    'Guardian',
-    'Trigon',
-    'Antique',
-    'Redline',
-    'Chameleon',
-    'Asiimov'
-  ],
-  chroma2: [
-      "Man-o'-war",
-      'Origami',
-      'Armor Core',
-      'Valence',
-      'Bronze Deco',
-      'Elite Build',
-      'Grand Prix',
-      'Pole Position',
-      'Heat',
-      'Worm God',
-      'Djinn',
-      'Monkey Business',
-      'Eco',
-      'Neon Rider',
-      'Hyper Beast'
-  ],
-  fracture: [
-      'Ultralight',
-      "Ol' Rusty",
-      'Gnarled',
-      'Freight',
-      'Runic',
-      'Cassette',
-      'Mainframe 001',
-      'Connexion',
-      'Kitbash',
-      'Brother',
-      'Allure',
-      'Monster Call',
-      'Entombed',
-      'Vogue',
-      'Tooth Fairy',
-      'Legion of Anubis',
-      'Printstream'
-  ],
-  clutch: [
-      'Oxide Blaze',
-      'Night Riot',
-      'Urban Hazard',
-      'Flame Test',
-      'Aloha',
-      'Grip',
-      'Black Sand',
-      'Lionfish',
-      'Wild Six',
-      'Arctic Wolf',
-      'SWAG-7',
-      'Moonrise',
-      'Stymphalian',
-      'Mortis',
-      'Cortex',
-      'Bloodsport',
-      'Neo-Noir'
-  ]
-}
-
-router.get('/get-user', auth, async(req, res) => {
-  return res.status(200).send(req.user)
-})
 
 const sendConfirmationEmail = async(email, emailVerificationCode) => {
   console.log(email, emailVerificationCode)
@@ -503,192 +287,6 @@ const sendPasswordReset = async(email, safeCode) => {
 
   console.log(info)
 }
-
-router.post('/signup', async (req, res) => {
-  const username = req.body.username
-  const email = req.body.email
-  const password = req.body.password
-  const tradeURL = req.body.tradeURL
-  let referral = req.body.referral
-
-  if (referral === null) {
-    referral = null
-  } else {
-    referral= referral[0]
-  }
-
-  try {
-    let emailTaken = await User.findOne({ email })
-    let usernameTaken = await User.findOne({ username })
-
-    if (usernameTaken) {
-      return res.status(200).send('Username is taken.')
-    }
-
-    const emailVerificationCode = generator.generate({
-      length: 10,
-      numbers: true
-    })
-
-    if (!emailTaken) {
-      const userForSave = new User({
-        username,
-        email,
-        emailVerificationCode,
-        password,
-        tradeURL,
-        referredTo: referral
-      })
-
-      const user = await userForSave.save()
-
-      const token = await userForSave.generateAuthToken()
-
-      sendConfirmationEmail(email, emailVerificationCode)
-
-      return res.status(201).send({ user, token })
-    } else {
-      return res.status(200).send('E-mail is already used by another account.')
-    }
-  } catch(err) {
-    return res.status(500).send(err)
-  }
-})
-
-router.post('/resend-email-verification', auth, async(req, res) => {
-  const user = req.user
-
-  try {
-    sendConfirmationEmail(user.email, user.emailVerificationCode)
-    return res.status(200).send()
-  } catch(err) {
-    return res.status(400).send()
-  }
-})
-
-router.post('/verify-email', auth, async (req, res) => {
-  const user = req.user
-  const verificationCode = req.body.emailVerificationCode
-
-  console.log(verificationCode)
-  console.log(user.emailVerificationCode)
-
-  try {
-    if (verificationCode === user.emailVerificationCode) {
-      user.emailVerified = true
-
-      await user.save()
-
-      return res.status(200).send()
-    } else {
-      return res.status(400).send()
-    }
-  } catch(err) {
-    return res.status(500).send()
-  }
-})
-
-router.post('/finish-daily-ads', auth, async(req, res) => {
-  const user = req.user
-
-  try {
-    user.boosterAdsFinishedAt = new Date()
-    user.adsViewed += 50
-
-    await user.save()
-
-    return res.status(200).send()
-  } catch(err) {
-    log(err)
-    return res.send(err)
-  }
-})
-
-router.post('/login', async (req, res) => {
-  const email = req.body.email
-  const password = req.body.password
-
-  console.log(email, password)
-
-  try {
-      const user = await User.findByCredentials(email, password)
-      const token = await user.generateAuthToken()
-      res.status(200).send({ user, token })
-  } catch(err) {
-      log(err)
-      res.status(201).send({ message: 'Wrong e-mail or password!' }) 
-  }
-})
-
-router.get('/logout', auth, async(req, res) => {
-    try {
-        req.user.tokens = req.user.tokens.filter((token) => {
-            return token.token !== req.token
-        })
-        await req.user.save()
-        res.send()
-    } catch(err) {
-        res.status(500).send()
-    }
-})
-
-router.get('/get-user-credits', auth, async(req, res) => {
-  const id = req.user._id
-
-  try {
-    const user = await User.findById(id, `credits -_id`)
-    
-    res.status(200).send(user)
-  } catch(err) {
-    res.status(400).send(err)
-  }
-})
-
-router.post('/get-wpn-prices', async(req, res) => {
-  // const id = req.user._id
-
-  const wpns = [
-    'M4A1-S | Hyper Beast (Factory New)',
-    'MAC-10 | Neon Rider (Factory New)',
-    'Galil AR | Eco (Factory New)',
-    'Five-SeveN | Monkey Business (Factory New)',
-    'Famas | Djinn (Factory New)',
-    'AWP | Worm God (Factory New)'
-  ]
-
-  try {
-    // const user = await User.findOne({ uid }, `credits -_id`)
-
-    let price
-    price = await steamprice.getprices(730, wpns, '1')
-
-    res.status(200).send(price)
-  } catch(err) {
-    res.status(400).send(err)
-  }
-})
-
-router.get('/get-user-skins', auth, async(req, res) => {
-  const id = req.user._id
-  console.log(id)
-
-  try {
-    const user = await User.findById(id, `skins -_id`)
-
-    let skins = []
-    await Promise.all(user.skins.map(async (skinID) => {
-      let data = await Skin.findById(skinID)
-
-      skins.push(data)
-    }))
-
-    return res.status(200).send(skins)
-  } catch(err) {
-    log(err)
-    return res.status(400).send(err) 
-  }
-
-})
 
 const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false) => {
   const wpnCases = {
@@ -1101,38 +699,6 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
   } else {
     skinGrade = predefinedGrade
   }
-  
-  // Get Skin Condition
-  // For Covert
-  // if (skinGrade === 'covert') {
-  //   skinCon = 'bs'
-  // }
-  // // For Classified
-  // else if (skinGrade === 'classified') {
-  //   const num = Math.round(skinCon * 100) / 100
-
-  //   if (num < 15) {
-  //     skinCon = 'ww'
-  //   } else {
-  //     skinCon = 'bs'
-  //   }
-  // }
-  // // For below Classified shuffle condition normally
-  // else {
-  //   // Get Skin condition
-  //   skinCon = Math.random() * 100
-  //   skinCon = Math.round(skinCon * 100) / 100
-
-  //   const getCondition = () => {
-  //     if (skinCon <= 1) return 'fn'
-  //     else if (skinCon >= 1 && skinCon < 7) return 'mw'
-  //     else if (skinCon >= 7 && skinCon < 35) return 'ft'
-  //     else if (skinCon >= 35 && skinCon < 70) return 'ww'
-  //     else if (skinCon >= 70) return 'bs'
-  //   }
-
-  //   skinCon = getCondition()
-  // }
 
   const arrLen = wpnCases[caseName][skinGrade].length
   const skinIndex = Math.floor(Math.random() * (arrLen - 0) + 0)
@@ -1156,12 +722,204 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
   return { formattedSkin, skin, skinGrade, skinCon }
 }
 
+router.post('/buy-ticket', auth, async(req, res) => {
+  const user = req.user
+  const ticketPrice = 30
+
+  try {
+    console.log(user.credits)
+    if (user.credits >= ticketPrice) {
+      user.credits -= ticketPrice
+      user.tickets += 1
+  
+      await Giveaway.findByIdAndUpdate(giveawayDocID, 
+        { $push: { weeklyUserPool: user.username } }
+      )
+  
+      await user.save()
+
+      return res.status(200).send()
+    }
+
+    return res.status(400).send()
+  } catch(err) {
+    console.log(err)
+    return res.status(500).send()
+  }
+})
+
+router.get('/get-user', auth, async(req, res) => {
+  return res.status(200).send(req.user)
+})
+
+router.post('/signup', async (req, res) => {
+  const username = req.body.username
+  const email = req.body.email
+  const password = req.body.password
+  const tradeURL = req.body.tradeURL
+  let referral = req.body.referral
+
+  if (referral === null) {
+    referral = null
+  } else {
+    referral= referral[0]
+  }
+
+  try {
+    let emailTaken = await User.findOne({ email })
+    let usernameTaken = await User.findOne({ username })
+
+    if (usernameTaken) {
+      return res.status(200).send('Username is taken.')
+    }
+
+    const emailVerificationCode = generator.generate({
+      length: 10,
+      numbers: true
+    })
+
+    if (!emailTaken) {
+      const userForSave = new User({
+        username,
+        email,
+        emailVerificationCode,
+        password,
+        tradeURL,
+        referredTo: referral
+      })
+
+      const user = await userForSave.save()
+
+      const token = await userForSave.generateAuthToken()
+
+      sendConfirmationEmail(email, emailVerificationCode)
+
+      return res.status(201).send({ user, token })
+    } else {
+      return res.status(200).send('E-mail is already used by another account.')
+    }
+  } catch(err) {
+    return res.status(500).send(err)
+  }
+})
+
+router.post('/resend-email-verification', auth, async(req, res) => {
+  const user = req.user
+
+  try {
+    sendConfirmationEmail(user.email, user.emailVerificationCode)
+    return res.status(200).send()
+  } catch(err) {
+    return res.status(400).send()
+  }
+})
+
+router.post('/verify-email', auth, async (req, res) => {
+  const user = req.user
+  const verificationCode = req.body.emailVerificationCode
+
+  console.log(verificationCode)
+  console.log(user.emailVerificationCode)
+
+  try {
+    if (verificationCode === user.emailVerificationCode) {
+      user.emailVerified = true
+
+      await user.save()
+
+      return res.status(200).send()
+    } else {
+      return res.status(400).send()
+    }
+  } catch(err) {
+    return res.status(500).send()
+  }
+})
+
+router.post('/finish-daily-ads', auth, async(req, res) => {
+  const user = req.user
+
+  try {
+    user.boosterAdsFinishedAt = new Date()
+    user.adsViewed += 50
+
+    await user.save()
+
+    return res.status(200).send()
+  } catch(err) {
+    log(err)
+    return res.send(err)
+  }
+})
+
+router.post('/login', async (req, res) => {
+  const email = req.body.email
+  const password = req.body.password
+
+  console.log(email, password)
+
+  try {
+      const user = await User.findByCredentials(email, password)
+      const token = await user.generateAuthToken()
+      res.status(200).send({ user, token })
+  } catch(err) {
+      log(err)
+      res.status(201).send({ message: 'Wrong e-mail or password!' }) 
+  }
+})
+
+router.get('/logout', auth, async(req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.send()
+    } catch(err) {
+        res.status(500).send()
+    }
+})
+
+router.get('/get-user-credits', auth, async(req, res) => {
+  const id = req.user._id
+
+  try {
+    const user = await User.findById(id, `credits -_id`)
+    
+    res.status(200).send(user)
+  } catch(err) {
+    res.status(400).send(err)
+  }
+})
+
+router.get('/get-user-skins', auth, async(req, res) => {
+  const id = req.user._id
+  console.log(id)
+
+  try {
+    const user = await User.findById(id, `skins -_id`)
+
+    let skins = []
+    await Promise.all(user.skins.map(async (skinID) => {
+      let data = await Skin.findById(skinID)
+
+      skins.push(data)
+    }))
+
+    return res.status(200).send(skins)
+  } catch(err) {
+    log(err)
+    return res.status(400).send(err) 
+  }
+
+})
+
 router.post('/buy-case', auth, async(req, res) => {
   const id = req.user._id
   const caseName = req.body.caseName
 
   const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [149, 199, 249, 399, 599]
+  const casePrices = [149, 199, 249, 349, 499]
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -1277,7 +1035,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.3
+  const casePrice = 0.2
 
   let skinPrices = 0
   let caseIncome = 0
@@ -1285,138 +1043,55 @@ router.get('/check-profitability', async(req, res) => {
 
   const amountOfDrops = 100000
 
-  const shorthandCondition = ['fn', 'mw', 'ft', 'ww', 'bs']
-  const conditions = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred']
-
-  const skins = [
-    "ak-47_asiimov",
-    "awp_neo-noir",
-    "desert_eagle_mecha_industries",
-    "mp5-sd_phosphor",
-    "ump-45_momentum",
-    "usp-s_flashback",
-    "p250_nevermore",
-    "galil_ar_signal",
-    "mac-10_pipe_down",
-    "g3sg1_scavenger",
-    "m4a4_magnesium",
-    "glock-18_oxide_blaze",
-    "tec-9_fubar",
-    "mp9_modest_threat",
-    "sg553_danger_close",
-    "sawed-off_black_sand",
-    "nova_wood_fired"
-  ]
-  
-  const skinsFormatted = [
-    "AK-47 | Asiimov",
-    "AWP | Neo-Noir",
-    "Desert Eagle | Mecha Industries",
-    "UMP-45 | Momentum",
-    "MP5-SD | Phosphor",
-    "USP-S | Flashback",
-    "P250 | Nevermore",
-    "Galil AR | Signal",
-    "MAC-10 | Pipe Down",
-    "G3SG1 | Scavenger",
-    "M4A4 | Magnesium",
-    "Glock-18 | Oxide Blaze",
-    "Tec-9 | Fubar",
-    "MP9 | Modest Threat",
-    "SG553 | Danger Close",
-    "Sawed-Off | Black Sand",
-    "Nova | Wood Fired"
-  ]
-
-  const pricesOfSkins = {
-    "AK-47 | Asiimov (Battle-Scarred)": 21.83,
-    "AK-47 | Asiimov (Well-Worn)": 21.83,
-    "AWP | Neo-Noir (Well-Worn)": 22.90,
-    "AWP | Neo-Noir (Battle-Scarred)": 22.90,
-
-    "Desert Eagle | Mecha Industries (Well-Worn)": 5.08,
-    "Desert Eagle | Mecha Industries (Battle-Scarred)": 4,
-
-    "MP5-SD | Phosphor (Well-Worn)": 3.27,
-    "MP5-SD | Phosphor (Battle-Scarred)": 2.9,
-
-    "UMP-45 | Momentum (Factory New)": 6.34,
-    "UMP-45 | Momentum (Minimal Wear)": 4.28,
-    "UMP-45 | Momentum (Field-Tested)": 3.07,
-    "UMP-45 | Momentum (Well-Worn)": 3,
-    "UMP-45 | Momentum (Battle-Scarred)": 3.11,
-
-    "USP-S | Flashback (Factory New)": 1.1,
-    "USP-S | Flashback (Minimal Wear)": 0.81,
-    "USP-S | Flashback (Field-Tested)": 0.69,
-    "USP-S | Flashback (Well-Worn)": 0.99,
-    "USP-S | Flashback (Battle-Scarred)": 1.11,
-
-    "P250 | Nevermore (Factory New)": 0.93,
-    "P250 | Nevermore (Minimal Wear)": 0.61,
-    "P250 | Nevermore (Field-Tested)": 0.41,
-    "P250 | Nevermore (Well-Worn)": 0.55,
-    "P250 | Nevermore (Battle-Scarred)": 0.55,
-
-    "Galil AR | Signal (Factory New)": 0.92,
-    "Galil AR | Signal (Minimal Wear)": 0.59,
-    "Galil AR | Signal (Field-Tested)": 0.39,
-    "Galil AR | Signal (Well-Worn)": 0.40,
-    "Galil AR | Signal (Battle-Scarred)": 0.40,
-
-    "MAC-10 | Pipe Down (Factory New)": 1.2,
-    "MAC-10 | Pipe Down (Minimal Wear)": 0.6,
-    "MAC-10 | Pipe Down (Field-Tested)": 0.39,
-    "MAC-10 | Pipe Down (Well-Worn)": 0.34,
-    "MAC-10 | Pipe Down (Battle-Scarred)": 0.32,
-
-    "G3SG1 | Scavenger (Factory New)": 0.92,
-    "G3SG1 | Scavenger (Minimal Wear)": 0.59,
-    "G3SG1 | Scavenger (Field-Tested)": 0.38,
-    "G3SG1 | Scavenger (Well-Worn)": 0.37,
-    "G3SG1 | Scavenger (Battle-Scarred)": 0.32,
-
-    "M4A4 | Magnesium (Factory New)": 1.58,
-    "M4A4 | Magnesium (Minimal Wear)": 0.46,
-    "M4A4 | Magnesium (Field-Tested)": 0.21,
-    "M4A4 | Magnesium (Well-Worn)": 0.17,
-    "M4A4 | Magnesium (Battle-Scarred)": 0.13,
-
-    "Glock-18 | Oxide Blaze (Factory New)": 0.3,
-    "Glock-18 | Oxide Blaze (Minimal Wear)": 0.12,
-    "Glock-18 | Oxide Blaze (Field-Tested)": 0.09,
-    "Glock-18 | Oxide Blaze (Well-Worn)": 0.14,
-    "Glock-18 | Oxide Blaze (Battle-Scarred)": 0.09,
-
-    "Tec-9 | Fubar (Factory New)": 0.65,
-    "Tec-9 | Fubar (Minimal Wear)": 0.65,
-    "Tec-9 | Fubar (Field-Tested)": 0.08,
-    "Tec-9 | Fubar (Well-Worn)": 0.08,
-    "Tec-9 | Fubar (Battle-Scarred)": 0.08,
-
-    "MP9 | Modest Threat (Factory New)": 0.21,
-    "MP9 | Modest Threat (Minimal Wear)": 0.12,
-    "MP9 | Modest Threat (Field-Tested)": 0.08,
-    "MP9 | Modest Threat (Well-Worn)": 0.10,
-    "MP9 | Modest Threat (Battle-Scarred)": 0.09,
-
-    "SG553 | Danger Close (Factory New)": 0.20,
-    "SG553 | Danger Close (Minimal Wear)": 0.10,
-    "SG553 | Danger Close (Field-Tested)": 0.08,
-    "SG553 | Danger Close (Well-Worn)": 0.10,
-    "SG553 | Danger Close (Battle-Scarred)": 0.07,
-
-    "Sawed-Off | Black Sand (Factory New)": 0.2,
-    "Sawed-Off | Black Sand (Minimal Wear)": 0.1,
-    "Sawed-Off | Black Sand (Field-Tested)": 0.08,
-    "Sawed-Off | Black Sand (Well-Worn)": 0.08,
-    "Sawed-Off | Black Sand (Battle-Scarred)": 0.08,
-
-    "Nova | Wood Fired (Factory New)": 0.17,
-    "Nova | Wood Fired (Minimal Wear)": 0.10,
-    "Nova | Wood Fired (Field-Tested)": 0.08,
-    "Nova | Wood Fired (Well-Worn)": 0.09,
-    "Nova | Wood Fired (Battle-Scarred)": 0.08
+  const gunPrices = {
+    "ak-47_asiimov": ["bs"],
+    "awp_neo-noir": ["bs"],
+    "desert_eagle_mecha_industries": ["bs"],
+    "mp5-sd_phosphor": ["bs"],
+    "ump-45_momentum": ["ww"],
+    "usp-s_flashback": ["ft"],
+    "p250_nevermore": ["ft"],
+    "galil_ar_signal": ["ft"],
+    "mac-10_pipe_down": ["bs"],
+    "g3sg1_scavenger": ["bs"],
+    "awp_asiimov": ["bs"],
+    "aug_chameleon": ["ft"],
+    "ak-47_redline": ["bs"],
+    "nova_antique": ["ft"],
+    "p90_trigon": ["ft"],
+    "usp-s_guardian": ["ft"],
+    "sg_553_pulse": ["bs"],
+    "mac-10_heat": ["bs"],
+    "famas_sergeant": ["bs"],
+    "m4a1-s_hyper_beast": ["ww", "bs"],
+    "mac-10_neon_rider": ["ft"],
+    "galil_ar_eco": ["ww", "bs"],
+    "five-seven_monkey_business": ["ww", "bs", "ft"],
+    "famas_djinn": ["ww", "ft"],
+    "awp_worm_god": ["ft"],
+    "mag-7_heat": ["ww", "bs"],
+    "cz75-auto_pole_position": ["bs", "ft"],
+    "ump-45_grand_prix": ["ft"],
+    "desert_eagle_printstream": ["bs"],
+    "ak-47_legion_of_anubis": ["bs"],
+    "m4a4_toothfairy": ["bs"],
+    "glock-18_vogue": ["bs"],
+    "xm1014_entombed": ["ww", "bs"],
+    "mag-7_monster_call": ["bs"],
+    "mac-10_allure": ["bs", "ww"],
+    "tec-9_brother": ["bs", "ww"],
+    "mp5-sd_kitbash": ["bs"],
+    "galil_ar_connexion": ["bs"],
+    "m4a4_neo-noir": ["bs"],
+    "mp7_bloodsport": ["bs"],
+    "usp-s_cortex": ["bs"],
+    "awp_mortis": ["ft"],
+    "aug_stymphalian": ["bs", "ft"],
+    "glock-18_moonrise": ["bs", "ft"],
+    "mag-7_swag-7": ["ft", "bs", "ww"],
+    "ump-45_artic_wolf": ["bs", "ft"],
+    "nova_wild_six": ["bs", "ft"],
+    "negev_lionfish": ["ft", "bs"]
   }
   
   let pricesBlue = 0
@@ -1425,6 +1100,8 @@ router.get('/check-profitability', async(req, res) => {
   let pricesPurpleAndPink = 0
   let pricesRed = 0
 
+  let blues = 0
+
   let i
   for (i = 0; i < amountOfDrops; i++) {
     let data = getWeapon('dangerZone', false)
@@ -1432,21 +1109,8 @@ router.get('/check-profitability', async(req, res) => {
     skin = data.skin
     skinCon = data.skinCon
 
-    const conIndex = shorthandCondition.indexOf(skinCon)
-    skinCon = conditions[conIndex] 
-
-    const skinIndex = skins.indexOf(skin)
-    skin = skinsFormatted[skinIndex]
-
-    const query = `${skin} (${skinCon})`
-    // log(`${query} ${pricesOfSkins[query]}`)
-
-    price = pricesOfSkins[query]
-    
-    const num = Math.floor(Math.random() * 100)
-    if (num <= 40 && data.skinGrade === 'mil_spec') {
-      skinPrices += price
-      pricesBlue += price
+    if (data.skinGrade !== 'mil_spec') {
+      price = gunPrices[skin]
     }
 
     if (data.skinGrade !== 'mil_spec') {
@@ -1464,10 +1128,22 @@ router.get('/check-profitability', async(req, res) => {
     casesOpened++
   }
 
+  // blues = Math.floor(blues / 10)
+
+  // let gi
+  // for (gi = 0; gi < blues; gi++) {
+  //   const cases = ['dangerZone', 'chroma2']
+  //   const randomCase = cases[Math.floor(Math.random() * cases.length)];
+
+  //   let skinDrop = getWeapon(randomCase, false, grade)
+
+  //   pricesPurple += gunPrices[skinDrop.skin]
+  // }
+
   caseIncome = casePrice * amountOfDrops
 
   return res.status(200).send({
-    pricesBlue,
+    blues,
     pricesPurple,
     pricesPink,
     pricesPurpleAndPink,
@@ -1874,7 +1550,7 @@ router.post('/trade-up', auth, async(req, res) => {
     else if (grade === 'classified') grade === 'covert'
     else if (grade === 'covert') grade === 'exceedingly_rare'
 
-    const cases = ['dangerZone', 'chroma2', 'clutch']
+    const cases = ['dangerZone', 'chroma2']
     const randomCase = cases[Math.floor(Math.random() * cases.length)];
 
     let skinDrop = getWeapon(randomCase, false, grade)

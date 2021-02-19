@@ -14,7 +14,6 @@
     "check-password-strength": "^1.0.15",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "csgo-market": "^1.5.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "firebase": "^8.2.6",
@@ -25,7 +24,6 @@
     "mongoose": "^5.11.9",
     "nodemailer": "^6.4.18",
     "openssl": "^1.1.0",
-    "socket.io": "^3.1.1",
-    "steam-price-api": "^2.0.0"
+    "socket.io": "^3.1.1"
   }
 }
