@@ -2022,13 +2022,12 @@ router.post('/update-password', async(req, res) => {
   
       await user.save()
 
-      return res.status(200).send()
+      return res.status(200).send({ msg: 'ok' })
     } else {
-      return res.status(400).send()
+      return res.status(400).send({ msg: 'expired' })
     }
   } catch(err) {
-    console.log(err)
-    res.status(500).send()
+    res.status(500).send({ msg: 'network_error' })
   }
 })
 
