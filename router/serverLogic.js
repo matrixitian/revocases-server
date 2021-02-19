@@ -2008,9 +2008,28 @@ router.post('/update-password', async(req, res) => {
   const safeCode = req.body.safeCode
   const newPassword = req.body.newPassword
 
-  let passwordReset = await PasswordReset.findOne({ safeCode }, `-_id email`)
+  try {
+    let passwordReset = await PasswordReset.findOne({ safeCode }, `_id forEmail expired`)
+   
+    if (!passwordReset.expired) {
+      let user = await User.findOne({ email: passwordReset.forEmail })
+    
+      passwordReset.expired = true
+  
+      await passwordReset.save()
+  
+      user.password = newPassword
+  
+      await user.save()
 
-  console.log(passwordReset)
+      return res.status(200).send()
+    } else {
+      return res.status(400).send()
+    }
+  } catch(err) {
+    console.log(err)
+    res.status(500).send()
+  }
 })
 
 module.exports = router
