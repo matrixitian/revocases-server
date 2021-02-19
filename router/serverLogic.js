@@ -490,7 +490,7 @@ const sendPasswordReset = async(email, safeCode) => {
   </tr><tr><td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#FFFFFF">Use the button below to reset your password. This password reset expires after one use.</p></td></tr></table></td></tr></table></td></tr></table></td>
   </tr></table><table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%"><tr><td align="center" bgcolor="#0a2b6e" style="padding:0;Margin:0;background-color:#0A2B6E;background-image:url(https://nmfszx.stripocdn.email/content/guids/CABINET_1ce849b9d6fc2f13978e163ad3c663df/images/33971592408649468.png);background-repeat:no-repeat;background-position:center center" background="https://nmfszx.stripocdn.email/content/guids/CABINET_1ce849b9d6fc2f13978e163ad3c663df/images/33971592408649468.png"><table bgcolor="#ffffff" class="es-content-body" align="center" cellpadding="0" cellspacing="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px"><tr><td class="es-m-p40t es-m-p40b es-m-p20r es-m-p20l" align="left" style="padding:0;Margin:0;padding-top:40px;padding-bottom:40px"><table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td align="center" valign="top" style="padding:0;Margin:0;width:600px"><table cellpadding="0" cellspacing="0" width="100%" bgcolor="#f0f3fe" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;background-color:#F0F3FE;border-radius:20px" role="presentation"><tr><td align="left" style="Margin:0;padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:25px"><h1 style="Margin:0;line-height:45px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:30px;font-style:normal;font-weight:bold;color:#212121;text-align:center">Click to reset password!</h1>
   </td></tr><tr><td align="center" style="padding:0;Margin:0"><span class="es-button-border es-button-border-2" style="border-style:solid;border-color:#2CB543;background:#DD5907;border-width:0px;display:inline-block;border-radius:32px;width:auto"><a href="${passwordResetLink}" class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;color:#FFFFFF;border-style:solid;border-color:#DD5907;border-width:10px 20px;display:inline-block;background:#DD5907;border-radius:32px;font-weight:normal;font-style:normal;line-height:19px;width:auto;text-align:center">Reset Password</a></span></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>
-  </td></tr><tr><td align="center" style="padding:0;Margin:0;padding-top:15px;padding-bottom:15px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:24px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:36px;color:#FF6600"><strong>${emailVerificationCode}</strong></p></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>
+  </td></tr><tr><td align="center" style="padding:0;Margin:0;padding-top:15px;padding-bottom:15px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:24px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:36px;color:#FF6600"></p></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>
   `
 
   // Send mail with defined transport object
@@ -1974,8 +1974,8 @@ router.post('/open-daily-reward', auth, async(req, res) => {
   }
 })
 
-router.post('/create-password-reset', async(req, res) => {
-  const email = req.body.email
+router.post('/send-password-reset', async(req, res) => {
+  const email = req.body.forEmail
 
   try {
     const emailExists = await User.findOne({ email })
@@ -1986,10 +1986,14 @@ router.post('/create-password-reset', async(req, res) => {
         numbers: true
       })
   
-      await passwordReset({
+      const passwordReset = new PasswordReset({
         forEmail: email,
         safeCode: generatedSafeCode
-      }).save()
+      })
+
+      await passwordReset.save()
+
+      console.log(passwordReset)
 
       await sendPasswordReset(email, generatedSafeCode)
     }
@@ -2000,8 +2004,13 @@ router.post('/create-password-reset', async(req, res) => {
   }
 })
 
-router.post('/reset-password', async(req, res) => {
+router.post('/update-password', async(req, res) => {
+  const safeCode = req.body.safeCode
+  const newPassword = req.body.newPassword
 
+  let passwordReset = await PasswordReset.findOne({ safeCode }, `-_id email`)
+
+  console.log(passwordReset)
 })
 
 module.exports = router
