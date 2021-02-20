@@ -28,196 +28,196 @@ const firestore = firebase.firestore()
 
 const giveawayDocID = '602bb5f27d5b6c0c10d3b04b'
 
-// // Giveaways interval
-// setInterval(async () => {
-//   let day = moment().day()
-//   let hour = moment().hour()
+// Giveaways interval
+setInterval(async () => {
+  let day = moment().day()
+  let hour = moment().hour()
 
-//   // If Sunday 00:00
-//   if (day === 7 && hour === 0) {
-//     let giveaway = await Giveaway.findById(giveawayDocID, `-_id weeklyUserPool`)
-//     let weeklyEntrants = giveaway.weeklyUserPool
+  // If Sunday 00:00
+  if (day === 7 && hour === 0) {
+    let giveaway = await Giveaway.findById(giveawayDocID, `-_id weeklyUserPool`)
+    let weeklyEntrants = giveaway.weeklyUserPool
 
-//     let winner = weeklyEntrants[Math.floor(Math.random() * weeklyEntrants.length)]
+    let winner = weeklyEntrants[Math.floor(Math.random() * weeklyEntrants.length)]
 
-//     await Giveaway.findOneAndUpdate(giveawayDocID, {
-//       currentWeeklyWinner: winner
-//     })
+    await Giveaway.findOneAndUpdate(giveawayDocID, {
+      currentWeeklyWinner: winner
+    })
 
-//     await User.updateMany({}, { tickets: 0 })
+    await User.updateMany({}, { tickets: 0 })
 
-//     await Giveaway.findOneAndUpdate(giveawayDocID, {
-//       weeklyUserPool: []
-//     })
-//   }
+    await Giveaway.findOneAndUpdate(giveawayDocID, {
+      weeklyUserPool: []
+    })
+  }
 
-//   // Choose daily winner
-//   if (hour === 0) {
-//     let giveaway = await Giveaway.findById(giveawayDocID, `-_id dailyUserPool`)
-//     dailyEntrants = giveaway.dailyUserPool
+  // Choose daily winner
+  if (hour === 0) {
+    let giveaway = await Giveaway.findById(giveawayDocID, `-_id dailyUserPool`)
+    dailyEntrants = giveaway.dailyUserPool
 
-//     let winner = dailyEntrants[Math.floor(Math.random() * dailyEntrants.length)]
+    let winner = dailyEntrants[Math.floor(Math.random() * dailyEntrants.length)]
 
-//     await Giveaway.findOneAndUpdate(giveawayDocID, {
-//       currentDailyWinner: winner
-//     })
-//   }
+    await Giveaway.findOneAndUpdate(giveawayDocID, {
+      currentDailyWinner: winner
+    })
+  }
 
-// }, 3600000)
+}, 3600000)
 
-// const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
-// let skinGradesOpened = [0, 0, 0, 0, 0]
-// skinGradesOpenedRef.onSnapshot((snap) => {
-//   snap.docs.forEach(doc => {
-//     skinGradesOpened[0] = doc.data().mil_spec
-//     skinGradesOpened[1] = doc.data().restricted
-//     skinGradesOpened[2] = doc.data().classified
-//     skinGradesOpened[3] = doc.data().covert
-//     skinGradesOpened[4] = doc.data().exceedingly_rare
-//   })
-// })
+const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
+let skinGradesOpened = [0, 0, 0, 0, 0]
+skinGradesOpenedRef.onSnapshot((snap) => {
+  snap.docs.forEach(doc => {
+    skinGradesOpened[0] = doc.data().mil_spec
+    skinGradesOpened[1] = doc.data().restricted
+    skinGradesOpened[2] = doc.data().classified
+    skinGradesOpened[3] = doc.data().covert
+    skinGradesOpened[4] = doc.data().exceedingly_rare
+  })
+})
 
-// const casesOpenedRef = firestore.collection('casesOpened')
-// let casesOpened = [0, 0, 0, 0, 0]
-// casesOpenedRef.onSnapshot((snap) => {
-//   snap.docs.forEach(doc => {
-//     casesOpened[0] = doc.data().dangerZone
-//     casesOpened[1] = doc.data().chroma2
-//     casesOpened[2] = doc.data().clutch
-//     casesOpened[3] = doc.data().fracture
-//     casesOpened[4] = doc.data().phoenix
-//   })
-// })
+const casesOpenedRef = firestore.collection('casesOpened')
+let casesOpened = [0, 0, 0, 0, 0]
+casesOpenedRef.onSnapshot((snap) => {
+  snap.docs.forEach(doc => {
+    casesOpened[0] = doc.data().dangerZone
+    casesOpened[1] = doc.data().chroma2
+    casesOpened[2] = doc.data().clutch
+    casesOpened[3] = doc.data().fracture
+    casesOpened[4] = doc.data().phoenix
+  })
+})
 
-// function updateCasesOpened(caseName, grade) {
-//   const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
-//   const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
+function updateCasesOpened(caseName, grade) {
+  const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
+  const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
 
-//   if (caseName === 'dangerZone') {
-//       docRef.update({
-//         dangerZone: casesOpened[0] + 1
-//     })
-//   }
+  if (caseName === 'dangerZone') {
+      docRef.update({
+        dangerZone: casesOpened[0] + 1
+    })
+  }
 
-//   else if (caseName === 'chroma2') {
-//       docRef.update({
-//         chroma2: casesOpened[1] + 1
-//     })
-//   }
+  else if (caseName === 'chroma2') {
+      docRef.update({
+        chroma2: casesOpened[1] + 1
+    })
+  }
 
-//   else if (caseName === 'clutch') {
-//     docRef.update({
-//         clutch: casesOpened[2] + 1
-//     })
-//   }
+  else if (caseName === 'clutch') {
+    docRef.update({
+        clutch: casesOpened[2] + 1
+    })
+  }
 
-//   else if (caseName === 'fracture') {
-//     docRef.update({
-//         fracture: casesOpened[3] + 1
-//     })
-//   }
+  else if (caseName === 'fracture') {
+    docRef.update({
+        fracture: casesOpened[3] + 1
+    })
+  }
 
-//   else if (caseName === 'phoenix') {
-//       docRef.update({
-//         phoenix: casesOpened[4] + 1
-//     })
-//   }
+  else if (caseName === 'phoenix') {
+      docRef.update({
+        phoenix: casesOpened[4] + 1
+    })
+  }
 
-//   switch (grade) {
-//     case 'mil_spec':
-//       docSkinGrades.update({
-//         mil_spec: skinGradesOpened[0] + 1
-//       })
-//       break;
-//     case 'restricted':
-//       docSkinGrades.update({
-//         restricted: skinGradesOpened[1] + 1
-//       })
-//       break;
-//     case 'classified':
-//       docSkinGrades.update({
-//         classified: skinGradesOpened[2] + 1
-//       })
-//       break;
-//     case 'covert':
-//       docSkinGrades.update({
-//         covert: skinGradesOpened[3] + 1
-//       })
-//       break;
-//     case 'exceedingly_rare':
-//       docSkinGrades.update({
-//         exceedingly_rare: skinGradesOpened[4] + 1
-//       })
-//       break;
-//     default:
-//       break;
-//   }
-// }
+  switch (grade) {
+    case 'mil_spec':
+      docSkinGrades.update({
+        mil_spec: skinGradesOpened[0] + 1
+      })
+      break;
+    case 'restricted':
+      docSkinGrades.update({
+        restricted: skinGradesOpened[1] + 1
+      })
+      break;
+    case 'classified':
+      docSkinGrades.update({
+        classified: skinGradesOpened[2] + 1
+      })
+      break;
+    case 'covert':
+      docSkinGrades.update({
+        covert: skinGradesOpened[3] + 1
+      })
+      break;
+    case 'exceedingly_rare':
+      docSkinGrades.update({
+        exceedingly_rare: skinGradesOpened[4] + 1
+      })
+      break;
+    default:
+      break;
+  }
+}
 
-// // for drop speed by userCount
-// let defaultUserCount = 0
-// let currentHour = 18
+// for drop speed by userCount
+let defaultUserCount = 0
+let currentHour = 18
 
-// function getHour() {
-//     let d = new Date();
-//     currentHour = d.getHours();
+function getHour() {
+    let d = new Date();
+    currentHour = d.getHours();
 
-//     const userCounts = [
-//       268, 254, 125, 45, 34, 17, 12, 26,
-//       56, 87, 125, 147, 216, 246, 215, 220,
-//       266, 284, 312, 352, 321, 275, 234, 254
-//   ]
+    const userCounts = [
+      268, 254, 125, 45, 34, 17, 12, 26,
+      56, 87, 125, 147, 216, 246, 215, 220,
+      266, 284, 312, 352, 321, 275, 234, 254
+  ]
 
-//   return userCounts[currentHour]
-// }
+  return userCounts[currentHour]
+}
 
-// function addSkinToLiveDrops(skin) {
-//   firestore.collection("drops").add(skin)
-// }
+function addSkinToLiveDrops(skin) {
+  firestore.collection("drops").add(skin)
+}
 
-// // Live Drops
-// let interval = Math.floor(Math.random() * (90000 - (100 * getHour())))
+// Live Drops
+let interval = Math.floor(Math.random() * (90000 - (100 * getHour())))
 
-// const iterator = () => {
-//   // Choose Case
-//   let caseName = Math.random() * 100
-//   caseName = Math.round(caseName * 100) / 100
+const iterator = () => {
+  // Choose Case
+  let caseName = Math.random() * 100
+  caseName = Math.round(caseName * 100) / 100
 
-//   const chooseCase = () => {
-//     if (caseName >= 0 && caseName < 25) return 'phoenix' 
-//     else if (caseName >= 25 && caseName < 32.00) return 'fracture'
-//     else if (caseName >= 32.00 && caseName < 75.00) return 'clutch'
-//     else if (caseName >= 75.00 && caseName < 80.00) return 'chroma2'
-//     else if (caseName > 80.00) return 'dangerZone'
-//   }
+  const chooseCase = () => {
+    if (caseName >= 0 && caseName < 25) return 'phoenix' 
+    else if (caseName >= 25 && caseName < 32.00) return 'fracture'
+    else if (caseName >= 32.00 && caseName < 75.00) return 'clutch'
+    else if (caseName >= 75.00 && caseName < 80.00) return 'chroma2'
+    else if (caseName > 80.00) return 'dangerZone'
+  }
 
-//   caseName = chooseCase()
+  caseName = chooseCase()
 
-//   const wpn = getWeapon(caseName, true)
+  const wpn = getWeapon(caseName, true)
 
-//   let uname = data.usernames[Math.floor(Math.random() * data.usernames.length)]
+  let uname = data.usernames[Math.floor(Math.random() * data.usernames.length)]
 
-//   addSkinToLiveDrops({
-//     uname,
-//     skin: wpn.formattedSkin,
-//     longhand: wpn.skin,
-//     grade: wpn.skinGrade,
-//     condition: wpn.skinCon,
-//     timeOpened: Number(Date.now())
-//   })
+  addSkinToLiveDrops({
+    uname,
+    skin: wpn.formattedSkin,
+    longhand: wpn.skin,
+    grade: wpn.skinGrade,
+    condition: wpn.skinCon,
+    timeOpened: Number(Date.now())
+  })
 
-//   updateCasesOpened(caseName, wpn.skinGrade)
+  updateCasesOpened(caseName, wpn.skinGrade)
 
-//   let userCount = getHour()
+  let userCount = getHour()
 
-//   interval = Math.floor(Math.random() * (200000 - (100 * userCount)))
+  interval = Math.floor(Math.random() * (200000 - (100 * userCount)))
 
-//   setTimeout(iterator, interval)
-// }
+  setTimeout(iterator, interval)
+}
 
-// setTimeout(() => {
-//   iterator()
-// }, interval)
+setTimeout(() => {
+  iterator()
+}, interval)
 
 const sendConfirmationEmail = async(email, emailVerificationCode) => {
   console.log(email, emailVerificationCode)
