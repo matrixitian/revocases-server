@@ -184,11 +184,11 @@ const iterator = () => {
   caseName = Math.round(caseName * 100) / 100
 
   const chooseCase = () => {
-    if (caseName >= 0 && caseName < 5) return 'phoenix' 
-    else if (caseName >= 5 && caseName < 12.00) return 'fracture'
-    else if (caseName >= 12.00 && caseName < 30.00) return 'clutch'
-    else if (caseName >= 30.00 && caseName < 55.00) return 'chroma2'
-    else if (caseName > 55.00) return 'dangerZone'
+    if (caseName >= 0 && caseName < 25) return 'phoenix' 
+    else if (caseName >= 25 && caseName < 32.00) return 'fracture'
+    else if (caseName >= 32.00 && caseName < 75.00) return 'clutch'
+    else if (caseName >= 75.00 && caseName < 80.00) return 'chroma2'
+    else if (caseName > 80.00) return 'dangerZone'
   }
 
   caseName = chooseCase()
@@ -675,22 +675,26 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
 
     if (fromGenerator) {
       const getGrade = () => {
-        if (skinGrade >= 0 && skinGrade < 0.3) return 'exceedingly_rare' 
-        else if (skinGrade >= 0.3 && skinGrade < 1.50) return 'covert'
-        else if (skinGrade >= 1.50 && skinGrade < 7.00) return 'classified'
-        else if (skinGrade >= 7 && skinGrade < 20.00) return 'restricted'
-        else if (skinGrade >= 20.00) return 'mil_spec'
+        if (skinGrade >= 0 && skinGrade < 0.1) return 'exceedingly_rare' 
+        else if (skinGrade >= 0.3 && skinGrade < 1) return 'covert'
+        else if (skinGrade >= 0.6 && skinGrade < 5.00) return 'classified'
+        else if (skinGrade >= 4 && skinGrade < 23.00) return 'restricted'
+        else if (skinGrade >= 23.00) return 'mil_spec'
       }
       skinGrade = getGrade()
     } else {
-      let restrictedChance = 15
+      let restrictedChance = 23
+      let classifiedChance = 1
 
-      if (isYouTuber) restrictedChance = 20
+      if (isYouTuber) {
+        classifiedChance = 5
+        restrictedChance = 30
+      }
 
       const getGrade = () => {
         if (skinGrade < 0) return 'covert' 
-        else if (skinGrade >= 0 && skinGrade < 2) return 'classified' 
-        else if (skinGrade >= 2 && skinGrade < restrictedChance) return 'restricted'
+        else if (skinGrade >= 0 && skinGrade < classifiedChance) return 'classified' 
+        else if (skinGrade >= classifiedChance && skinGrade < restrictedChance) return 'restricted'
         else if (skinGrade >= restrictedChance) return 'mil_spec'
       }
     
@@ -1035,7 +1039,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.55
+  const casePrice = 0.5
 
   let skinPrices = 0
   let caseIncome = 0
@@ -1103,7 +1107,7 @@ router.get('/check-profitability', async(req, res) => {
 
   let i
   for (i = 0; i < amountOfDrops; i++) {
-    let data = getWeapon('dangerZone', false)
+    let data = getWeapon('clutch', false)
 
     skin = data.skin
     skinCon = data.skinCon
@@ -1554,7 +1558,7 @@ router.post('/trade-up', auth, async(req, res) => {
     else if (grade === 'classified') grade === 'covert'
     else if (grade === 'covert') grade === 'exceedingly_rare'
 
-    const cases = ['dangerZone', 'chroma2']
+    const cases = ['dangerZone', 'clutch']
     const randomCase = cases[Math.floor(Math.random() * cases.length)];
 
     let skinDrop = getWeapon(randomCase, false, grade)
