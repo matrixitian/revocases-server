@@ -843,13 +843,16 @@ router.post('/verify-email', auth, async (req, res) => {
 router.post('/finish-daily-ads', auth, async(req, res) => {
   const user = req.user
 
-  const a = moment(new Date())
-  const b = moment(user.boosterAdsFinishedAt)
+  console.log(user.boosterAdsFinishedAt)
 
-  const hourDiff = a.diff(b, 'hours')
+  if (user.boosterAdsFinishedAt) {
+    const a = moment(new Date())
+    const b = moment(user.boosterAdsFinishedAt)
 
-  if (hourDiff < 24) {
-    return res.status(400).send()
+    const hourDiff = a.diff(b, 'hours')
+    if (hourDiff < 24) {
+      return res.status(400).send()
+    }
   }
 
   try {
