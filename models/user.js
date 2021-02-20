@@ -85,13 +85,11 @@ const userSchema = new mongoose.Schema({
     },
     dailyRewardOpened: {
       type: Date,
-      // yesterday
-      default: new Date((new Date()).valueOf() - 1000*60*60*24)
+      required: false
     },
     boosterAdsFinishedAt: {
       type: Date,
-      // yesterday
-      default: new Date((new Date()).valueOf() - 1000*60*60*24)
+      required: false
     },
     accountType: {
       type: String,
