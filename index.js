@@ -65,7 +65,7 @@ io.on('connection', function(socket) {
 
     setInterval(() => {
         getHour()
-    }, 100000)
+    }, 3600000)
 
     const userCounts = [
         268, 254, 125, 45, 34, 17, 12, 26,
@@ -82,7 +82,7 @@ io.on('connection', function(socket) {
 
     setInterval(() => {
         changeUserCount()
-    }, 10000)
+    }, 30000)
 
     socket.join('main')
 
