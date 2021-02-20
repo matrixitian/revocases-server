@@ -53,47 +53,47 @@ const io = require('socket.io')(server, {
 })
 
 io.on('connection', function(socket) {
-    let defaultUserCount = 0
-    let currentHour = 18
+    // let defaultUserCount = 0
+    // let currentHour = 18
 
-    function getHour() {
-        let d = new Date();
-        currentHour = d.getHours();
-    }
+    // function getHour() {
+    //     let d = new Date();
+    //     currentHour = d.getHours();
+    // }
     
-    getHour()
+    // getHour()
 
-    setInterval(() => {
-        getHour()
-    }, 3600000)
+    // setInterval(() => {
+    //     getHour()
+    // }, 3600000)
 
-    const userCounts = [
-        268, 254, 125, 45, 34, 17, 12, 26,
-        56, 87, 125, 147, 216, 246, 215, 220,
-        266, 284, 312, 352, 321, 275, 234, 254
-    ]
+    // const userCounts = [
+    //     268, 254, 125, 45, 34, 17, 12, 26,
+    //     56, 87, 125, 147, 216, 246, 215, 220,
+    //     266, 284, 312, 352, 321, 275, 234, 254
+    // ]
 
-    const changeUserCount = () => {
-        defaultUserCount = Math.floor(userCounts[currentHour] + Math.random() * 10)
-        sendUserCount()
-    }
+    // const changeUserCount = () => {
+    //     defaultUserCount = Math.floor(userCounts[currentHour] + Math.random() * 10)
+    //     sendUserCount()
+    // }
 
-    changeUserCount()
+    // changeUserCount()
 
-    setInterval(() => {
-        changeUserCount()
-    }, 30000)
+    // setInterval(() => {
+    //     changeUserCount()
+    // }, 30000)
 
-    socket.join('main')
+    // socket.join('main')
 
-    function sendUserCount() {
-        socket.emit('get user count', { userCount: io.engine.clientsCount  + defaultUserCount})
-        socket.to('main').emit('get user count', { userCount: io.engine.clientsCount + defaultUserCount })
-    }
+    // function sendUserCount() {
+    //     socket.emit('get user count', { userCount: io.engine.clientsCount  + defaultUserCount})
+    //     socket.to('main').emit('get user count', { userCount: io.engine.clientsCount + defaultUserCount })
+    // }
 
-    sendUserCount()
+    // sendUserCount()
 
-    socket.on('disconnect', function() {
-        sendUserCount()
-    })
+    // socket.on('disconnect', function() {
+    //     sendUserCount()
+    // })
 })
