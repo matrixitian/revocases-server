@@ -843,16 +843,26 @@ router.post('/verify-email', auth, async (req, res) => {
 router.post('/finish-daily-ads', auth, async(req, res) => {
   const user = req.user
 
+  const a = moment(new Date())
+  const b = moment(user.boosterAdsFinishedAt)
+
+  const hourDiff = a.diff(b, 'hours')
+
+  if (hourDiff < 24) {
+    return res.status(400).send()
+  }
+
   try {
     user.boosterAdsFinishedAt = new Date()
     user.adsViewed += 50
+    user.credits += 25
 
     await user.save()
 
     return res.status(200).send()
   } catch(err) {
     log(err)
-    return res.send(err)
+    return res.status(400).send(err)
   }
 })
 
@@ -1267,19 +1277,6 @@ function normalizeSkinName(skinName) {
   return `${skins[skinName]}`
 }
 
-function normalizeCondition(condition) {
-  // condition
-  const conditions = {
-    "fn": "Factory New",
-    "mw": "Minimal Wear",
-    "ft": "Field-Tested",
-    "ww": "Well-Worn",
-    "bs": "Battle-Scarred"
-  }
-
-  return conditions[condition]
-}
-
 router.get('/view-trade-requests', auth, async(req, res) => {
   if (req.user.accountType !== 'admin') {
     return res.status(401).send()
@@ -1610,6 +1607,8 @@ router.post('/give-user-points', async(req, res) => {
     } else {
       user.credits += 3
     }
+
+    user.gAdsViewed += 5
 
     await user.save()
 
