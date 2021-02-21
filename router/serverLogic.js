@@ -1045,6 +1045,78 @@ router.get('/get-giveaway-data', auth, async(req, res) => {
 
 })
 
+router.get('/check-new-profitability', async(req, res) => {
+  const caseName = 'nuclear'
+  const casePrice = 0.8
+  const amountOfDrops = 30000
+
+  const skinPrices = {
+    fire: {
+      purple: [0.2, 0.3, 0.1, 0.1],
+      pink: [0.5, 0.65, 0.65],
+      gold: [0.7, 0.7]
+    },
+    lambda: {
+      purple: [0.1, 0.2, 0.2, 0.15],
+      pink: [0.9, 1.3, 1.2],
+      gold: [1.5, 1.2]
+    },
+    oldschool: {
+      purple: [0.2, 0.35, 0.2, 0.15],
+      pink: [1.3, 0.55, 0.85],
+      gold: [1.5, 1.4]
+    },
+    goldenLambda: {
+      purple: [0.35, 0.2, 0.35, 0.35],
+      pink: [1.5, 1.1, 1.4],
+      gold: [2, 3]
+    },
+    nuclear: {
+      purple: [0.4, 0.45, 0.65, 0.45],
+      pink: [1.65, 1.65, 2.2],
+      gold: [3.5, 4.5]
+    }
+  }
+
+  let skinCosts = 0
+  let caseIncome = 0
+
+  let skinGrade
+
+  let i
+  for (i = 0; i < amountOfDrops; i++) {
+    skinGrade = Math.random() * 100
+    skinGrade = Math.round(skinGrade * 100) / 100
+    const getGrade = () => {
+      if (skinGrade <= 0.1) return 'gold'
+      else if (skinGrade > 0.1 && skinGrade <= 2.0) return 'pink'
+      else if (skinGrade > 2.0 && skinGrade <= 20.0) return 'purple'
+      else if (skinGrade > 20.0) return 'blue'
+    }
+
+    skinGrade = getGrade()
+
+    if (skinGrade !== 'blue') {
+      let pricesForColor = skinPrices[caseName][skinGrade]
+
+      let price = pricesForColor[Math.floor(Math.random() * pricesForColor.length)]
+      skinCosts += price
+    }
+  }
+
+  caseIncome = amountOfDrops * casePrice
+
+  return res.status(200).send({
+    brojOtvorenihKutija: amountOfDrops,
+    cijenaJedneKutijeKodNas: casePrice + ' €',
+    sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome) + ' €',
+    sveukupnoIsplacenoSkinovaEUR: Math.round(skinCosts) + ' €',
+    profitEUR: Math.round(caseIncome - skinCosts) + ' €',
+    profitPerc: Math.round(((caseIncome - skinCosts) / caseIncome) * 100) + ' %'
+  })
+
+})
+
 router.get('/check-profitability', async(req, res) => {
   const powerSecret = req.body.powerSecret
 
