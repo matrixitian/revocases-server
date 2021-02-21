@@ -1083,15 +1083,32 @@ router.get('/check-new-profitability', async(req, res) => {
 
   let skinGrade
 
+  let blueCount = 0
+  let purpleCount = 0
+  let pinkCount = 0
+  let goldCount = 0
+
   let i
   for (i = 0; i < amountOfDrops; i++) {
     skinGrade = Math.random() * 100
     skinGrade = Math.round(skinGrade * 100) / 100
     const getGrade = () => {
-      if (skinGrade <= 0.1) return 'gold'
-      else if (skinGrade > 0.1 && skinGrade <= 2.0) return 'pink'
-      else if (skinGrade > 2.0 && skinGrade <= 20.0) return 'purple'
-      else if (skinGrade > 20.0) return 'blue'
+      if (skinGrade <= 0.1) {
+        goldCount++
+        return 'gold'
+      }
+      else if (skinGrade > 0.1 && skinGrade <= 2.0) {
+        pinkCount++
+        return 'pink'
+      }
+      else if (skinGrade > 2.0 && skinGrade <= 20.0) {
+        purpleCount++
+        return 'purple'
+      }
+      else if (skinGrade > 20.0) {
+        blueCount++
+        return 'blue'
+      }
     }
 
     skinGrade = getGrade()
@@ -1107,6 +1124,10 @@ router.get('/check-new-profitability', async(req, res) => {
   caseIncome = amountOfDrops * casePrice
 
   return res.status(200).send({
+    blueCount,
+    purpleCount,
+    pinkCount,
+    goldCount,
     brojOtvorenihKutija: amountOfDrops,
     cijenaJedneKutijeKodNas: casePrice + ' €',
     sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome) + ' €',
