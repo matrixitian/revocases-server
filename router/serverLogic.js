@@ -683,12 +683,12 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
       }
       skinGrade = getGrade()
     } else {
-      let restrictedChance = 23
+      let restrictedChance = 17
       let classifiedChance = 1
 
       if (isYouTuber) {
         classifiedChance = 5
-        restrictedChance = 30
+        restrictedChance = 20
       }
 
       const getGrade = () => {
@@ -1052,7 +1052,7 @@ router.get('/check-profitability', async(req, res) => {
     return res.status(401).send()
   }
 
-  const casePrice = 0.5
+  const casePrice = 0.2
 
   let skinPrices = 0
   let caseIncome = 0
