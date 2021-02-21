@@ -1046,8 +1046,8 @@ router.get('/get-giveaway-data', auth, async(req, res) => {
 })
 
 router.get('/check-new-profitability', async(req, res) => {
-  const caseName = 'nuclear'
-  const casePrice = 0.8
+  const caseName = 'fire'
+  const casePrice = 0.2
   const amountOfDrops = 30000
 
   const skinPrices = {
@@ -1088,6 +1088,10 @@ router.get('/check-new-profitability', async(req, res) => {
   let pinkCount = 0
   let goldCount = 0
 
+  let purpleCosts = 0
+  let pinkCosts = 0
+  let goldCosts = 0
+
   let i
   for (i = 0; i < amountOfDrops; i++) {
     skinGrade = Math.random() * 100
@@ -1118,7 +1122,25 @@ router.get('/check-new-profitability', async(req, res) => {
 
       let price = pricesForColor[Math.floor(Math.random() * pricesForColor.length)]
       skinCosts += price
+
+      if (skinGrade === 'purple') purpleCosts += price
+      else if (skinGrade === 'pink') pinkCosts += price
+      else if (skinGrade === 'gold') goldCosts += price
     }
+  }
+
+  let gi
+  for (gi = 0; gi < (blueCount / 10); gi++) {
+    const cases = ['fire', 'lambda', 'oldschool']
+    let randomCase = cases[Math.floor(Math.random() * cases.length)]
+
+    let priceRange = skinPrices[randomCase]['purple']
+    let costFromTradeUp = priceRange[Math.floor(Math.random() * priceRange.length)]
+
+    skinCosts += costFromTradeUp
+    purpleCosts += costFromTradeUp
+
+    purpleCount++
   }
 
   caseIncome = amountOfDrops * casePrice
@@ -1128,6 +1150,9 @@ router.get('/check-new-profitability', async(req, res) => {
     purpleCount,
     pinkCount,
     goldCount,
+    purpleCosts: Math.round(purpleCosts) + ' €',
+    pinkCosts: Math.round(pinkCosts) + ' €',
+    goldCosts: Math.round(goldCosts) + ' €',
     brojOtvorenihKutija: amountOfDrops,
     cijenaJedneKutijeKodNas: casePrice + ' €',
     sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome) + ' €',
