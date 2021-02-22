@@ -687,6 +687,7 @@ router.post('/signup', async (req, res) => {
   const email = req.body.email
   const password = req.body.password
   const tradeURL = req.body.tradeURL
+  const location = req.body.location
   let referral = req.body.referral
 
   if (referral == null) {
@@ -715,6 +716,7 @@ router.post('/signup', async (req, res) => {
         emailVerificationCode,
         password,
         tradeURL,
+        location,
         referredTo: referral
       })
 
