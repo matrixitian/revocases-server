@@ -52,8 +52,8 @@ const io = require('socket.io')(server, {
     }
 })
 
-io.on('connection', function(socket) {
-    let defaultUserCount = 0
+// User count
+let defaultUserCount = 0
     let currentHour = 18
 
     function getHour() {
@@ -75,15 +75,16 @@ io.on('connection', function(socket) {
 
     const changeUserCount = () => {
         defaultUserCount = Math.floor(userCounts[currentHour] + Math.random() * 10)
-        sendUserCount()
+        // sendUserCount()
     }
 
-    changeUserCount()
+    // changeUserCount()
 
     setInterval(() => {
         changeUserCount()
     }, 30000)
 
+io.on('connection', function(socket) {
     socket.join('main')
 
     function sendUserCount() {
