@@ -69,11 +69,10 @@ const skinGradesOpenedRef = firestore.collection('skinGradesOpened')
 let skinGradesOpened = [0, 0, 0, 0, 0]
 skinGradesOpenedRef.onSnapshot((snap) => {
   snap.docs.forEach(doc => {
-    skinGradesOpened[0] = doc.data().mil_spec
-    skinGradesOpened[1] = doc.data().restricted
-    skinGradesOpened[2] = doc.data().classified
-    skinGradesOpened[3] = doc.data().covert
-    skinGradesOpened[4] = doc.data().exceedingly_rare
+    skinGradesOpened[0] = doc.data().blue
+    skinGradesOpened[1] = doc.data().purple
+    skinGradesOpened[2] = doc.data().pink
+    skinGradesOpened[3] = doc.data().gold
   })
 })
 
@@ -81,11 +80,11 @@ const casesOpenedRef = firestore.collection('casesOpened')
 let casesOpened = [0, 0, 0, 0, 0]
 casesOpenedRef.onSnapshot((snap) => {
   snap.docs.forEach(doc => {
-    casesOpened[0] = doc.data().dangerZone
-    casesOpened[1] = doc.data().chroma2
-    casesOpened[2] = doc.data().clutch
-    casesOpened[3] = doc.data().fracture
-    casesOpened[4] = doc.data().phoenix
+    casesOpened[0] = doc.data().fire
+    casesOpened[1] = doc.data().lambda
+    casesOpened[2] = doc.data().oldschool
+    casesOpened[3] = doc.data().goldenLambda
+    casesOpened[4] = doc.data().nuclear
   })
 })
 
@@ -93,60 +92,55 @@ function updateCasesOpened(caseName, grade) {
   const docRef = firestore.collection("casesOpened").doc('ZiXgrpmWCfUiEy6t3Hfw')
   const docSkinGrades = firestore.collection("skinGradesOpened").doc('rmHWnoBk97YLUf6GRQbl')
 
-  if (caseName === 'dangerZone') {
+  if (caseName === 'fire') {
       docRef.update({
-        dangerZone: casesOpened[0] + 1
+        fire: casesOpened[0] + 1
     })
   }
 
-  else if (caseName === 'chroma2') {
+  else if (caseName === 'lambda') {
       docRef.update({
-        chroma2: casesOpened[1] + 1
+        lambda: casesOpened[1] + 1
     })
   }
 
-  else if (caseName === 'clutch') {
+  else if (caseName === 'oldschool') {
     docRef.update({
-        clutch: casesOpened[2] + 1
+      oldschool: casesOpened[2] + 1
     })
   }
 
-  else if (caseName === 'fracture') {
+  else if (caseName === 'goldenLambda') {
     docRef.update({
-        fracture: casesOpened[3] + 1
+      goldenLambda: casesOpened[3] + 1
     })
   }
 
-  else if (caseName === 'phoenix') {
+  else if (caseName === 'nuclear') {
       docRef.update({
-        phoenix: casesOpened[4] + 1
+        nuclear: casesOpened[4] + 1
     })
   }
 
   switch (grade) {
-    case 'mil_spec':
+    case 'blue':
       docSkinGrades.update({
-        mil_spec: skinGradesOpened[0] + 1
+        blue: skinGradesOpened[0] + 1
       })
       break;
-    case 'restricted':
+    case 'purple':
       docSkinGrades.update({
-        restricted: skinGradesOpened[1] + 1
+        purple: skinGradesOpened[1] + 1
       })
       break;
-    case 'classified':
+    case 'pink':
       docSkinGrades.update({
-        classified: skinGradesOpened[2] + 1
+        pink: skinGradesOpened[2] + 1
       })
       break;
-    case 'covert':
+    case 'gold':
       docSkinGrades.update({
-        covert: skinGradesOpened[3] + 1
-      })
-      break;
-    case 'exceedingly_rare':
-      docSkinGrades.update({
-        exceedingly_rare: skinGradesOpened[4] + 1
+        gold: skinGradesOpened[3] + 1
       })
       break;
     default:
@@ -184,11 +178,11 @@ const iterator = () => {
   caseName = Math.round(caseName * 100) / 100
 
   const chooseCase = () => {
-    if (caseName >= 0 && caseName < 25) return 'phoenix' 
-    else if (caseName >= 25 && caseName < 32.00) return 'fracture'
-    else if (caseName >= 32.00 && caseName < 75.00) return 'clutch'
-    else if (caseName >= 75.00 && caseName < 80.00) return 'chroma2'
-    else if (caseName > 80.00) return 'dangerZone'
+    if (caseName >= 0 && caseName < 25) return 'nuclear' 
+    else if (caseName >= 25 && caseName < 32.00) return 'goldenLambda'
+    else if (caseName >= 32.00 && caseName < 75.00) return 'oldschool'
+    else if (caseName >= 75.00 && caseName < 80.00) return 'lambda'
+    else if (caseName > 80.00) return 'fire'
   }
 
   caseName = chooseCase()
@@ -290,295 +284,227 @@ const sendPasswordReset = async(email, safeCode) => {
 
 const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false) => {
   const wpnCases = {
-    dangerZone: {
-      mil_spec: [
-        'nova_wood_fired',
-        'sawed-off_black_sand',
-        'sg553_danger_close',
-        'mp9_modest_threat',
-        'tec-9_fubar',
-        'glock-18_oxide_blaze',
-        'm4a4_magnesium'
+    fire: {
+      blue: [
+        "xm1014_oxide_blaze",
+        "mp9_black_sand",
+        "r8_revolver_grip"
       ],
-      restricted: [
-        'g3sg1_scavenger',
-        'mac-10_pipe_down',
-        'galil_ar_signal',
-        'p250_nevermore',
-        'usp-s_flashback'
+      purple: [
+        "ak-47_safari_mesh",
+        "cz75-auto_pole_position",
+        "cz75-auto_imprint",
+        "five-seven_flame_test"
       ],
-      classified: [
-        'mp5-sd_phosphor',
-        'ump-45_momentum',
-        'desert_eagle_mecha_industries'
+      pink: [
+        "ak-47_uncharted",
+        "desert_eagle_corinthian",
+        "usp-s_lead_conduit"
       ],
-      covert: [
-        'awp_neo-noir',
-        'ak-47_asiimov'
-      ],
-      exceedingly_rare: [
-        'rare_item'
+      gold: [
+        "usp-s_flashback",
+        "m4a1-s_nitro"
       ]
     },
-    phoenix: {
-      mil_spec: [
-        'ump-45_corporal',
-        'mag-7_heaven_guard',
-        'negev_terrain',
-        'tec-9_sandstorm'
+    lambda: {
+      blue: [
+        "mp7_armor_core",
+        "sg_553_danger_close",
+        "mp9_modest_threat"
       ],
-      restricted: [
-        'famas_sergeant',
-        'mac-10_heat',
-        'sg_553_pulse',
-        'usp-s_guardian',
+      purple: [
+        "mac-10_pipe_down",
+        "desert_eagle_oxide_blaze",
+        "sg_553_phantom",
+        "p250_inferno"
       ],
-      classified: [
-        'p90_trigon',
-        'nova_antique',
-        'ak-47_redline',
+      pink: [
+        "m4a1-s_basilisk",
+        "desert_eagle_naga",
+        "ak-47_elite_build"
       ],
-      covert: [
-        'aug_chameleon',
-        'awp_asiimov'
-      ],
-      exceedingly_rare: [
-        'rare_item'
+      gold: [
+        "famas_styx",
+        "m4a4_evil_daimyo"
       ]
     },
-    chroma2: {
-      mil_spec: [
-        "negev_man-o-'war",
-        'sawed-off_origami',
-        'mp7_armor_core',
-        'p250_valence',
-        'desert_eagle_bronze_deco',
-        'ak-47_elite_build'
+    oldschool: {
+      blue: [
+        "tec-9_fubar",
+        "p250_cassette",
+        "mag-7_heaven_guard"
       ],
-      restricted: [
-        'ump-45_grand_prix',
-        'cz75-auto_pole_position',
-        'mag-7_heat',
-        'awp_worm_god',
+      purple: [
+        "desert_eagle_the_bronze",
+        "mag-7_swag-7",
+        "ak-47_safari_mesh",
+        "m4a4_magnesium"
       ],
-      classified: [
-        'famas_djinn',
-        'five-seven_monkey_business',
-        'galil_ar_eco',
+      pink: [
+        "famas_valence",
+        "ssg_08_parallax",
+        "desert_eagle_meteorite"
       ],
-      covert: [
-        'mac-10_neon_rider',
-        'm4a1-s_hyper_beast'
-      ],
-      exceedingly_rare: [
-        'rare_item'
+      gold: [
+        "usp-s_cyrex",
+        "ak-47_elite_build"
       ]
     },
-    fracture: {
-      mil_spec: [
-        'negev_ultralight',
-        "sg_553_ol'rusty",
-        'p2000_gnarled',
-        'p90_freight',
-        'pp-bizon_runic',
-        'p250_cassette',
-        'ssg_08_mainframe_001'
+    goldenLambda: {
+      blue: [
+        "mp7_armor_core",
+        "sg_553_danger_close",
+        "mp9_modest_threat"
       ],
-      restricted: [
-        'galil_ar_connexion',
-        'mp5-sd_kitbash',
-        'tec-9_brother',
-        'mac-10_allure',
-        'mag-7_monster_call'
+      purple: [
+        "mac-10_pipe_down",
+        "desert_eagle_oxide_blaze",
+        "sg_553_phantom",
+        "p250_inferno"
       ],
-      classified: [
-        'xm1014_entombed',
-        'glock-18_vogue',
-        'm4a4_toothfairy',
+      pink: [
+        "m4a1-s_basilisk",
+        "desert_eagle_naga",
+        "ak-47_elite_build"
       ],
-      covert: [
-        'ak-47_legion_of_anubis',
-        'desert_eagle_printstream'
-      ],
-      exceedingly_rare: [
-        'rare_item'
+      gold: [
+        "famas_styx",
+        "m4a4_evil_daimyo"
       ]
     },
-    clutch: {
-      mil_spec: [
-        'xm1014_oxide_blaze',
-        'pp-bizon_night_riot',
-        'p2000_urban_hazard',
-        'five-seven_flame_test',
-        'sg_553_aloha',
-        'r8_revolver_grip',
-        'mp9_black_sand'
+    nuclear: {
+      blue: [
+        "famas_decommissioned",
+        "glock-18_oxide_blaze",
+        "sg_553_ol'_rusty"
       ],
-      restricted: [
-        'negev_lionfish',
-        'nova_wild_six',
-        'ump-45_artic_wolf',
-        'mag-7_swag-7',
-        'glock-18_moonrise'
+      purple: [
+        "desert_eagle_directive",
+        "p250_nevermore",
+        "m4a1-s_flashback",
+        "sg_553_darkwing"
       ],
-      classified: [
-        'aug_stymphalian',
-        'awp_mortis',
-        'usp-s_cortex',
+      pink: [
+        "awp_atheris",
+        "famas_djinn",
+        "awp_mortis"
       ],
-      covert: [
-        'mp7_bloodsport',
-        'm4a4_neo-noir'
-      ],
-      exceedingly_rare: [
-        'rare_item'
+      gold: [
+        "usp-s_mashup",
+        "m4a4_cyber_security"
       ]
     }
   }
 
   const formattedSkinName = {
-    dangerZone: {
-      mil_spec: [
-        'Wood Fired',
-        'Black Sand',
-        'Danger Close',
-        'Modest Threat',
-        'Fubar',
-        'Oxide Blaze',
-        'Magnesium'
+    fire: {
+      blue: [
+        "Oxide Blaze",
+        "Black Sand",
+        "Grip"
       ],
-      restricted: [
-        'Scavenger',
-        'Pipe Down',
-        'Signal',
-        'Nevermore',
-        'Flashback',
+      purple: [
+        "Safari Mesh",
+        "Pole Position",
+        "Imprint",
+        "Flame Test"
       ],
-      classified: [
-        'Phosphor',
-        'Momentum',
-        'Mecha Industries'
+      pink: [
+        "Uncharted",
+        "Corinthian",
+        "Lead Conduit"
       ],
-      covert: [
-        'Neo-Noir',
-        'Asiimov'
-      ],
-      exceedingly_rare: [
-        'Rare Item'
+      gold: [
+        "Flashback",
+        "Nitro"
       ]
     },
-    phoenix: {
-      mil_spec: [
-        'Corporal',
-        'Heaven Guard',
-        'Terrain',
-        'Sandstorm'
+    lambda: {
+      blue: [
+        "Wood Fired",
+        "Freight",
+        "Ultralight"
       ],
-      restricted: [
-        'Sergeant',
-        'Heat',
-        'Pulse',
-        'Guardian',
+      purple: [
+        "Safari Mesh",
+        "Blue Ply",
+        "Bronze Deco",
+        "Magnesium"
       ],
-      classified: [
-        'Trigon',
-        'Antique',
-        'Redline',
+      pink: [
+        "Light Rail",
+        "PAW",
+        "Guardian"
       ],
-      covert: [
-        'Chameleon',
-        'Asiimov'
-      ],
-      exceedingly_rare: [
-        'Rare Item'
+      gold: [
+        "Exoskeleton",
+        "Phobos"
       ]
     },
-    chroma2: {
-      mil_spec: [
-        "Man-o'-war",
-        'Origami',
-        'Armor Core',
-        'Valence',
-        'Bronze Deco',
-        'Elite Build'
+    oldschool: {
+      blue: [
+        "Fubar",
+        "Cassette",
+        "Heaven Guard"
       ],
-      restricted: [
-        'Grand Prix',
-        'Pole Position',
-        'Heat',
-        'Worm God',
+      purple: [
+        "The Bronze",
+        "SWAG-7",
+        "Safari Mesh",
+        "Magnesium",
       ],
-      classified: [
-        'Djinn',
-        'Monkey Business',
-        'Eco',
+      pink: [
+        "Valence",
+        "Parallax",
+        "Meteorite"
       ],
-      covert: [
-        'Neon Rider',
-        'Hyper Beast'
-      ],
-      exceedingly_rare: [
-        'Rare Item'
+      gold: [
+        "Cyrex",
+        "Elite Build"
       ]
     },
-    fracture: {
-      mil_spec: [
-        'Ultralight',
-        "Ol' Rusty",
-        'Gnarled',
-        'Freight',
-        'Runic',
-        'Cassette',
-        'Mainframe 001'
+    goldenLambda: {
+      blue: [
+        "Armor Core",
+        "Danger Close",
+        "Modest Threat"
       ],
-      restricted: [
-        'Connexion',
-        'Kitbash',
-        'Brother',
-        'Allure',
-        'Monster Call'
+      purple: [
+        "Pipe Down",
+        "Oxide Blaze",
+        "Phantom",
+        "Inferno"
       ],
-      classified: [
-        'Entombed',
-        'Vogue',
-        'Tooth Fairy',
+      pink: [
+        "Basilisk",
+        "Naga",
+        "Elite Build"
       ],
-      covert: [
-        'Legion of Anubis',
-        'Printstream'
-      ],
-      exceedingly_rare: [
-        'Rare Item'
+      gold: [
+        "Styx",
+        "Evil Daimyo"
       ]
     },
-    clutch: {
-      mil_spec: [
-        'Oxide Blaze',
-        'Night Riot',
-        'Urban Hazard',
-        'Flame Test',
-        'Aloha',
-        'Grip',
-        'Black Sand'
+    nuclear: {
+      blue: [
+        "Decommissioned",
+        "Oxide Blaze",
+        "Ol' Rusty"
       ],
-      restricted: [
-        'Lionfish',
-        'Wild Six',
-        'Arctic Wolf',
-        'SWAG-7',
-        'Moonrise'
+      purple: [
+        "Directive",
+        "Nevermore",
+        "Flashback",
+        "Darkwing"
       ],
-      classified: [
-        'Stymphalian',
-        'Mortis',
-        'Cortex',
+      pink: [
+        "Atheris",
+        "Djinn",
+        "Mortis"
       ],
-      covert: [
-        'Bloodsport',
-        'Neo-Noir'
-      ],
-      exceedingly_rare: [
-        'Rare Item'
+      gold: [
+        "Mashup",
+        "Cyber Security"
       ]
     }
   }
@@ -675,27 +601,26 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
 
     if (fromGenerator) {
       const getGrade = () => {
-        if (skinGrade >= 0 && skinGrade < 0.1) return 'exceedingly_rare' 
-        else if (skinGrade >= 0.3 && skinGrade < 1) return 'covert'
-        else if (skinGrade >= 0.6 && skinGrade < 5.00) return 'classified'
-        else if (skinGrade >= 4 && skinGrade < 23.00) return 'restricted'
-        else if (skinGrade >= 23.00) return 'mil_spec'
+        if (skinGrade >= 0 && skinGrade <= 0.2) return 'gold'
+        else if (skinGrade > 0.2 && skinGrade <= 3.00) return 'pink'
+        else if (skinGrade > 3 && skinGrade <= 25.00) return 'purple'
+        else if (skinGrade > 25.00) return 'blue'
       }
       skinGrade = getGrade()
     } else {
-      let restrictedChance = 17
-      let classifiedChance = 1
+      let purpleChance = 20
+      let pinkChance = 2
 
       if (isYouTuber) {
-        classifiedChance = 5
-        restrictedChance = 20
+        pinkChance = 5
+        purpleChance = 20
       }
 
       const getGrade = () => {
-        if (skinGrade < 0) return 'covert' 
-        else if (skinGrade >= 0 && skinGrade < classifiedChance) return 'classified' 
-        else if (skinGrade >= classifiedChance && skinGrade < restrictedChance) return 'restricted'
-        else if (skinGrade >= restrictedChance) return 'mil_spec'
+        if (skinGrade >= 0 && skinGrade <= 0.1) return 'gold' 
+        else if (skinGrade > 0.1 && skinGrade <= pinkChance) return 'pink' 
+        else if (skinGrade > pinkChance && skinGrade <= purpleChance) return 'purple'
+        else if (skinGrade > purpleChance) return 'blue'
       }
     
       skinGrade = getGrade()
@@ -935,8 +860,8 @@ router.post('/buy-case', auth, async(req, res) => {
   const id = req.user._id
   const caseName = req.body.caseName
 
-  const cases = ['dangerZone', 'chroma2', 'clutch', 'fracture', 'phoenix']
-  const casePrices = [149, 199, 249, 349, 499]
+  const cases = ['fire', 'lambda', 'oldschool', 'goldenLambda', 'nuclear']
+  const casePrices = [125, 149, 199, 299, 399]
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -996,15 +921,13 @@ router.post('/buy-case', auth, async(req, res) => {
 
       updateCasesOpened(caseName, skinGrade)
 
-      if (skinGrade === 'mil_spec') {
+      if (skinGrade === 'blue') {
         req.user.blues += 1
-      } else if (skinGrade === 'restricted') {
+      } else if (skinGrade === 'purple') {
         req.user.purples += 1
-      } else if (skinGrade === 'classified') {
+      } else if (skinGrade === 'pink') {
         req.user.pinks += 1
-      } else if (skinGrade === 'covert') {
-        req.user.reds += 1
-      } else if (skinGrade === 'exceedingly_rare') {
+      } else if (skinGrade === 'gold') {
         req.user.yellows += 1
       }
 
@@ -1232,7 +1155,7 @@ router.get('/check-profitability', async(req, res) => {
   let pricesPurple = 0
   let pricesPink = 0
   let pricesPurpleAndPink = 0
-  let pricesRed = 0
+  let pricesGold = 0
 
   let blues = 0
 
@@ -1243,23 +1166,23 @@ router.get('/check-profitability', async(req, res) => {
     skin = data.skin
     skinCon = data.skinCon
 
-    if (data.skinGrade === 'mil_spec') {
+    if (data.skinGrade === 'blue') {
       blues++
     }
 
-    if (data.skinGrade !== 'mil_spec') {
+    if (data.skinGrade !== 'blue') {
       price = gunPrices[skin]
     }
 
-    if (data.skinGrade !== 'mil_spec') {
+    if (data.skinGrade !== 'blue') {
       skinPrices += price
       pricesPurpleAndPink += price
-      if (data.skinGrade === 'restricted') {
+      if (data.skinGrade === 'purple') {
         pricesPurple += price
-      } else if (data.skinGrade === 'classified') {
+      } else if (data.skinGrade === 'pink') {
         pricesPink += price
-      } else if (data.skinGrade === 'covert') {
-        pricesRed += price
+      } else if (data.skinGrade === 'gold') {
+        pricesGold += price
       }
     }
 
@@ -1268,7 +1191,7 @@ router.get('/check-profitability', async(req, res) => {
 
   blues = Math.floor(blues / 10)
   let gi
-  const cases = ['dangerZone', 'chroma2']
+  const cases = ['fire', 'lambda']
   for (gi = 0; gi < blues; gi++) {
     let randomCase = cases[Math.floor(Math.random() * cases.length)];
 
@@ -1286,7 +1209,7 @@ router.get('/check-profitability', async(req, res) => {
     pricesPurple: Math.round(pricesPurple) + ' €',
     pricesPink: Math.round(pricesPink) + ' €',
     pricesPurpleAndPink: Math.round(pricesPurpleAndPink) + ' €',
-    pricesRed: Math.round(pricesRed) + ' €',
+    pricesGold: Math.round(pricesGold) + ' €',
     brojOtvorenihKutija: casesOpened,
     cijenaJedneKutijeKodNas: casePrice + ' €',
     sveukupnaZaradaOdProdavanjaKutijaEUR: Math.round(caseIncome) + ' €',
@@ -1314,86 +1237,119 @@ router.post('/request-trade', auth, async(req, res) => {
 
 function normalizeSkinName(skinName) {
   const skins = {
-        "ak-47_asiimov": "AK-47 | Asiimov",
-        "awp_neo-noir": "AWP | Neo-Noir",
-        "desert_eagle_mecha_industries": "Desert Eagle | Mecha Industries",
-        "mp5-sd_phosphor": "MP5-SD | Phosphor",
-        "ump-45_momentum": "UMP-45 | Momentum",
-        "usp-s_flashback": "USP-S | Flashback",
-        "p250_nevermore": "P250 | Nevermore",
-        "galil_ar_signal": "Galil AR | Signal",
-        "mac-10_pipe_down": "MAC-10 | Pipe Down",
-        "g3sg1_scavenger": "G3SG1 | Scavenger",
-        "m4a4_magnesium": "M4A4 | Magnesium",
-        "glock-18_oxide_blaze": "Glock-18 | Oxide Blaze",
-        "tec-9_fubar": "Tec-9 | Fubar",
-        "mp9_modest_threat": "MP9 | Modest Threat",
-        "sg553_danger_close": "SG 553 | Danger Close",
-        "sawed-off_black_sand": "Sawed-Off | Black Sand",
-        "nova_wood_fired": "Nova | Wood Fired",
-        "awp_asiimov": "AWP | Asiimov",
-        "aug_chameleon": "AUG | Chameleon",
-        "ak-47_redline": "AK-47 | Redline",
-        "nova_antique": "Nova | Antique",
-        "p90_trigon": "P90 | Trigon",
-        "usp-s_guardian": "USP-S | Guardian",
-        "sg_553_pulse": "SG 553 | Pulse",
-        "mac-10_heat": "MAC-10 | Heat",
-        "famas_sergeant": "FAMAS | Sergeant",
-        "tec-9_sandstorm": "Tec-9 | Sandstorm",
-        "negev_terrain": "Negev | Terrain",
-        "mag-7_heaven_guard": "MAG-7 | Heaven Guard",
-        "ump-45_corporal": "UMP-45 | Corporal",
-        "m4a1-s_hyper_beast": "M4A1-S | Hyper Beast",
-        "mac-10_neon_rider": "MAC-10 | Neon Rider",
-        "galil_ar_eco": "Galil AR | Eco",
-        "five-seven_monkey_business": "Five-SeveN | Monkey Business",
-        "famas_djinn": "FAMAS | Djinn",
-        "awp_worm_god": "AWP | Worm God",
-        "mag-7_heat": "MAG-7 | Heat",
-        "cz75-auto_pole_position": "CZ75-Auto | Pole Position",
-        "ump-45_grand_prix": "UMP-45 | Grand Prix",
-        "ak-47_elite_build": "AK-47 | Elite Build",
-        "desert_eagle_bronze_deco": "Desert Eagle | Bronze Deco",
-        "p250_valence": "P250 | Valence",
-        "mp7_armor_core": "MP7 | Armor Core",
-        "sawed-off_origami": "Sawed-Off | Origami",
-        "negev_man-o-'war": "Negev | Man-o'-war",
-        "desert_eagle_printstream": "Desert Eagle | Printstream",
-        "ak-47_legion_of_anubis": "AK-47 | Legion of Anubis",
-        "m4a4_toothfairy": "M4A4 | Tooth Fairy",
-        "glock-18_vogue": "Glock-18 | Vogue",
-        "xm1014_entombed": "XM1014 | Entombed",
-        "mag-7_monster_call": "MAG-7 | Monster Call",
-        "mac-10_allure": "MAC-10 | Allure",
-        "tec-9_brother": "Tec-9 | Brother",
-        "mp5-sd_kitbash": "MP5-SD | Kitbash",
-        "galil_ar_connexion": "Galil AR | Connexion",
-        "ssg_08_mainframe_001": "SSG 08 | Mainframe 001",
-        "p250_cassette": "P250 | Cassette",
-        "pp-bizon_runic": "PP-Bizon | Runic",
-        "p90_freight": "P90 | Freight",
-        "p2000_gnarled": "P2000 | Gnarled",
-        "sg_553_ol'rusty": "SG 553 | Ol' Rusty",
-        "negev_ultralight": "Negev | Ultralight",
-        "m4a4_neo-noir": "M4A4 | Neo-Noir",
-        "mp7_bloodsport": "MP7 | Bloodsport",
-        "usp-s_cortex": "USP-S | Cortex",
-        "awp_mortis": "AWP | Mortis",
-        "aug_stymphalian": "AUG | Stymphalian",
-        "glock-18_moonrise": "Glock-18 | Moonrise",
-        "mag-7_swag-7": "MAG-7 | SWAG-7",
-        "ump-45_artic_wolf": "UMP-45 | Arctic Wolf",
-        "nova_wild_six": "Nova | Wild Six",
-        "negev_lionfish": "Negev | Lionfish",
-        "mp9_black_sand": "MP9 | Black Sand",
-        "r8_revolver_grip": "R8 Revolver | Grip",
-        "sg_553_aloha": "SG 553 | Aloha",
-        "five-seven_flame_test": "Five-SeveN | Flame Test",
-        "p2000_urban_hazard": "P2000 | Urban Hazard",
-        "pp-bizon_night_riot": "PP-Bizon | Night Riot",
-        "xm1014_oxide_blaze": "XM1014 | Oxide Blaze"
-    }
+    "ak-47_asiimov": "AK-47 | Asiimov",
+    "awp_neo-noir": "AWP | Neo-Noir",
+    "desert_eagle_mecha_industries": "Desert Eagle | Mecha Industries",
+    "mp5-sd_phosphor": "MP5-SD | Phosphor",
+    "ump-45_momentum": "UMP-45 | Momentum",
+    "usp-s_flashback": "USP-S | Flashback",
+    "p250_nevermore": "P250 | Nevermore",
+    "galil_ar_signal": "Galil AR | Signal",
+    "mac-10_pipe_down": "MAC-10 | Pipe Down",
+    "g3sg1_scavenger": "G3SG1 | Scavenger",
+    "m4a4_magnesium": "M4A4 | Magnesium",
+    "glock-18_oxide_blaze": "Glock-18 | Oxide Blaze",
+    "tec-9_fubar": "Tec-9 | Fubar",
+    "mp9_modest_threat": "MP9 | Modest Threat",
+    "sg553_danger_close": "SG 553 | Danger Close",
+    "sawed-off_black_sand": "Sawed-Off | Black Sand",
+    "nova_wood_fired": "Nova | Wood Fired",
+    "awp_asiimov": "AWP | Asiimov",
+    "aug_chameleon": "AUG | Chameleon",
+    "ak-47_redline": "AK-47 | Redline",
+    "nova_antique": "Nova | Antique",
+    "p90_trigon": "P90 | Trigon",
+    "usp-s_guardian": "USP-S | Guardian",
+    "sg_553_pulse": "SG 553 | Pulse",
+    "mac-10_heat": "MAC-10 | Heat",
+    "famas_sergeant": "FAMAS | Sergeant",
+    "tec-9_sandstorm": "Tec-9 | Sandstorm",
+    "negev_terrain": "Negev | Terrain",
+    "mag-7_heaven_guard": "MAG-7 | Heaven Guard",
+    "ump-45_corporal": "UMP-45 | Corporal",
+    "m4a1-s_hyper_beast": "M4A1-S | Hyper Beast",
+    "mac-10_neon_rider": "MAC-10 | Neon Rider",
+    "galil_ar_eco": "Galil AR | Eco",
+    "five-seven_monkey_business": "Five-SeveN | Monkey Business",
+    "famas_djinn": "FAMAS | Djinn",
+    "awp_worm_god": "AWP | Worm God",
+    "mag-7_heat": "MAG-7 | Heat",
+    "ump-45_grand_prix": "UMP-45 | Grand Prix",
+    "ak-47_elite_build": "AK-47 | Elite Build",
+    "desert_eagle_bronze_deco": "Desert Eagle | Bronze Deco",
+    "p250_valence": "P250 | Valence",
+    "mp7_armor_core": "MP7 | Armor Core",
+    "sawed-off_origami": "Sawed-Off | Origami",
+    "negev_man-o-'war": "Negev | Man-o'-war",
+    "desert_eagle_printstream": "Desert Eagle | Printstream",
+    "ak-47_legion_of_anubis": "AK-47 | Legion of Anubis",
+    "m4a4_toothfairy": "M4A4 | Tooth Fairy",
+    "glock-18_vogue": "Glock-18 | Vogue",
+    "xm1014_entombed": "XM1014 | Entombed",
+    "mag-7_monster_call": "MAG-7 | Monster Call",
+    "mac-10_allure": "MAC-10 | Allure",
+    "tec-9_brother": "Tec-9 | Brother",
+    "mp5-sd_kitbash": "MP5-SD | Kitbash",
+    "galil_ar_connexion": "Galil AR | Connexion",
+    "ssg_08_mainframe_001": "SSG 08 | Mainframe 001",
+    "p250_cassette": "P250 | Cassette",
+    "pp-bizon_runic": "PP-Bizon | Runic",
+    "p90_freight": "P90 | Freight",
+    "p2000_gnarled": "P2000 | Gnarled",
+    "sg_553_ol'rusty": "SG 553 | Ol' Rusty",
+    "negev_ultralight": "Negev | Ultralight",
+    "m4a4_neo-noir": "M4A4 | Neo-Noir",
+    "mp7_bloodsport": "MP7 | Bloodsport",
+    "usp-s_cortex": "USP-S | Cortex",
+    "awp_mortis": "AWP | Mortis",
+    "aug_stymphalian": "AUG | Stymphalian",
+    "glock-18_moonrise": "Glock-18 | Moonrise",
+    "mag-7_swag-7": "MAG-7 | SWAG-7",
+    "ump-45_artic_wolf": "UMP-45 | Arctic Wolf",
+    "nova_wild_six": "Nova | Wild Six",
+    "negev_lionfish": "Negev | Lionfish",
+    "sg_553_aloha": "SG 553 | Aloha",
+    "p2000_urban_hazard": "P2000 | Urban Hazard",
+    "pp-bizon_night_riot": "PP-Bizon | Night Riot",
+    "m4a1-s_nitro": "M4A1-S | Nitro",
+    "ak-47_uncharted": "AK-47 | Uncharted",
+    "desert_eagle_corinthian": "Desert Eagle | Corinthian",
+    "usp-s_lead_conduit": "USP-S | Lead Conduit",
+    "ak-47_safari_mesh": "AK-47 | Safari Mesh",
+    "cz75-auto_pole_position": "CZ75-Auto | Pole Position",
+    "cz75-auto_imprint": "CZ75-Auto | Imprint",
+    "five-seven_flame_test": "Five-SeveN | Flame Test",
+    "xm1014_oxide_blaze": "XM1014 | Oxide Blaze",
+    "mp9_black_sand": "MP9 | Black Sand",
+    "r8_revolver_grip":"R8 Revolver | Grip",
+    "famas_styx": "Famas | Styx",
+    "m4a4_evil_daimyo": "M4A4 | Evil Daimyo",
+    "m4a1-s_basilisk": "M4A1-S | Basilisk",
+    "desert_eagle_naga": "Desert Eagle | Naga",
+    "desert_eagle_oxide_blaze": "Desert Eagle | Oxide Blaze",
+    "sg_553_phantom": "SG 553 | Phantom",
+    "p250_inferno": "P250 | Inferno",
+    "sg_553_danger_close": "SG 553 | Danger Close",
+    "awp_exoskeleton": "AWP | Exoskeleton",
+    "awp_phobos": "AWP | Phobos",
+    "desert_eagle_light_rail": "Desert Eagle | Light Rail",
+    "awp_paw": "AWP | PAW",
+    "awp_safari_mesh": "AWP | Safari Mesh",
+    "desert_eagle_blue_ply": "Desert Eagle | Blue Ply",
+    "usp-s_mashup": "USP-S | Mashup",
+    "m4a4_cyber_security": "M4A4 | Cyber Security",
+    "awp_atheris": "AWP | Atheris",
+    "desert_eagle_directive": "Desert Eagle | Directive",
+    "m4a1-s_flashback": "M4A1-S | Flashback",
+    "sg_553_darkwing": "SG 553 | Darkwing",
+    "famas_decommissioned": "Famas | Decommissioned",
+    "sg_553_ol'_rusty": "SG 553 | Ol' Rusty",
+    "usp-s_cyrex": "USP-S | Cyrex",
+    "famas_valence": "Famas | Valence",
+    "ssg_08_parallax": "SSG 08 | Parallax",
+    "desert_eagle_meteorite": "Desert Eagle | Meteorite",
+    "desert_eagle_the_bronze": "Desert Eagle | The Bronze"
+  }
 
   return `${skins[skinName]}`
 }
@@ -1485,105 +1441,129 @@ router.post('/finish-trade-offer', auth, async(req, res) => {
 
 function getSkinPrice(caseName, grade, condition) {
   const skinPrices = {
-    "dangerZone": {
-      "mil_spec": {
+    "fire": {
+      "blue": {
         "fn": 20,
         "mw": 15,
         "ft": 12,
         "ww": 9,
         "bs": 7
       },
-      "restricted": {
+      "purple": {
         "fn": 135,
         "mw": 90,
         "ft": 60,
         "ww": 50,
         "bs": 45
       },
-      "classified": {
+      "pink": {
         "ww": 475,
         "bs": 400
-      }
-    },
-    "chroma2": {
-      "mil_spec": {
-        "fn": 30,
-        "mw": 20,
-        "ft": 15,
-        "ww": 12,
-        "bs": 10
       },
-      "restricted": {
-        "fn": 135,
-        "mw": 80,
-        "ft": 45,
-        "ww": 30,
-        "bs": 15
-      },
-      "classified": {
-        "ww": 350,
+      "gold": {
+        "ft": 150,
+        "ww": 100,
         "bs": 200
       }
     },
-    "clutch": {
-      "mil_spec": {
-        "fn": 17,
+    "lambda": {
+      "blue": {
+        "fn": 20,
         "mw": 15,
         "ft": 12,
-        "ww": 10,
-        "bs": 8
+        "ww": 9,
+        "bs": 7
       },
-      "restricted": {
-        "fn": 150,
-        "mw": 80,
-        "ft": 45,
-        "ww": 25,
-        "bs": 15
+      "purple": {
+        "fn": 135,
+        "mw": 90,
+        "ft": 60,
+        "ww": 50,
+        "bs": 45
       },
-      "classified": {
-        "ww": 260,
-        "bs": 150
+      "pink": {
+        "ww": 475,
+        "bs": 400
+      },
+      "gold": {
+        "ft": 150,
+        "ww": 100,
+        "bs": 200
       }
     },
-    "fracture": {
-      "mil_spec": {
-        "fn": 30,
-        "mw": 20,
-        "ft": 15,
-        "ww": 12,
-        "bs": 10
+    "oldschool": {
+      "blue": {
+        "fn": 20,
+        "mw": 15,
+        "ft": 12,
+        "ww": 9,
+        "bs": 7
       },
-      "restricted": {
-        "fn": 250,
-        "mw": 180,
-        "ft": 100,
-        "ww": 70,
-        "bs": 60
+      "purple": {
+        "fn": 135,
+        "mw": 90,
+        "ft": 60,
+        "ww": 50,
+        "bs": 45
       },
-      "classified": {
-        "ww": 900,
-        "bs": 800
+      "pink": {
+        "ww": 475,
+        "bs": 400
+      },
+      "gold": {
+        "ft": 150,
+        "ww": 100,
+        "bs": 200
       }
     },
-    "phoenix": {
-      "mil_spec": {
-        "fn": 40,
-        "mw": 30,
-        "ft": 20,
-        "ww": 15,
-        "bs": 12
+    "goldenLambda": {
+      "blue": {
+        "fn": 20,
+        "mw": 15,
+        "ft": 12,
+        "ww": 9,
+        "bs": 7
       },
-      "restricted": {
-        "fn": 500,
-        "mw": 360,
-        "ft": 160,
-        "ww": 145,
-        "bs": 215
+      "purple": {
+        "fn": 135,
+        "mw": 90,
+        "ft": 60,
+        "ww": 50,
+        "bs": 45
       },
-      "classified": {
-        "ft": 1450,
-        "ww": 750,
-        "bs": 600
+      "pink": {
+        "ww": 475,
+        "bs": 400
+      },
+      "gold": {
+        "ft": 150,
+        "ww": 100,
+        "bs": 200
+      }
+    },
+    "nuclear": {
+      "blue": {
+        "fn": 20,
+        "mw": 15,
+        "ft": 12,
+        "ww": 9,
+        "bs": 7
+      },
+      "purple": {
+        "fn": 135,
+        "mw": 90,
+        "ft": 60,
+        "ww": 50,
+        "bs": 45
+      },
+      "pink": {
+        "ww": 475,
+        "bs": 400
+      },
+      "gold": {
+        "ft": 150,
+        "ww": 100,
+        "bs": 200
       }
     }
   }
@@ -1671,12 +1651,11 @@ router.post('/trade-up', auth, async(req, res) => {
     const data = await Skin.findById(skinIDs[0], `grade -_id`)
     let grade = data.grade
 
-    if (grade === 'mil_spec') grade = 'restricted'
-    else if (grade === 'restricted') grade === 'classified'
-    else if (grade === 'classified') grade === 'covert'
-    else if (grade === 'covert') grade === 'exceedingly_rare'
+    if (grade === 'blue') grade = 'purple'
+    else if (grade === 'purple') grade === 'pink'
+    else if (grade === 'pink') grade === 'gold'
 
-    const cases = ['dangerZone', 'clutch']
+    const cases = ['fire', 'lambda']
     const randomCase = cases[Math.floor(Math.random() * cases.length)];
 
     let skinDrop = getWeapon(randomCase, false, grade)
