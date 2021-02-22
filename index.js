@@ -75,10 +75,7 @@ let defaultUserCount = 0
 
     const changeUserCount = () => {
         defaultUserCount = Math.floor(userCounts[currentHour] + Math.random() * 10)
-        // sendUserCount()
     }
-
-    // changeUserCount()
 
     setInterval(() => {
         changeUserCount()
