@@ -642,6 +642,7 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
   } 
   else {
     skinCon = gunConditions[skin]
+    log(skinCon)
 
     if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
   
