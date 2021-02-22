@@ -688,10 +688,10 @@ router.post('/signup', async (req, res) => {
   const tradeURL = req.body.tradeURL
   let referral = req.body.referral
 
-  if (referral === null) {
+  if (referral == null) {
     referral = null
   } else {
-    referral= referral[0]
+    referral = referral[0]
   }
 
   try {
