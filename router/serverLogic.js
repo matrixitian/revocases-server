@@ -972,8 +972,8 @@ router.get('/get-giveaway-data', auth, async(req, res) => {
 })
 
 router.get('/check-new-profitability', async(req, res) => {
-  const caseName = 'lambda'
-  const casePrice = 0.15
+  const caseName = 'nuclear'
+  const casePrice = 0.37
   const amountOfDrops = 30000
 
   const skinPrices = {
