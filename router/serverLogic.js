@@ -178,11 +178,11 @@ const iterator = () => {
   caseName = Math.round(caseName * 100) / 100
 
   const chooseCase = () => {
-    if (caseName >= 0 && caseName < 25) return 'nuclear' 
-    else if (caseName >= 25 && caseName < 32.00) return 'goldenLambda'
-    else if (caseName >= 32.00 && caseName < 75.00) return 'oldschool'
-    else if (caseName >= 75.00 && caseName < 80.00) return 'lambda'
-    else if (caseName > 80.00) return 'fire'
+    if (caseName >= 0 && caseName < 30) return 'nuclear' 
+    else if (caseName >= 30 && caseName < 70.00) return 'goldenLambda'
+    else if (caseName >= 70.00 && caseName < 80.00) return 'oldschool'
+    else if (caseName >= 80.00 && caseName < 92.00) return 'lambda'
+    else if (caseName > 92.00) return 'fire'
   }
 
   caseName = chooseCase()
@@ -864,7 +864,34 @@ router.post('/buy-case', auth, async(req, res) => {
   const caseName = req.body.caseName
 
   const cases = ['fire', 'lambda', 'oldschool', 'goldenLambda', 'nuclear']
-  const casePrices = [125, 149, 199, 299, 399]
+  let casePrices = [125, 149, 199, 299, 399]
+
+  const ccCasePrices = [
+    [599, 799, 1199, 1799, 2099],
+    [299, 345, 599, 899, 1099],
+    [249, 299, 399, 599, 799],
+    [199, 279, 449, 599, 699],
+    [149, 199, 249, 349, 449]
+  ]
+
+  const countryCodes = [
+    ['XK', 'SY'],
+    ['IQ', 'BA', 'PA', 'LY', 'DZ', 'ME', 'MK', 'AL'],
+    ['RS', 'LB', 'MD', 'GS', 'JO', 'MO', 'EG', 'BY'],
+    ['BG', 'UA'],
+    ['HR', 'CY', 'LV', 'LT', 'TR', 'SI', 'RO']
+  ]
+
+  const userLoc = user.location
+
+  if (userLoc) {
+    let i
+    for (i = 0; i < 5; i++) {
+      if (countryCodes[i].includes(userLoc)) {
+        casePrices = ccCasePrices[i]
+      }
+    }
+  }
 
   const caseIndex = cases.indexOf(caseName)
 
@@ -972,8 +999,8 @@ router.get('/get-giveaway-data', auth, async(req, res) => {
 })
 
 router.get('/check-new-profitability', async(req, res) => {
-  const caseName = 'nuclear'
-  const casePrice = 0.37
+  const caseName = 'fire'
+  const casePrice = 0.1
   const amountOfDrops = 30000
 
   const skinPrices = {
