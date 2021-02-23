@@ -824,7 +824,6 @@ router.get('/get-user-credits', auth, async(req, res) => {
 
 router.get('/get-user-skins', auth, async(req, res) => {
   const id = req.user._id
-  console.log(id)
 
   try {
     const user = await User.findById(id, `skins -_id`)
