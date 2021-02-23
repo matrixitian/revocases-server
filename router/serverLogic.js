@@ -510,85 +510,71 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
   }
 
   const gunConditions = {
-    "ak-47_asiimov": ["bs"],
-    "awp_neo-noir": ["bs"],
-    "desert_eagle_mecha_industries": ["bs"],
-    "mp5-sd_phosphor": ["bs"],
-    "ump-45_momentum": ["bs"],
-    "usp-s_flashback": ["ft"],
-    "p250_nevermore": ["ft"],
-    "galil_ar_signal": ["ft"],
-    "mac-10_pipe_down": ["ww"],
-    "g3sg1_scavenger": ["bs"],
-    "m4a4_magnesium": ["*"],
-    "glock-18_oxide_blaze": ["*"],
-    "tec-9_fubar": ["*"],
-    "mp9_modest_threat": ["*"],
-    "sg553_danger_close": ["*"],
-    "sawed-off_black_sand": ["*"],
-    "nova_wood_fired": ["*"],
-    "awp_asiimov": ["bs"],
-    "aug_chameleon": ["ft"],
-    "ak-47_redline": ["bs"],
-    "nova_antique": ["ft"],
-    "p90_trigon": ["ft"],
-    "usp-s_guardian": ["ft"],
-    "sg_553_pulse": ["ft"],
-    "mac-10_heat": ["ww"],
-    "famas_sergeant": ["bs"],
-    "tec-9_sandstorm": ["*"],
-    "negev_terrain": ["*"],
-    "mag-7_heaven_guard": ["*"],
-    "ump-45_corporal": ["*"],
-    "m4a1-s_hyper_beast": ["bs"],
-    "mac-10_neon_rider": ["ft"],
-    "galil_ar_eco": ["bs"],
-    "five-seven_monkey_business": ["ft"],
-    "famas_djinn": ["ft"],
-    "awp_worm_god": ["ft"],
-    "mag-7_heat": ["ft"],
-    "cz75-auto_pole_position": ["ft"],
-    "ump-45_grand_prix": ["ft"],
-    "ak-47_elite_build": ["*"],
-    "desert_eagle_bronze_deco": ["*"],
-    "p250_valence": ["*"],
-    "mp7_armor_core": ["*"],
-    "sawed-off_origami": ["*"],
-    "negev_man-o-'war": ["*"],
-    "desert_eagle_printstream": ["bs"],
-    "ak-47_legion_of_anubis": ["bs"],
-    "m4a4_toothfairy": ["bs"],
-    "glock-18_vogue": ["bs"],
-    "xm1014_entombed": ["bs"],
-    "mag-7_monster_call": ["bs"],
-    "mac-10_allure": ["bs"],
-    "tec-9_brother": ["bs"],
-    "mp5-sd_kitbash": ["bs"],
-    "galil_ar_connexion": ["bs"],
-    "ssg_08_mainframe_001": ["*"],
-    "p250_cassette": ["*"],
-    "pp-bizon_runic": ["*"],
-    "p90_freight": ["*"],
-    "p2000_gnarled": ["*"],
-    "sg_553_ol'rusty": ["*"],
-    "negev_ultralight": ["*"],
-    "m4a4_neo-noir": ["bs"],
-    "mp7_bloodsport": ["bs"],
-    "usp-s_cortex": ["bs"],
-    "awp_mortis": ["ft"],
-    "aug_stymphalian": ["ft"],
-    "glock-18_moonrise": ["ft"],
-    "mag-7_swag-7": ["ft"],
-    "ump-45_artic_wolf": ["ft"],
-    "nova_wild_six": ["ft"],
-    "negev_lionfish": ["ft"],
-    "mp9_black_sand": ["*"],
+    // Fire
     "r8_revolver_grip": ["*"],
-    "sg_553_aloha": ["*"],
-    "five-seven_flame_test": ["*"],
-    "p2000_urban_hazard": ["*"],
-    "pp-bizon_night_riot": ["*"],
-    "xm1014_oxide_blaze": ["*"]
+    "mp9_black_sand": ["*"],
+    "xm1014_oxide_blaze": ["*"],
+    "five-seven_flame_test": ["ft"],
+    "cz75-auto_imprint": ["ft"],
+    "cz75-auto_pole_position": ["ft"],
+    "ak-47_safari_mesh": ["ft"],
+    "usp-s_lead_conduit": ["ww"],
+    "desert_eagle_corinthian": ["ft"],
+    "ak-47_uncharted": ["ft"],
+    "m4a1-s_nitro": ["ft"],
+    "usp-s_flashback": ["ft"],
+    // Lambda
+    "negev_ultralight": ["*"],
+    "p90_freight": ["*"],
+    "nova_wood_fired": ["*"],
+    "m4a4_magnesium": ["ww"],
+    "desert_eagle_the_bronze": ["mw"],
+    "desert_eagle_blue_ply": ["ww"],
+    "awp_safari_mesh": ["ft"],
+    "usp-s_guardian": ["ft"],
+    "awp_paw": ["ft"],
+    "desert_eagle_light_rail": ["ft"],
+    "awp_phobos": ["ft"],
+    "awp_exoskeleton": ["ww"],
+    // Oldschool
+    "mag-7_heaven_guard": ["*"],
+    "p250_cassette": ["*"],
+    "tec-9_fubar": ["*"],
+    "m4a4_magnesium": ["ww"],
+    "ak-47_safari_mesh": ["ft"],
+    "mag-7_swag-7": ["ft"],
+    "desert_eagle_the_bronze": ["mw"],
+    "desert_eagle_meteorite": ["ft"],
+    "ssg_08_parallax": ["ww"],
+    "famas_valence": ["ft"],
+    "ak-47_elite_build": ["bs"],
+    "usp-s_cyrex": ["ft"],
+    // Golden Lambda
+    "mp9_modest_threat": ["*"],
+    "sg_553_danger_close": ["*"],
+    "mp7_armor_core": ["*"],
+    "p250_inferno": ["bs"],
+    "sg_553_phantom": ["ft"],
+    "desert_eagle_oxide_blaze": ["ft"],
+    "mac-10_pipe_down": ["ft"],
+    "ak-47_elite_build": ["bs"],
+    "desert_eagle_naga": ["ft"],
+    "m4a1-s_basilisk": ["ft"],
+    "m4a4_evil_daimyo": ["ft"],
+    "famas_styx": ["ww"],
+    // Nuclear
+    "sg_553_ol'_rusty": ["*"],
+    "glock-18_oxide_blaze": ["*"],
+    "famas_decommissioned": ["*"],
+    "sg_553_darkwing": ["ww"],
+    "m4a1-s_flashback": ["ww"],
+    "p250_nevermore": ["ft"],
+    "desert_eagle_directive": ["ft"],
+    "awp_mortis": ["ft"],
+    "famas_djinn": ["ww"],
+    "awp_atheris": ["bs"],
+    "m4a4_cyber_security": ["bs"],
+    "usp-s_mashup": ["bs"]
   }
 
   let skinGrade
@@ -642,7 +628,6 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
   } 
   else {
     skinCon = gunConditions[skin]
-    log(skinCon)
 
     if (skinCon[0] === '*') skinCon = ['bs', 'ww', 'ft', 'mw', 'fn']
   
@@ -1473,127 +1458,132 @@ function getSkinPrice(caseName, grade, condition) {
   const skinPrices = {
     "fire": {
       "blue": {
-        "fn": 20,
-        "mw": 15,
-        "ft": 12,
-        "ww": 9,
-        "bs": 7
+        "fn": 8,
+        "mw": 6,
+        "ft": 5,
+        "ww": 4,
+        "bs": 3
       },
       "purple": {
-        "fn": 135,
-        "mw": 90,
-        "ft": 60,
-        "ww": 50,
-        "bs": 45
+        "fn": 40,
+        "mw": 30,
+        "ft": 20,
+        "ww": 15,
+        "bs": 12
       },
       "pink": {
-        "ww": 475,
-        "bs": 400
+        "ft": 450,
+        "ww": 350,
+        "bs": 300
       },
       "gold": {
-        "ft": 150,
-        "ww": 100,
-        "bs": 200
+        "ft": 1000,
+        "ww": 900,
+        "bs": 800
       }
     },
     "lambda": {
       "blue": {
-        "fn": 20,
-        "mw": 15,
-        "ft": 12,
-        "ww": 9,
-        "bs": 7
+        "fn": 10,
+        "mw": 8,
+        "ft": 6,
+        "ww": 5,
+        "bs": 4
       },
       "purple": {
-        "fn": 135,
-        "mw": 90,
-        "ft": 60,
-        "ww": 50,
-        "bs": 45
+        "fn": 45,
+        "mw": 35,
+        "ft": 25,
+        "ww": 20,
+        "bs": 15
       },
       "pink": {
-        "ww": 475,
-        "bs": 400
+        "ft": 500,
+        "ww": 400,
+        "bs": 350
       },
       "gold": {
-        "ft": 150,
-        "ww": 100,
-        "bs": 200
+        "ft": 1100,
+        "ww": 1000,
+        "bs": 900
       }
     },
     "oldschool": {
       "blue": {
-        "fn": 20,
-        "mw": 15,
-        "ft": 12,
-        "ww": 9,
-        "bs": 7
+        "fn": 15,
+        "mw": 10,
+        "ft": 8,
+        "ww": 6,
+        "bs": 4
       },
       "purple": {
-        "fn": 135,
-        "mw": 90,
+        "fn": 100,
+        "mw": 70,
         "ft": 60,
         "ww": 50,
-        "bs": 45
+        "bs": 40
       },
       "pink": {
-        "ww": 475,
+        "ft": 600,
+        "ww": 500,
         "bs": 400
       },
       "gold": {
-        "ft": 150,
-        "ww": 100,
-        "bs": 200
+        "ft": 1500,
+        "ww": 1200,
+        "bs": 1000
       }
     },
     "goldenLambda": {
       "blue": {
-        "fn": 20,
-        "mw": 15,
+        "fn": 25,
+        "mw": 20,
         "ft": 12,
-        "ww": 9,
-        "bs": 7
+        "ww": 11,
+        "bs": 10
       },
       "purple": {
-        "fn": 135,
-        "mw": 90,
-        "ft": 60,
-        "ww": 50,
-        "bs": 45
+        "fn": 150,
+        "mw": 120,
+        "ft": 100,
+        "ww": 80,
+        "bs": 65
       },
       "pink": {
-        "ww": 475,
-        "bs": 400
+        "ft": 800,
+        "ww": 600,
+        "bs": 500
       },
       "gold": {
-        "ft": 150,
-        "ww": 100,
-        "bs": 200
+        "ft": 2000,
+        "ww": 1500,
+        "bs": 1200
       }
     },
     "nuclear": {
       "blue": {
-        "fn": 20,
-        "mw": 15,
-        "ft": 12,
-        "ww": 9,
-        "bs": 7
+        "fn": 30,
+        "mw": 20,
+        "ft": 15,
+        "ww": 12,
+        "bs": 10
       },
       "purple": {
-        "fn": 135,
-        "mw": 90,
-        "ft": 60,
-        "ww": 50,
-        "bs": 45
-      },
-      "pink": {
-        "ww": 475,
-        "bs": 400
-      },
-      "gold": {
+        "fn": 200,
+        "mw": 180,
         "ft": 150,
         "ww": 100,
-        "bs": 200
+        "bs": 80
+      },
+      "pink": {
+        "ft": 1000,
+        "ww": 800,
+        "bs": 600
+      },
+      "gold": {
+        "ft": 2500,
+        "ww": 2000,
+        "bs": 1500
       }
     }
   }
