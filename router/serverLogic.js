@@ -867,7 +867,7 @@ router.post('/buy-case', auth, async(req, res) => {
     ['HR', 'CY', 'LV', 'LT', 'TR', 'SI', 'RO']
   ]
 
-  const userLoc = user.location
+  const userLoc = req.user.location
 
   if (userLoc) {
     let i
@@ -990,9 +990,9 @@ router.get('/check-new-profitability', async(req, res) => {
 
   const skinPrices = {
     fire: {
-      purple: [0.2, 0.3, 0.1, 0.1],
-      pink: [0.5, 0.65, 0.65],
-      gold: [0.7, 0.7]
+      purple: [0.07, 0.07, 0.3, 0.2],
+      pink: [0.7, 0.7, 0.45],
+      gold: [0.75, 0.75]
     },
     lambda: {
       purple: [0.1, 0.2, 0.2, 0.15],
@@ -1012,7 +1012,7 @@ router.get('/check-new-profitability', async(req, res) => {
     nuclear: {
       purple: [0.4, 0.45, 0.65, 0.45],
       pink: [1.65, 1.65, 2.2],
-      gold: [3.5, 4.5]
+      gold: [4.3, 3.7]
     }
   }
 
