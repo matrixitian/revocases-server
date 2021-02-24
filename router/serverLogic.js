@@ -1589,9 +1589,9 @@ router.post('/give-user-points', async(req, res) => {
     const hourDiff = a.diff(b, 'hours')
 
     if (hourDiff < 24) {
-      user.credits += 5
+      user.credits += 10
     } else {
-      user.credits += 3
+      user.credits += 5
     }
 
     user.gAdsViewed += 5
