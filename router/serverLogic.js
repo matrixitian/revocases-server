@@ -179,10 +179,10 @@ const iterator = () => {
 
   const chooseCase = () => {
     if (caseName >= 0 && caseName < 30) return 'nuclear' 
-    else if (caseName >= 30 && caseName < 70.00) return 'goldenLambda'
-    else if (caseName >= 70.00 && caseName < 80.00) return 'oldschool'
-    else if (caseName >= 80.00 && caseName < 92.00) return 'lambda'
-    else if (caseName > 92.00) return 'fire'
+    else if (caseName >= 30 && caseName < 75.00) return 'goldenLambda'
+    else if (caseName >= 75.00 && caseName < 86.00) return 'oldschool'
+    else if (caseName >= 86.00 && caseName < 93.00) return 'lambda'
+    else if (caseName > 93.00) return 'fire'
   }
 
   caseName = chooseCase()
@@ -587,10 +587,10 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
 
     if (fromGenerator) {
       const getGrade = () => {
-        if (skinGrade >= 0 && skinGrade <= 0.2) return 'gold'
-        else if (skinGrade > 0.2 && skinGrade <= 3.00) return 'pink'
-        else if (skinGrade > 3 && skinGrade <= 25.00) return 'purple'
-        else if (skinGrade > 25.00) return 'blue'
+        if (skinGrade >= 0 && skinGrade <= 1) return 'gold'
+        else if (skinGrade > 1 && skinGrade <= 5.00) return 'pink'
+        else if (skinGrade > 5 && skinGrade <= 30.00) return 'purple'
+        else if (skinGrade > 30.00) return 'blue'
       }
       skinGrade = getGrade()
     } else {
@@ -599,7 +599,7 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
 
       if (isYouTuber) {
         pinkChance = 5
-        purpleChance = 20
+        purpleChance = 25
       }
 
       const getGrade = () => {
