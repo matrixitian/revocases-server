@@ -649,6 +649,7 @@ router.post('/buy-ticket', auth, async(req, res) => {
 
     return res.status(400).send()
   } catch(err) {
+    console.log(err)
     return res.status(500).send()
   }
 })
@@ -762,6 +763,7 @@ router.post('/finish-daily-ads', auth, async(req, res) => {
 
     return res.status(200).send()
   } catch(err) {
+    log(err)
     return res.status(400).send(err)
   }
 })
@@ -775,6 +777,7 @@ router.post('/login', async (req, res) => {
       const token = await user.generateAuthToken()
       res.status(200).send({ user, token })
   } catch(err) {
+      log(err)
       res.status(201).send({ message: 'Wrong e-mail or password!' }) 
   }
 })
@@ -818,6 +821,7 @@ router.get('/get-user-skins', auth, async(req, res) => {
 
     return res.status(200).send(skins)
   } catch(err) {
+    log(err)
     return res.status(400).send(err) 
   }
 
@@ -1091,6 +1095,7 @@ router.post('/request-trade', auth, async(req, res) => {
   
     return res.status(200).send()
   } catch(err) {
+    log(err)
     return res.status(400).send(err)
   }
 })
@@ -1234,7 +1239,7 @@ router.get('/view-trade-requests', auth, async(req, res) => {
 
     const giveaway = await Giveaway.findById(giveawayDocID,
       `-_id currentDailyWinner currentWeeklyWinner`)
-    
+
     const dailyWinnerTradeURL = await User.findOne(
       { username: giveaway.currentDailyWinner }, `-_id tradeURL`)
 
@@ -1274,6 +1279,7 @@ router.get('/view-trade-requests', auth, async(req, res) => {
 
     return res.status(200).send({ tradeRequests, giveawayData })
   } catch(err) {
+    log(err)
     return res.status(400).send(err)
   }
 })
@@ -1459,6 +1465,7 @@ router.post('/sell-skin', auth, async(req, res) => {
   
     return res.status(200).send()
   } catch(err) {
+    log(err)
     return res.status(400).send(err)
   }
 })
