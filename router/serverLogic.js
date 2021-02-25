@@ -214,8 +214,6 @@ setTimeout(() => {
 }, interval)
 
 const sendConfirmationEmail = async(email, emailVerificationCode) => {
-  console.log(email, emailVerificationCode)
-
   let transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
     port: 465,
@@ -242,13 +240,9 @@ const sendConfirmationEmail = async(email, emailVerificationCode) => {
     subject: "Revo Cases E-mail Confirmation ✔",
     html: myHTML
   })
-
-  console.log(info)
 }
 
 const sendPasswordReset = async(email, safeCode) => {
-  console.log(email, safeCode)
-
   let transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
     port: 465,
@@ -278,8 +272,6 @@ const sendPasswordReset = async(email, safeCode) => {
     subject: "Revo Cases Password Reset",
     html: myHTML
   })
-
-  console.log(info)
 }
 
 const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false) => {
@@ -642,7 +634,6 @@ router.post('/buy-ticket', auth, async(req, res) => {
   const ticketPrice = 30
 
   try {
-    console.log(user.credits)
     if (user.credits >= ticketPrice) {
       user.credits -= ticketPrice
       user.tickets += 1
@@ -658,7 +649,6 @@ router.post('/buy-ticket', auth, async(req, res) => {
 
     return res.status(400).send()
   } catch(err) {
-    console.log(err)
     return res.status(500).send()
   }
 })
@@ -735,9 +725,6 @@ router.post('/verify-email', auth, async (req, res) => {
   const user = req.user
   const verificationCode = req.body.emailVerificationCode
 
-  console.log(verificationCode)
-  console.log(user.emailVerificationCode)
-
   try {
     if (verificationCode === user.emailVerificationCode) {
       user.emailVerified = true
@@ -755,8 +742,6 @@ router.post('/verify-email', auth, async (req, res) => {
 
 router.post('/finish-daily-ads', auth, async(req, res) => {
   const user = req.user
-
-  console.log(user.boosterAdsFinishedAt)
 
   if (user.boosterAdsFinishedAt) {
     const a = moment(new Date())
@@ -777,7 +762,6 @@ router.post('/finish-daily-ads', auth, async(req, res) => {
 
     return res.status(200).send()
   } catch(err) {
-    log(err)
     return res.status(400).send(err)
   }
 })
@@ -786,14 +770,11 @@ router.post('/login', async (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
-  console.log(email, password)
-
   try {
       const user = await User.findByCredentials(email, password)
       const token = await user.generateAuthToken()
       res.status(200).send({ user, token })
   } catch(err) {
-      log(err)
       res.status(201).send({ message: 'Wrong e-mail or password!' }) 
   }
 })
@@ -837,7 +818,6 @@ router.get('/get-user-skins', auth, async(req, res) => {
 
     return res.status(200).send(skins)
   } catch(err) {
-    log(err)
     return res.status(400).send(err) 
   }
 
@@ -1111,7 +1091,6 @@ router.post('/request-trade', auth, async(req, res) => {
   
     return res.status(200).send()
   } catch(err) {
-    log(err)
     return res.status(400).send(err)
   }
 })
@@ -1255,8 +1234,7 @@ router.get('/view-trade-requests', auth, async(req, res) => {
 
     const giveaway = await Giveaway.findById(giveawayDocID,
       `-_id currentDailyWinner currentWeeklyWinner`)
-
-    console.log(giveaway)
+    
     const dailyWinnerTradeURL = await User.findOne(
       { username: giveaway.currentDailyWinner }, `-_id tradeURL`)
 
@@ -1296,7 +1274,6 @@ router.get('/view-trade-requests', auth, async(req, res) => {
 
     return res.status(200).send({ tradeRequests, giveawayData })
   } catch(err) {
-    log(err)
     return res.status(400).send(err)
   }
 })
@@ -1482,7 +1459,6 @@ router.post('/sell-skin', auth, async(req, res) => {
   
     return res.status(200).send()
   } catch(err) {
-    log(err)
     return res.status(400).send(err)
   }
 })
@@ -1661,8 +1637,6 @@ router.post('/send-password-reset', async(req, res) => {
       })
 
       await passwordReset.save()
-
-      console.log(passwordReset)
 
       await sendPasswordReset(email, generatedSafeCode)
     }
