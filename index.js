@@ -54,7 +54,7 @@ const io = require('socket.io')(server, {
 
 // User count
 let defaultUserCount = 0
-    let currentHour = 18
+    let currentHour = 24
 
     function getHour() {
         let d = new Date();
