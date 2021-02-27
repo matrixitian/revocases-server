@@ -580,8 +580,8 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
     if (fromGenerator) {
       const getGrade = () => {
         if (skinGrade >= 0 && skinGrade <= 0.1) return 'gold'
-        else if (skinGrade > 0.1 && skinGrade <= 7.00) return 'pink'
-        else if (skinGrade > 7 && skinGrade <= 25.00) return 'purple'
+        else if (skinGrade > 0.1 && skinGrade <= 2.00) return 'pink'
+        else if (skinGrade > 2 && skinGrade <= 25.00) return 'purple'
         else if (skinGrade > 25.00) return 'blue'
       }
       skinGrade = getGrade()
@@ -1018,15 +1018,15 @@ router.get('/check-new-profitability', async(req, res) => {
         goldCount++
         return 'gold'
       }
-      else if (skinGrade > 0.1 && skinGrade <= 7.0) {
+      else if (skinGrade > 0.1 && skinGrade <= 2.0) {
         pinkCount++
         return 'pink'
       }
-      else if (skinGrade > 7.0 && skinGrade <= 25.0) {
+      else if (skinGrade > 2.0 && skinGrade <= 20.0) {
         purpleCount++
         return 'purple'
       }
-      else if (skinGrade > 25.0) {
+      else if (skinGrade > 20.0) {
         blueCount++
         return 'blue'
       }
