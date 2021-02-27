@@ -579,10 +579,10 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
 
     if (fromGenerator) {
       const getGrade = () => {
-        if (skinGrade >= 0 && skinGrade <= 1) return 'gold'
-        else if (skinGrade > 1 && skinGrade <= 5.00) return 'pink'
-        else if (skinGrade > 5 && skinGrade <= 30.00) return 'purple'
-        else if (skinGrade > 30.00) return 'blue'
+        if (skinGrade >= 0 && skinGrade <= 0.1) return 'gold'
+        else if (skinGrade > 0.1 && skinGrade <= 7.00) return 'pink'
+        else if (skinGrade > 7 && skinGrade <= 25.00) return 'purple'
+        else if (skinGrade > 25.00) return 'blue'
       }
       skinGrade = getGrade()
     } else {
@@ -590,7 +590,7 @@ const getWeapon = (caseName, fromGenerator, predefinedGrade, isYouTuber = false)
       let pinkChance = 2
 
       if (isYouTuber) {
-        pinkChance = 5
+        pinkChance = 7
         purpleChance = 25
       }
 
@@ -963,9 +963,9 @@ router.get('/get-giveaway-data', auth, async(req, res) => {
 })
 
 router.get('/check-new-profitability', async(req, res) => {
-  const caseName = 'fire'
-  const casePrice = 0.1
-  const amountOfDrops = 30000
+  const caseName = 'nuclear'
+  const casePrice = 0.4
+  const amountOfDrops = 150
 
   const skinPrices = {
     fire: {
@@ -1018,15 +1018,15 @@ router.get('/check-new-profitability', async(req, res) => {
         goldCount++
         return 'gold'
       }
-      else if (skinGrade > 0.1 && skinGrade <= 2.0) {
+      else if (skinGrade > 0.1 && skinGrade <= 7.0) {
         pinkCount++
         return 'pink'
       }
-      else if (skinGrade > 2.0 && skinGrade <= 20.0) {
+      else if (skinGrade > 7.0 && skinGrade <= 25.0) {
         purpleCount++
         return 'purple'
       }
-      else if (skinGrade > 20.0) {
+      else if (skinGrade > 25.0) {
         blueCount++
         return 'blue'
       }
